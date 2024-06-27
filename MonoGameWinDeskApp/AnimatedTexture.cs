@@ -44,7 +44,7 @@ namespace AnimatedSprite
             this.depth = 0.5f;
         }
 
-        public AnimatedTexture(Vector2 Position, ContentManager content, string asset, int FrameCount, int framesPerSec)
+        public AnimatedTexture(Vector2 Position, ContentManager content, Texture2D texture, int FrameCount, int framesPerSec)
         {
             this.position = Position;
             this.rotation = 0;
@@ -52,7 +52,7 @@ namespace AnimatedSprite
             this.depth = 0.5f;
 
             frameCount = FrameCount;
-            myTexture = content.Load<Texture2D>(asset);
+            myTexture = texture;
             TimePerFrame = (float)1 / framesPerSec;
             Frame = 0;
             TotalElapsed = 0;
@@ -63,6 +63,16 @@ namespace AnimatedSprite
         {
             frameCount = FrameCount;
             myTexture = content.Load<Texture2D>(asset);
+            TimePerFrame = (float)1 / framesPerSec;
+            Frame = 0;
+            TotalElapsed = 0;
+            Paused = false;
+        }
+
+        public void Load(ContentManager content, Texture2D texture, int FrameCount, int framesPerSec)
+        {
+            frameCount = FrameCount;
+            myTexture = texture;
             TimePerFrame = (float)1 / framesPerSec;
             Frame = 0;
             TotalElapsed = 0;
@@ -92,10 +102,8 @@ namespace AnimatedSprite
         public void DrawFrame(SpriteBatch batch, int frame, Vector2 screenPos)
         {
             FrameWidth = myTexture.Width / frameCount;
-            Rectangle sourcerect = new Rectangle(FrameWidth * frame, 0,
-                FrameWidth, myTexture.Height);
-            batch.Draw(myTexture, screenPos, sourcerect, Color.White,
-                rotation, position, scale, SpriteEffects.None, depth);
+            Rectangle sourcerect = new Rectangle(FrameWidth * frame, 0, FrameWidth, myTexture.Height);
+            batch.Draw(myTexture, screenPos, sourcerect, Color.White, rotation, position, scale, SpriteEffects.None, depth);
         }
 
         public bool IsPaused

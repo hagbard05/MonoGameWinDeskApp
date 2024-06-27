@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-//using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 
-namespace MonoGameWinDeskApp
+namespace MyFirstGame
 {
     class SpeedPowerUp : PowerUp
     {
-        public int speed;
+        public float speed;
         public Vector2 direction;
 
         public static int playerSpeedModifier;
@@ -21,13 +21,17 @@ namespace MonoGameWinDeskApp
 
         int defaultPlayerSpeedModifier = 4;
 
-        public SpeedPowerUp(MainGame game, Vector2 Position, Vector2 Directon, int Speed)
+        public SpeedPowerUp(MainGame game, Vector2 Position, Vector2 Directon, float speed)
         {
+			if (Guide.IsTrialMode == true)
+			{
+				timeout = 5000;
+			}
             position = Position;
             direction = Directon;
-            sprite = game.Content.Load<Texture2D>("speed");
+            sprite = game.speedPowUpTex;
             powerUpType = powerUpTypes.Speed;
-            speed = Speed;
+            this.speed = speed;
 
             playerSpeedModifier = defaultPlayerSpeedModifier;
         }

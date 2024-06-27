@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-//using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 
 
-namespace MonoGameWinDeskApp
+namespace MyFirstGame
 {
 
     class ShieldPowerUp : PowerUp
     {
-        public int speed;
+        public float speed;
         public Vector2 direction;
 
         public static int projectileSpeedModifier;
@@ -27,13 +27,17 @@ namespace MonoGameWinDeskApp
         int defaultProjectileSpeedModifier = -5;
         int defaultPlayerSpeedModifier = 2;
 
-        public ShieldPowerUp(MainGame game, Vector2 Position, Vector2 Directon, int Speed)
+        public ShieldPowerUp(MainGame game, Vector2 Position, Vector2 Directon, float speed)
         {
+            if (Guide.IsTrialMode == true)
+            {
+                timeout = 5000;
+            }
             position = Position;
             direction = Directon;
-            sprite = game.Content.Load<Texture2D>("Sphere75small");
+            sprite = game.shieldPowUpTex;
             powerUpType = powerUpTypes.Shield;
-            speed = Speed;
+            this.speed = speed;
 
             projectileFrequencyModifier = defaultProjectileFrequencyModifier;
             projectileSpeedModifier = defaultProjectileSpeedModifier;

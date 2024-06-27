@@ -9,11 +9,11 @@ using Microsoft.Xna.Framework.Input;
 
 using AnimatedSprite;
 
-namespace MonoGameWinDeskApp
+namespace MyFirstGame
 {
     class MissleLauncherEnemy : Sprite
     {
-        public int speed;
+        public float speed;
         public int defaultSpeed = 2;
         public Vector2 direction;
         public AnimatedTexture explosion;

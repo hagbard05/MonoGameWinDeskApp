@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -9,177 +9,451 @@ using Microsoft.Xna.Framework.Input;
 
 using AnimatedSprite;
 
-namespace MonoGameWinDeskApp
+namespace MyFirstGame
 {
-	/// <summary>
-	/// Handles operations in the game loop 
-	/// </summary>
-	public class MainGame : Microsoft.Xna.Framework.Game
-	{
-		SpriteFont gameFont;
-		Random random2, random3, random4, random5, random6;
-		bool playerOneStarted = false, playerTwoStarted = false, playerThreeStarted = false, playerFourStarted = false;
-		double diffuculityAdder = 0;
-		int kamikazeSpawnRate = 8,
-			crystalGrabberSpawnRate = 10,
-			pepperPowerUpSpawnRate = 8,
-			invincibleBulletPowerUpSpawnRate = 4,
-			superBombPowerUpSpawnRate = 8,
-			shieldPowerUpSpawnRate = 7,
-			speedPowerUpSpawnRate = 6,
-			extraLifePowerUpSpawnRate = 3;
-		bool finalScoreMessageboxHasBeenShown = false;
-		GamePadState previousGamePadState1, previousGamePadState2, previousGamePadState3, previousGamePadState4;
-		protected bool _gameOver;
-		public bool gameOver
-		{
-			get
-			{
-				return _gameOver;
-			}
-			set
-			{
-				if (value == true)
+    /// <summary>
+    /// This is the main type for your game
+    /// </summary>
+    public partial class MainGame : Microsoft.Xna.Framework.Game
+    {
+		bool simulateTrialMode = false; // In debug trialmode will be enabled (this variable will be ignored)
+
+        SpriteFont gameFont;
+		SpriteFont gameFontLarger;
+		SpriteFont Comic;
+
+		public Random random1;
+        public Random random2;
+        public Random random3;
+        public Random random4;
+        public Random random5;
+        public Random random6;
+        int debugRandom;
+ 
+        public int numPlayersStarted = 0;
+        
+        int _level = 0;
+        public int level 
+        { 
+            get { return _level; } 
+            set 
+            {
+				foreach (Player player in players)
 				{
-					finalScoreMessageboxHasBeenShown = false;
+					if (value == levelToAddSpeedPowerUp && _level != levelToAddSpeedPowerUp)
+					{
+						spawnPowerUp(100000, Sprite.powerUpTypes.Speed, new Random(randomSeed3));
+					}
+					if (value == 1 && _level != 1)
+					{
+                        spawn10CrystalGrabbersBelow();
+                        spawn10CrystalGrabbersBelow();
+                        spawnCrystalGrabbersLeftOfScreen(10000);
+                        spawnCrystalGrabbersRightOfScreen(10000);
+						spawnPowerUp(100000, Sprite.powerUpTypes.Pepper, new Random(randomSeed6));
+					}
+					if (value == 2 && _level != 2)
+					{
+						spawnCrystalGrabbersRightOfScreen(10000);
+						spawnCrystalGrabbersBelowScreen(10000);
+						spawnCrystalGrabbersLeftOfScreen(100000);
+						spawnCrystalGrabbersLeftOfScreen(10000);
+						spawnCrystalGrabbersBelowScreen(10000);
+						spawnPowerUp(100000, Sprite.powerUpTypes.Shield, new Random(randomSeed));
+					}
+					if (value == 3 && _level != 3)
+					{
+						spawnCrystalGrabbersLeftOfScreen(10000);
+						spawnCrystalGrabbersRightOfScreen(1000);
+						spawnCrystalGrabbersBelowScreen(10000);
+						spawnCrystalGrabbersBelowScreen(1000);
+						spawnCrystalGrabbersLeftOfScreen(100000);
+						spawnCrystalGrabbersLeftOfScreen(10000);
+						spawnCrystalGrabbersLeftOfScreen(1000);
+						spawnCrystalGrabbersBelowScreen(100000);
+						spawnCrystalGrabbersBelowScreen(10000);
+						spawnCrystalGrabbersBelowScreen(1000);
+						spawnPowerUp(100000, Sprite.powerUpTypes.InvincibleBullet, new Random(randomSeed));
+					}
+					if (value == 4 && _level != 4)
+					{
+						spawnCrystalGrabbersLeftOfScreen(100000);
+						spawnCrystalGrabbersRightOfScreen(10000);
+						spawnCrystalGrabbersBelowScreen(100000);
+						spawnCrystalGrabbersBelowScreen(10000);
+						spawnCrystalGrabbersLeftOfScreen(1000000);
+						spawnCrystalGrabbersLeftOfScreen(100000);
+						spawnCrystalGrabbersLeftOfScreen(10000);
+						spawnCrystalGrabbersBelowScreen(1000000);
+						spawnCrystalGrabbersBelowScreen(100000);
+						spawnCrystalGrabbersBelowScreen(10000);
+						spawnPowerUp(100000, Sprite.powerUpTypes.SuperBomb, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Speed, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Shield, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.ExtraLife, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Pepper, new Random(randomSeed));
+					}
+					if (value == 5 && _level != 5)
+					{
+                        spawn10CrystalGrabbersBelow();
+                        spawn10CrystalGrabbersBelow();
+                        spawn10CrystalGrabbersBelow();
+                        spawn10CrystalGrabbersBelow();
 
-					kamikazes.Clear();
-					crystalGrabbers.Clear();
+                        spawnCrystalGrabbersLeftOfScreen(1000000);
+                        spawnCrystalGrabbersLeftOfScreen(100000);
+                        spawnCrystalGrabbersLeftOfScreen(10000);
 
-					playerOneStarted = false;
-					playerTwoStarted = false;
-					playerThreeStarted = false;
-					playerFourStarted = false;
-
-					playerOne.resetToIniValues();
-					playerTwo.resetToIniValues();
-					playerThree.resetToIniValues();
-					playerFour.resetToIniValues();
-
-					diffuculityAdder = 0;
-					kamikazeSpawnRate = 8;
-					crystalGrabberSpawnRate = 10;
-					pepperPowerUpSpawnRate = 8;
-					invincibleBulletPowerUpSpawnRate = 4;
-					superBombPowerUpSpawnRate = 8;
-					shieldPowerUpSpawnRate = 7;
-					speedPowerUpSpawnRate = 6;
-					extraLifePowerUpSpawnRate = 3;
-
-					pepperPowerUps.Clear();
-					InvincibleBulletPowerUps.Clear();
-					superBombPowerUps.Clear();
-					shieldPowerUps.Clear();
-					speedPowerUps.Clear();
-					extraLifePowerUps.Clear();
-
-					kamikazes.Clear();
-					crystalGrabbers.Clear();
-					powerCrystal.position = centerOfScreen;
+						spawnPowerUp(100000, Sprite.powerUpTypes.Pepper, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.InvincibleBullet, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.SuperBomb, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Speed, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Speed, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.ExtraLife, new Random(randomSeed));
+					}
+					if (value == 6 && _level != 6)
+					{
+						spawnPowerUp(100000, Sprite.powerUpTypes.ExtraLife, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Shield, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Speed, new Random(randomSeed));
+						spawnCrystalGrabbersBelowScreen(1000000);
+						spawnCrystalGrabbersBelowScreen(1000000);
+						spawnCrystalGrabbersBelowScreen(1000000);
+						spawnCrystalGrabbersBelowScreen(1000000);
+						spawnCrystalGrabbersBelowScreen(1000000);
+					}
+					if (value == 7 && _level != 7)
+					{
+						spawnPowerUp(100000, Sprite.powerUpTypes.ExtraLife, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Shield, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Speed, new Random(randomSeed));
+					}
+					if (value == 8 && _level != 8)
+					{
+						spawnCrystalGrabbersLeftOfScreen(100000);
+						spawnCrystalGrabbersRightOfScreen(10000);
+						spawnCrystalGrabbersBelowScreen(100000);
+						spawnCrystalGrabbersLeftOfScreen(100000);
+						spawnCrystalGrabbersLeftOfScreen(100000);
+						spawnCrystalGrabbersBelowScreen(1000000);
+						spawnCrystalGrabbersBelowScreen(100000);
+						spawnCrystalGrabbersBelowScreen(10000);
+						spawnCrystalGrabbersBelowScreen(1000);
+						spawnPowerUp(100000, Sprite.powerUpTypes.ExtraLife, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Shield, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Speed, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Pepper, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.InvincibleBullet, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.SuperBomb, new Random(randomSeed));
+					}
+					if (value == 9 && _level != 9)
+					{
+						spawnPowerUp(100000, Sprite.powerUpTypes.ExtraLife, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Shield, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Speed, new Random(randomSeed));
+					}
+					if (value == 10 && _level != 10)
+					{
+						spawnCrystalGrabbersLeftOfScreen(100);
+						spawnCrystalGrabbersRightOfScreen(100);
+						spawnCrystalGrabbersBelowScreen(100000);
+						spawnCrystalGrabbersBelowScreen(10000);
+						spawnCrystalGrabbersBelowScreen(100000);
+						spawnCrystalGrabbersBelowScreen(10000);
+						spawnCrystalGrabbersBelowScreen(100000);
+						spawnCrystalGrabbersBelowScreen(10000);
+						spawnCrystalGrabbersBelowScreen(1000);
+						spawnCrystalGrabbersBelowScreen(100);
+						spawnCrystalGrabbersLeftOfScreen(1000);
+						spawnCrystalGrabbersLeftOfScreen(100);
+						spawnCrystalGrabbersLeftOfScreen(10);
+						spawnPowerUp(100000, Sprite.powerUpTypes.ExtraLife, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Shield, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Speed, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Pepper, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.InvincibleBullet, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.SuperBomb, new Random(randomSeed));
+					}
+					if (value == levelToAddKama && _level != levelToAddKama)
+					{
+						spawnKamikazesAboveScreen(100000);
+						spawnKamikazesAboveScreen(100000);
+						spawnKamikazesAboveScreen(10000);
+						spawnKamikazesBelowScreen(10000);
+						spawnKamikazesLeftOfScreen(10000);
+						spawnKamikazesLeftOfScreen(10000);
+						spawnPowerUp(100000, Sprite.powerUpTypes.ExtraLife, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Speed, new Random(randomSeed));
+						spawnPowerUp(100000, Sprite.powerUpTypes.Pepper, new Random(randomSeed));
+					}
+					if (value == levelToAddWobbleKama && _level != levelToAddWobbleKama)
+					{
+						spawnWobbleKamikazes(1000000);
+						spawnWobbleKamikazes(100000);
+						spawnWobbleKamikazes(10000);
+						spawnWobbleKamikazes(10000);
+						spawnPowerUp(100000, Sprite.powerUpTypes.InvincibleBullet, new Random(randomSeed));
+					}
 				}
-				_gameOver = value;
-			}
-		}
+                _level = value; 
+            } 
+        }
+        double diffuculityAdder = 0;
 
-		public enum gameTypes { defendTheCrystal, deathMatch, none };
-		gameTypes gameType = gameTypes.defendTheCrystal;
+#if DEBUG
+		public static int crystalGrabberSpawnRateDefault = 5;
+		public static int kamikazeSpawnRateDefault = 5;
+        public static int wobbleKSpanRateDefault = 5;
+#else
+        public static int wobbleKSpanRateDefault = 7;
+        public static int crystalGrabberSpawnRateDefault = 25;
+		public static int kamikazeSpawnRateDefault = 10;
+#endif
 
-		int headExplodeDownTime = 59; //Number of cycles to show the explosion. default gameTime: 60 = 1 second = 0 to 59 = 1 second
-		float elapsed; // used to track elapsed time for sprite anamation
-		GameTime gameTime1;
-		Viewport viewport;
-		GraphicsDeviceManager graphics;
-		AudioEngine audioEngine;
-		SoundBank soundBank;
-		WaveBank waveBank;
-		SpriteBatch spriteBatch;
-		Color backColor = Color.Black; //background color
-		Vector2 centerOfScreen;
+        int wobbleKSpanRate = wobbleKSpanRateDefault;
+        int kamikazeSpawnRate = kamikazeSpawnRateDefault;
+        int crystalGrabberSpawnRate = crystalGrabberSpawnRateDefault;
+        int pepperPowerUpSpawnRate = pepperPowerUpSpawnRateDefault;
+        int invincibleBulletPowerUpSpawnRate = invincibleBulletPowerUpSpawnRateDefault;
+        int superBombPowerUpSpawnRate = superBombPowerUpSpawnRateDefault;
+        int shieldPowerUpSpawnRate = shieldPowerUpSpawnRateDefault;
+        int speedPowerUpSpawnRate = speedPowerUpSpawnRateDefault;
+        int extraLifePowerUpSpawnRate = extraLifePowerUpSpawnRateDefault;
 
-		// Color array data for the images - used for per-pixel collision
-		// ToDo: finish setting up per pixle collisions
-		Color[] forestSpriteTextureData;
-		Color[] projectileSpriteTextureData;
+        bool finalScoreMessageboxHasBeenShown = false;
 
-		Player playerOne;
-		Player playerTwo;
-		Player playerThree;
-		Player playerFour;
+        GamePadState previousGamePadState1;
+        GamePadState previousGamePadState2;
+        GamePadState previousGamePadState3;
+        GamePadState previousGamePadState4;
 
-		public PowerCrystal powerCrystal;
-
-		List<PowerUp> pepperPowerUps = new List<PowerUp>();
-		List<PowerUp> InvincibleBulletPowerUps = new List<PowerUp>();
-		List<PowerUp> superBombPowerUps = new List<PowerUp>();
-		List<PowerUp> shieldPowerUps = new List<PowerUp>();
-		List<PowerUp> speedPowerUps = new List<PowerUp>();
-		List<PowerUp> extraLifePowerUps = new List<PowerUp>();
-
-		List<Kamikaze> kamikazes = new List<Kamikaze>();
-		List<CrystalGrabber> crystalGrabbers = new List<CrystalGrabber>();
-
-		// The sub-rectangle of the drawable area which should be visible on all TVs
-		Rectangle safeBounds;
-
-		// Percentage of the screen on every side is the safe area
-		const float SafeAreaPortion = 0.05f;
-
-
-		public MainGame()
+		protected bool _gameOver;
+		public bool gameOver 
 		{
-			_gameOver = true;
-			graphics = new GraphicsDeviceManager(this);
-			if (GraphicsAdapter.DefaultAdapter.IsWideScreen)
+            get { return _gameOver; } 
+			set 
 			{
-				graphics.PreferredBackBufferWidth = 1920;
-				graphics.PreferredBackBufferHeight = 1080;
-			}
-			else
-			{
-				graphics.PreferredBackBufferWidth = 1280;
-				graphics.PreferredBackBufferHeight = 720;
-			}
+                if (value == true)
+                {
+                    resetGame();
+                }
+				_gameOver = value; 
+			} 
+		} 
 
-			graphics.IsFullScreen = false;
+        public enum gameTypes { defendTheCrystal, deathMatch, none };
+        gameTypes gameType = gameTypes.defendTheCrystal;
+
+        int headExplodeDownTime = 59; //Number of cycles to show the explosion. default gameTime: 60 = 1 second = 0 to 59 = 1 second
+        float elapsed; // used to track elapsed time for sprite anamation
+
+		// ------------------------------------------------------------------------------
+        // Sound Effects
+        // ------------------------------------------------------------------------------
+		SoundEffect unstopaballShot;
+		SoundEffect powerUp;
+		SoundEffect fireBallShot;
+        SoundEffect normalShot;
+        SoundEffect Explosion;
+        SoundEffect explosion6;
+
+        AudioEngine audioEngine;
+        SoundBank soundBank;
+        WaveBank waveBank;
+        SpriteBatch spriteBatch;
+        Color backColor = Color.Black; //background color
+        Vector2 centerOfScreen;
+
+        // Color array data for the images - used for per-pixel collision
+        // ToDo: finish setting up per pixle collisions
+        Color[] forestSpriteTextureData;
+        Color[] projectileSpriteTextureData;
+
+        public Player playerOne = null;
+        public Player playerTwo = null;
+        public Player playerThree = null;
+        public Player playerFour = null;
+
+		public GameTime gameTime1;
+		public Viewport viewport;
+		public GraphicsDeviceManager graphics;
+
+        public PowerCrystal powerCrystal;
+        // powerUp lists
+        public List<PowerUp> pepperPowerUps = new List<PowerUp>();
+        public List<PowerUp> InvincibleBulletPowerUps = new List<PowerUp>();
+        public List<PowerUp> superBombPowerUps = new List<PowerUp>();
+        public List<PowerUp> shieldPowerUps = new List<PowerUp>();
+        public List<PowerUp> speedPowerUps = new List<PowerUp>();
+        public List<PowerUp> extraLifePowerUps = new List<PowerUp>();
+
+        // Enemy lists
+        List<Kamikaze> kamikazes = new List<Kamikaze>();
+        List<WobbleKamikaze> wobbleKamikazes = new List<WobbleKamikaze>();
+        List<CrystalGrabber> crystalGrabbers = new List<CrystalGrabber>();
+
+        // player list
+        public List<Player> players = new List<Player>();
+
+        // The sub-rectangle of the drawable area which should be visible on all TVs
+        public Rectangle safeBounds;
+
+        // Percentage of the screen on every side is the safe area
+        const float SafeAreaPortion = 0.06f;
+
+        /// <summary>
+        /// Default constructor set screen size and add the GamerServicesComponent
+        /// </summary>
+        public MainGame()
+        {
+            graphics = new GraphicsDeviceManager(this);
+			
+            // GamerServicesComponent
+            //Components.Add(new GamerServicesComponent(this));
 			Content.RootDirectory = "Content";
-			//TargetElapsedTime = new TimeSpan(20000);
-		}
+#if DEBUG
+            //Guide.SimulateTrialMode = simulateTrialMode;
+            graphics.PreferredBackBufferWidth = 1650;
+            graphics.PreferredBackBufferHeight = 950;
+            graphics.IsFullScreen = false;
+#else
+			Guide.SimulateTrialMode = simulateTrialMode;
+            if (GraphicsAdapter.DefaultAdapter.IsWideScreen)
+            {
+                graphics.PreferredBackBufferWidth = 1920;
+                graphics.PreferredBackBufferHeight = 1080;
+            }
+            else
+            {
+#if WINDOWS
+                graphics.PreferredBackBufferWidth = 1850;
+                graphics.PreferredBackBufferHeight = 920;
+#endif
+#if XBOX
+                graphics.PreferredBackBufferWidth = 1280;
+                graphics.PreferredBackBufferHeight = 720;
+#endif
 
-		private static int _randomSeed = 0;
-		public static int randomSeed
-		{
-			get
-			{
-				if (_randomSeed > 10523)
-					_randomSeed = 0;
-				return _randomSeed++;
-			}
-		}
+            }
+            graphics.IsFullScreen = false; 
+#endif
+            _gameOver = true;
+        }
 
-		/// <summary>
-		/// Allows the game to perform any initialization it needs to before starting to run.
-		/// This is where it can query for any required services and load any non-graphic related content.  
-		/// Calling base.Initialize will enumerate through any components and initialize them as well.
-		/// </summary>
-		protected override void Initialize()
-		{
-			base.Initialize();
-			random2 = new Random(randomSeed);
-			random3 = new Random(randomSeed);
-			random4 = new Random(randomSeed);
-			random5 = new Random(randomSeed);
-			random6 = new Random(randomSeed);
+        public static int _randomSeed = 1;
+        public static int randomSeed 
+        { 
+            get 
+            {
+                if (_randomSeed > 2147483641) // int32 maxValue = 2,147,483,647
+                    _randomSeed = 1;
+                return _randomSeed++; 
+            } 
+        }
+        public static int _randomSeed2 = 23;
+        public static int randomSeed2
+        {
+            get
+            {
+                if (_randomSeed2 > 2147483642) // int32 maxValue = 2,147,483,647
+                    _randomSeed2 = 3;
+                return _randomSeed2++;
+            }
+        }
+        public static int _randomSeed3 = 42;
+        public static int randomSeed3
+        {
+            get
+            {
+                if (_randomSeed3 > 2147483643) // int32 maxValue = 2,147,483,647
+                    _randomSeed3 = 4;
+                return _randomSeed3++;
+            }
+        }
+        public static int _randomSeed4 = 99;
+        public static int randomSeed4
+        {
+            get
+            {
+                if (_randomSeed4 > 2147483644) // int32 maxValue = 2,147,483,647
+                    _randomSeed4 = 5;
+                return _randomSeed4++;
+            }
+        }
+        public static int _randomSeed5 = 1234;
+        public static int randomSeed5
+        {
+            get
+            {
+                if (_randomSeed5 > 2147483645) // int32 maxValue = 2,147,483,647
+                    _randomSeed5 = 4321;
+                return _randomSeed5++;
+            }
+        }
+        public static int _randomSeed6 = 963578;
+        public static int randomSeed6
+        {
+            get
+            {
+                if (_randomSeed6 > 2147483646) // int32 maxValue = 2,147,483,647
+                    _randomSeed6 = 6;
+                return _randomSeed6++;
+            }
+        }
 
-			//audioEngine = new AudioEngine("Content\\Sounds\\Win\\XACT Sounds.xgs");
-			//soundBank = new SoundBank(audioEngine, "Content\\Sounds\\Win\\Sound Bank.xsb");
-			//waveBank = new WaveBank(audioEngine, "Content\\Sounds\\Win\\Wave Bank.xwb");
+        /// <summary>
+        /// Allows the game to perform any initialization it needs to before starting to run.
+        /// This is where it can query for any required services and load any non-graphic
+        /// related content.  Calling base.Initialize will enumerate through any components
+        /// and initialize them as well.
+        /// </summary>
+        protected override void Initialize()
+        {
+            base.Initialize();
+            //random1 = new Random(randomSeed + randomSeed2 + DateTime.Now.Millisecond % Int32.MaxValue);
+            //random2 = new Random(randomSeed2 + randomSeed + DateTime.Now.Millisecond % Int32.MaxValue);
+            //random3 = new Random(randomSeed3 + randomSeed3 + DateTime.Now.Millisecond % Int32.MaxValue);
+            //random4 = new Random(randomSeed4 + randomSeed2 + DateTime.Now.Millisecond % Int32.MaxValue);
+            //random5 = new Random(randomSeed5 + 1 + randomSeed3 + DateTime.Now.Millisecond % Int32.MaxValue);
+            //random6 = new Random(randomSeed6 + 7 + randomSeed + DateTime.Now.Millisecond % Int32.MaxValue);
 
-			//soundBank.PlayCue("The Crystal Method_Bad Ass");
-		}
+            random1 = new Random(randomSeed + randomSeed2);
+            random2 = new Random(randomSeed2 + randomSeed + 1);
+            random3 = new Random(randomSeed3 + randomSeed3);
+            random4 = new Random(randomSeed4 + randomSeed2);
+            random5 = new Random(randomSeed5 + 1 + randomSeed3);
+            random6 = new Random(randomSeed6 + 7 + randomSeed);
 
-		// This is a texture we can render.
+            //audioEngine = new AudioEngine("Content\\Sounds\\XACT Sounds.xgs");
+            //soundBank = new SoundBank(audioEngine, "Content\\Sounds\\Sound Bank.xsb");
+            //waveBank = new WaveBank(audioEngine, "Content\\Sounds\\Wave Bank.xwb");
+
+            // Create player objects
+            playerOne = new Player(this, gameTime1);
+            playerOne.explosion.Load(Content, explosionStripP1, 6, 12);
+
+            playerTwo = new Player(this, new Vector2(safeBounds.Right - playerTwoTex.Width, safeBounds.Top), playerTwoTex, gameTime1);
+            playerTwo.explosion.Load(Content, explosionStrip2, 12, 12);
+
+            playerThree = new Player(this, new Vector2(safeBounds.Left - playerThreeTex.Width, safeBounds.Bottom - playerThreeTex.Height), playerThreeTex, gameTime1);
+            playerThree.explosion.Load(Content, explosionStrip2, 12, 12);
+
+            playerFour = new Player(this, new Vector2(safeBounds.Right - playerFourTex.Width, safeBounds.Bottom - playerFourTex.Height), forestSprite2, gameTime1);
+            playerFour.explosion.Load(Content, explosionStrip2, 12, 12);
+        }
+
 		public Texture2D background;
-		public Texture2D forestSprite;
+        public Texture2D backgroundSat;
+        public Texture2D backgroundGalixy;
+        public Texture2D backgroundMilkyWay;
+        public Texture2D backgroundBlueSun;
+        public Texture2D backgroundMiraInSnow;
+        public Texture2D level2;
+        public Texture2D level3;
+        public Texture2D level4;
+        public Texture2D level6;
+        public Texture2D level10;
+
 		public Texture2D forestSprite2;
 		public Texture2D calebSprite;
 		public Texture2D headExplodeSprite;
@@ -190,1738 +464,1232 @@ namespace MonoGameWinDeskApp
 		public Texture2D spriteOctoLarge;
 
 		public Texture2D debugDot; // one pixle used for position debugging
+        public Texture2D playerBullet;
+        public Texture2D metelSpherePowerUp;
+        public Texture2D metelSpherePowerUpProjectileSprite;
+        public Texture2D playerOneTex;
+        public Texture2D playerTwoTex;
+        public Texture2D playerThreeTex;
+        public Texture2D playerFourTex;
+        public Texture2D kamakizeTex;
+        public Texture2D kamakizeTexSm;
+        public Texture2D oneUpTex;
+		public Texture2D crystal;
+		public Texture2D habanerio;
+        public Texture2D fireball;
+		public Texture2D bomb;
+        public Texture2D explosionStripForGhost;
+        public Texture2D KamakisaiSheetSmall;
+        public Texture2D explosionStrip;
+        public Texture2D OctoEnemy;
+        public Texture2D OctoEnemyAnamation;
+        public Texture2D OctoEnemyAnamation2;
+        public Texture2D OctoEnemyAnamationSmall;
+        public Texture2D OctoEnemySmall;
+        public Texture2D wobbleKam;
+        public Texture2D wobbleKSheet;
+        public Texture2D explosionStrip2;
+        public Texture2D shieldSprite;
+		public Texture2D powerCrystalTex;
+        public Texture2D speedPowUpTex;
+        public Texture2D shieldPowUpTex;
+        public Texture2D explosionStripForWobble;
+        public Texture2D explosionStripP1;
 
-		/// <summary>
-		/// LoadContent will be called once per game and is the place to load
-		/// all of your content.
-		/// </summary>
-		protected override void LoadContent()
-		{
-			// Calculate safe bounds based on current resolution
-			viewport = graphics.GraphicsDevice.Viewport;
+        /// <summary>LoadContent will be called once per game and is the place to load all of your content.</summary>
+        protected override void LoadContent()
+        {
 
-			safeBounds = new Rectangle((int)(viewport.Width * SafeAreaPortion), (int)(viewport.Height * SafeAreaPortion),
-				(int)(viewport.Width * (1 - 2 * SafeAreaPortion)), (int)(viewport.Height * (1 - 2 * SafeAreaPortion)));
+            // Calculate safe bounds based on current resolution
+            viewport = graphics.GraphicsDevice.Viewport;
+            safeBounds = new Rectangle( (int)(viewport.Width * SafeAreaPortion), (int)(viewport.Height * SafeAreaPortion), (int)(viewport.Width * (1 - 2 * SafeAreaPortion)), (int)(viewport.Height * (1 - 2 * SafeAreaPortion)));
+            gameTime1 = new GameTime();
+            centerOfScreen = new Vector2((viewport.Width / 2), (viewport.Height / 2));
 
-			gameTime1 = new GameTime();
-			centerOfScreen = new Vector2((viewport.Width / 2), (viewport.Height / 2));
+            //Backgrounds
+            backgroundSat = Content.Load<Texture2D>("Saturn");
+            backgroundGalixy = Content.Load<Texture2D>("Galixy");
+            backgroundMilkyWay = Content.Load<Texture2D>("Saturn");
+            backgroundBlueSun = Content.Load<Texture2D>("BlueSun");
+            backgroundMiraInSnow = Content.Load<Texture2D>("Saturn");
+            level2 = Content.Load<Texture2D>("level2");
+            level3 = Content.Load<Texture2D>("level3");
+            level4 = Content.Load<Texture2D>("level4");
+            level6 = Content.Load<Texture2D>("level2");
+            level10 = Content.Load<Texture2D>("level10");
 
-			gameFont = Content.Load<SpriteFont>("gameFont");
-			//gameFont = Content.Load<SpriteFont>("fonts//MarkerFelt-16");
+            // sprites that are used by the Sprite (and child classes) objs
+            explosionStripP1 = Content.Load<Texture2D>("explosionStripP1");
+            shieldPowUpTex = Content.Load<Texture2D>("Sphere75small");
+            speedPowUpTex = Content.Load<Texture2D>("speed");
+			powerCrystalTex = Content.Load<Texture2D>("quartz");
+            shieldSprite = Content.Load<Texture2D>("Sphere75");
+            explosionStrip2 = Content.Load<Texture2D>("explosionStrip2");
+            OctoEnemySmall = Content.Load<Texture2D>("OctoEnemy-s");
+            wobbleKam = Content.Load<Texture2D>("WKam");
+            wobbleKSheet = Content.Load<Texture2D>("wobKamAna");
 
-			background = Content.Load<Texture2D>("DeeperDive");
-			calebSprite = Content.Load<Texture2D>("CalebSprite");
-			forestSprite2 = Content.Load<Texture2D>("ForestSprite2");
-			forestSprite = Content.Load<Texture2D>("ForestSprite");
+            OctoEnemy = Content.Load<Texture2D>("OctoEnemy");
+            OctoEnemyAnamation = Content.Load<Texture2D>("OctoEnemyAnamation");
+            OctoEnemyAnamation2 = Content.Load<Texture2D>("OctoEnemyAnamation2");
+            explosionStrip = Content.Load<Texture2D>("explosionStrip");
+            KamakisaiSheetSmall = Content.Load<Texture2D>("KamakisaiSheet - small-s");
+            explosionStripForGhost = Content.Load<Texture2D>("explosionStripForGhost");
+            explosionStripForWobble = Content.Load<Texture2D>("exStripWobble");
+			bomb = Content.Load<Texture2D>("H-Bomb");
+			habanerio = Content.Load<Texture2D>("habanerio");
+			fireball = Content.Load<Texture2D>("fireBall");
+			crystal = Content.Load<Texture2D>("quartz");
+            oneUpTex = Content.Load<Texture2D>("1up");
+            kamakizeTex = Content.Load<Texture2D>("Kspr-ExSmall");
+            kamakizeTexSm = Content.Load<Texture2D>("Kspr-s");
+            playerOneTex = Content.Load<Texture2D>("playerOne");
+            playerTwoTex = Content.Load<Texture2D>("player2");
+            playerThreeTex = Content.Load<Texture2D>("player3");
+            playerFourTex = Content.Load<Texture2D>("player4");
+
+            playerBullet = Content.Load<Texture2D>("smileSmallStainG");
+            metelSpherePowerUp = Content.Load<Texture2D>("metelSphere");
+            metelSpherePowerUpProjectileSprite = Content.Load<Texture2D>("metelSphereSmall");
+
+            gameFont = Content.Load<SpriteFont>("gameFont");
+			gameFontLarger = Content.Load<SpriteFont>("gameFontLarger");
+			Comic = Content.Load<SpriteFont>("Comic");
+            background = Content.Load<Texture2D>("DeeperDive");
+            calebSprite = Content.Load<Texture2D>("CalebSprite");
+            forestSprite2 = Content.Load<Texture2D>("ForestSprite2");
 			spriteOcto = Content.Load<Texture2D>("OctoEnemy");
-			fireBallMetalSphere = Content.Load<Texture2D>("fireBallMetelSphere");  //used as a combo sprite for when player has invincibleBullet and Pepper powerups
-																				   //projectileSprite = Content.Load<Texture2D>("flameBall");
-																				   //headExplodeSprite = Content.Load<Texture2D>("headExplode");
-			splatSprite = Content.Load<Texture2D>("splat");
-			playerStatusArea = Content.Load<Texture2D>("PlayerStatusArea");
+            fireBallMetalSphere = Content.Load<Texture2D>("fireBallMetelSphere");  //used as a combo sprite for when player has invincibleBullet and Pepper powerups
+            //projectileSprite = Content.Load<Texture2D>("flameBall");
+            //headExplodeSprite = Content.Load<Texture2D>("headExplode");
+            //splatSprite = Content.Load<Texture2D>("splat");
+            playerStatusArea = Content.Load<Texture2D>("PlayerStatusArea");
 
-			debugDot = Content.Load<Texture2D>("debugDot");// one pixle used for position debugging
+            debugDot = Content.Load<Texture2D>("debugDot");// one pixle used for position debugging
 
-			// Extract collision data - used for per pixle collisions - not yet implemented
-			forestSpriteTextureData = new Color[forestSprite2.Width * forestSprite2.Height];
-			forestSprite2.GetData(forestSpriteTextureData);
-			//projectileSpriteTextureData = new Color[projectileSprite.Width * projectileSprite.Height];
+			unstopaballShot = Content.Load<SoundEffect>("unstopaballShot");
+			powerUp = Content.Load<SoundEffect>("reload");
+			fireBallShot = Content.Load<SoundEffect>("FireBallShot");
+            normalShot = Content.Load<SoundEffect>("puet");
+            Explosion = Content.Load<SoundEffect>("exp");   
+            explosion6 = Content.Load<SoundEffect>("explosion6");
 
-			// Create a new SpriteBatch
-			spriteBatch = new SpriteBatch(GraphicsDevice);
+			speedPowUpGrab = Content.Load<SoundEffect>("reload");
+            lifePowUpGrab = Content.Load<SoundEffect>("ExLifeAhh");
+            pepperPowUpGrab = Content.Load<SoundEffect>("FireballAhh");
+            shieldPowUpGrab = Content.Load<SoundEffect>("reload");
+            
+            daBombPowUpGrab = Content.Load<SoundEffect>("reload");
+            unstopPowUpGrab = Content.Load<SoundEffect>("reload");
 
-			//TestCrystalGrabber = new CrystalGrabber(this, new Vector2(300, 300), new AnimatedTexture(new Vector2(0), Content, "explosionStripForGhost", 12, 12));
+            // Extract collision data - used for per pixle collisions - not yet implemented
+            forestSpriteTextureData = new Color[forestSprite2.Width * forestSprite2.Height];
+            forestSprite2.GetData(forestSpriteTextureData);
+            //projectileSpriteTextureData = new Color[projectileSprite.Width * projectileSprite.Height];
 
-			powerCrystal = new PowerCrystal(this, centerOfScreen);
+            // Create a new SpriteBatch
+            spriteBatch = new SpriteBatch(GraphicsDevice);
 
-			// Create player objects
-			playerOne = new Player(this, gameTime1);
-			playerOne.explosion.Load(Content, "explosionStrip2", 12, 12);
+            powerCrystal = new PowerCrystal(this, centerOfScreen);
 
-			playerTwo = new Player(this, new Vector2(safeBounds.Right - calebSprite.Width, safeBounds.Top), calebSprite, gameTime1);
-			playerTwo.explosion.Load(Content, "explosionStrip2", 12, 12);
+        }
 
-			playerThree = new Player(this, new Vector2(safeBounds.Left - forestSprite.Width, safeBounds.Bottom - forestSprite.Height), gameTime1);
-			playerThree.explosion.Load(Content, "explosionStrip2", 12, 12);
+        /// <summary>
+        /// Checks the score for a deathmatch type game (not implemented fully)
+        /// </summary>
+        void CheckTheScore()
+        {
+            int winningScore = 10;
+            if ((playerOne.score >= winningScore || playerTwo.score >= winningScore || playerThree.score >= winningScore || playerFour.score >= winningScore ) && finalScoreMessageboxHasBeenShown == false)
+            {
+                //System.Windows.Forms.MessageBox.Show("Game over. Final score: player one: " + playerOne.score + " player two: " + playerTwo.score
+                //    + " player three: " + playerThree.score + " player four: " + playerFour.score);
+                //finalScoreMessageboxHasBeenShown = true;
+            }
+        }
+                
+        /// <summary>UnloadContent will be called once per game and is the place to unload all content.</summary>
+        protected override void UnloadContent()
+        {
+            Content.Unload();
+        }
 
-			playerFour = new Player(this, new Vector2(safeBounds.Right - forestSprite2.Width, safeBounds.Bottom - forestSprite2.Height), forestSprite2, gameTime1);
-			playerFour.explosion.Load(Content, "explosionStrip2", 12, 12);
+		bool livesSetForTrialMode = false;
 
+        /// <summary>Allows the game to run logic such as updating the world, checking for collisions, gathering input, and playing audio.</summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Update(GameTime gameTime)
+        {
+            gameTime1 = gameTime;
+            elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-		}
-
-
-		void CheckTheScore()
-		{
-			int winningScore = 10;
-			if ((playerOne.score >= winningScore || playerTwo.score >= winningScore || playerThree.score >= winningScore || playerFour.score >= winningScore) && finalScoreMessageboxHasBeenShown == false)
-			{
-				//System.Windows.Forms.MessageBox.Show("Game over. Final score: player one: " + playerOne.score + " player two: " + playerTwo.score
-				//    + " player three: " + playerThree.score + " player four: " + playerFour.score);
-				//finalScoreMessageboxHasBeenShown = true;
-			}
-		}
-
-		/// <summary>
-		/// UnloadContent will be called once per game and is the place to unload
-		/// all content.
-		/// </summary>
-		protected override void UnloadContent()
-		{
-			// TODO: Unload any non ContentManager content here
-			Content.Unload();
-		}
-
-		/// <summary>
-		/// Allows the game to run logic such as updating the world,
-		/// checking for collisions, gathering input, and playing audio.
-		/// </summary>
-		/// <param name="gameTime">Provides a snapshot of timing values.</param>
-		protected override void Update(GameTime gameTime)
-		{
-			gameTime1 = gameTime;
-			elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-			// Move the sprites around.
-			UpdateInputAndMovement(gameTime);
-			//CheckTheScore();
-
-			//audioEngine.Update();
-			if (gameOver == false)
-			{
-				diffuculityAdder += 0.01;
-			}
-			base.Update(gameTime);
-		}
-
-		private void UpdateInputAndMovement(GameTime gameTime)
-		{
-			GamePadState gamePadStateOne = GamePad.GetState(PlayerIndex.One);
-			GamePadState gamePadStateTwo = GamePad.GetState(PlayerIndex.Two);
-			GamePadState gamePadStateThree = GamePad.GetState(PlayerIndex.Three);
-			GamePadState gamePadStateFour = GamePad.GetState(PlayerIndex.Four);
-
-			// Create player objects
-			// poll for start press on controller
-			#region pollForStart
-
-			if (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed && previousGamePadState1.Buttons.Start == ButtonState.Released && playerOneStarted == false)
-			{
-				playerOneStarted = true;
-				gameOver = false;
-			}
-			if (GamePad.GetState(PlayerIndex.Two).Buttons.Start == ButtonState.Pressed && previousGamePadState2.Buttons.Start == ButtonState.Released && playerTwoStarted == false)
-			{
-				playerTwoStarted = true;
-				gameOver = false;
-			}
-			if (GamePad.GetState(PlayerIndex.Three).Buttons.Start == ButtonState.Pressed && previousGamePadState3.Buttons.Start == ButtonState.Released && playerThreeStarted == false)
-			{
-				playerThreeStarted = true;
-				gameOver = false;
-			}
-			if (GamePad.GetState(PlayerIndex.Four).Buttons.Start == ButtonState.Pressed && previousGamePadState4.Buttons.Start == ButtonState.Released && playerFourStarted == false)
-			{
-				playerFourStarted = true;
-				gameOver = false;
-			}
-			if (Keyboard.GetState().IsKeyDown(Keys.A))
-			{
-				playerOneStarted = true;
-				gameOver = false;
-			}
-
-			#endregion
-
-			if (gamePadStateOne.Buttons.Back == ButtonState.Pressed && playerOneStarted == true)
-				this.Exit();
-			if (gamePadStateTwo.Buttons.Back == ButtonState.Pressed && playerTwoStarted == true)
-				this.Exit();
-			if (gamePadStateThree.Buttons.Back == ButtonState.Pressed && playerThreeStarted == true)
-				this.Exit();
-			if (gamePadStateFour.Buttons.Back == ButtonState.Pressed && playerFourStarted == true)
-				this.Exit();
-
-			if (playerOne.lives < 0 && playerTwo.lives < 0 && playerThree.lives < 0 && playerFour.lives < 0)
-			{
-				gameOver = true;
-			}
-
-			if (playerOneStarted && playerOne.lives > 0)
-			{
-				PlayerMovement(playerOne, gamePadStateOne);
-				PlayerShooting(playerOne, gamePadStateOne);
-				PlayerTiming(playerOne);
-			}
-			if (playerTwoStarted && playerTwo.lives > 0)
-			{
-				PlayerMovement(playerTwo, gamePadStateTwo);
-				PlayerShooting(playerTwo, gamePadStateTwo);
-				PlayerTiming(playerTwo);
-			}
-			if (playerThreeStarted && playerThree.lives > 0)
-			{
-				PlayerMovement(playerThree, gamePadStateThree);
-				PlayerShooting(playerThree, gamePadStateThree);
-				PlayerTiming(playerThree);
-			}
-			if (playerFourStarted && playerFour.lives < 0)
-			{
-				PlayerMovement(playerFour, gamePadStateFour);
-				PlayerShooting(playerFour, gamePadStateFour);
-				PlayerTiming(playerFour);
-			}
-
-			if (!(playerOne == null))
-				destroyOffScreenSprites(playerOne.projectiles);
-			if (!(playerTwo == null))
-				destroyOffScreenSprites(playerTwo.projectiles);
-			if (!(playerThree == null))
-				destroyOffScreenSprites(playerThree.projectiles);
-			if (!(playerFour == null))
-				destroyOffScreenSprites(playerFour.projectiles);
-
-			if (gameOver == false)
-			{
-
-				if (gameType == gameTypes.deathMatch)
-				{
-					checkPlayerPlayerCollision(playerOne, playerTwo);
-					checkPlayerPlayerCollision(playerOne, playerThree);
-					checkPlayerPlayerCollision(playerOne, playerFour);
-					checkPlayerPlayerCollision(playerTwo, playerThree);
-					checkPlayerPlayerCollision(playerTwo, playerFour);
-					checkPlayerPlayerCollision(playerThree, playerFour);
-				}
-
-				spawnKamikazesAboveScreen(kamikazeSpawnRate + (int)diffuculityAdder);  // spawn enemys above screen
-				spawnKamikazesBelowScreen(kamikazeSpawnRate + (int)diffuculityAdder);
-				spawnKamikazesLeftOfScreen(kamikazeSpawnRate + (int)diffuculityAdder);
-				spawnKamikazesRightOfScreen(kamikazeSpawnRate + (int)diffuculityAdder);
-
-				spawnCrystalGrabbersAboveScreen(crystalGrabberSpawnRate + (int)diffuculityAdder);
-				spawnCrystalGrabbersBelowScreen(crystalGrabberSpawnRate + (int)diffuculityAdder);
-				spawnCrystalGrabbersRightOfScreen(crystalGrabberSpawnRate + (int)diffuculityAdder);
-				spawnCrystalGrabbersLeftOfScreen(crystalGrabberSpawnRate + (int)diffuculityAdder);
-
-				CheckForCrystalOffScreen();
-
-				KamikazeMovement();
-				CrystalGrabberMovement();
-
-				foreach (Kamikaze kamikazeObj in kamikazes)
-				{
-					checkPlayerSpriteCollision(playerOne, kamikazeObj);
-					checkPlayerSpriteCollision(playerTwo, kamikazeObj);
-					checkPlayerSpriteCollision(playerThree, kamikazeObj);
-					checkPlayerSpriteCollision(playerFour, kamikazeObj);
-					if (kamikazeTiming(kamikazeObj))
-						break;
-				}
-
-				foreach (CrystalGrabber crystalGrabber in crystalGrabbers)
-				{
-					checkPlayerSpriteCollision(playerOne, crystalGrabber);
-					checkPlayerSpriteCollision(playerTwo, crystalGrabber);
-					checkPlayerSpriteCollision(playerThree, crystalGrabber);
-					checkPlayerSpriteCollision(playerFour, crystalGrabber);
-					if (enemyTiming(crystalGrabber))
-						break;
-				}
-
-				HandleSpriteBoundries(playerOne);
-				HandleSpriteBoundries(playerTwo);
-				HandleSpriteBoundries(playerThree);
-				HandleSpriteBoundries(playerFour);
-
-				powerUpTiming(playerOne);
-				powerUpTiming(playerTwo);
-				powerUpTiming(playerThree);
-				powerUpTiming(playerFour);
-
-				spawnPowerUp(pepperPowerUpSpawnRate, Sprite.powerUpTypes.Pepper, random2);
-				spawnPowerUp(invincibleBulletPowerUpSpawnRate, Sprite.powerUpTypes.InvincibleBullet, random3);
-				spawnPowerUp(superBombPowerUpSpawnRate, Sprite.powerUpTypes.SuperBomb, random4);
-				spawnPowerUp(shieldPowerUpSpawnRate, Sprite.powerUpTypes.Shield, random5);
-				spawnPowerUp(speedPowerUpSpawnRate, Sprite.powerUpTypes.Speed, new Random(randomSeed));
-				spawnPowerUp(extraLifePowerUpSpawnRate, Sprite.powerUpTypes.ExtraLife, new Random(randomSeed));
-
-				destroyOffScreenPowerUps(pepperPowerUps);
-				destroyOffScreenPowerUps(InvincibleBulletPowerUps);
-				destroyOffScreenPowerUps(superBombPowerUps);
-				destroyOffScreenPowerUps(shieldPowerUps);
-				destroyOffScreenPowerUps(speedPowerUps);
-				destroyOffScreenPowerUps(extraLifePowerUps);
-
-				foreach (PepperPowerUp pepperPowerU in pepperPowerUps)
-				{
-					bool powerUpHasBeenGrabbedResult;
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerOne, pepperPowerU);
-					if (powerUpHasBeenGrabbedResult == true)
+            //if (Guide.IsVisible == false)
+            {
+                // Move the sprites around.
+                UpdateInputAndMovement(gameTime);
+                //CheckTheScore();
+                if (gameOver == false)
+                {
+                    if (level > 5)
+                        diffuculityAdder += 0.00030;
+                    else
 					{
-						pepperPowerUps.Remove(pepperPowerU);
-						break;
+						diffuculityAdder += 0.00039;
 					}
+					level = (int)diffuculityAdder;
+                }
+            }
+            
+            foreach (Player p in players)
+            {
+                if (p.lives <= 0)
+                {
+                    p.position = new Vector2(100000, 100000);
+                    players.Remove(p);
+                    numPlayersStarted--;
+                    break;
+                }
+            }
+            //audioEngine.Update();
 
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerTwo, pepperPowerU);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						pepperPowerUps.Remove(pepperPowerU);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerThree, pepperPowerU);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						pepperPowerUps.Remove(pepperPowerU);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerFour, pepperPowerU);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						pepperPowerUps.Remove(pepperPowerU);
-						break;
-					}
-				}
-
-				foreach (InvincibleBulletPowerUp invincibleBulletPowerUp in InvincibleBulletPowerUps)
-				{
-					bool powerUpHasBeenGrabbedResult;
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerOne, invincibleBulletPowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						InvincibleBulletPowerUps.Remove(invincibleBulletPowerUp);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerTwo, invincibleBulletPowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						InvincibleBulletPowerUps.Remove(invincibleBulletPowerUp);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerThree, invincibleBulletPowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						InvincibleBulletPowerUps.Remove(invincibleBulletPowerUp);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerFour, invincibleBulletPowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						InvincibleBulletPowerUps.Remove(invincibleBulletPowerUp);
-						break;
-					}
-				}
-
-				foreach (SuperBombPowerUp superBombPowerUp in superBombPowerUps)
-				{
-					bool powerUpHasBeenGrabbedResult;
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerOne, superBombPowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						superBombPowerUps.Remove(superBombPowerUp);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerTwo, superBombPowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						superBombPowerUps.Remove(superBombPowerUp);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerThree, superBombPowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						superBombPowerUps.Remove(superBombPowerUp);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerFour, superBombPowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						superBombPowerUps.Remove(superBombPowerUp);
-						break;
-					}
-				}
-
-				foreach (ShieldPowerUp shieldPowerUp in shieldPowerUps)
-				{
-					bool powerUpHasBeenGrabbedResult;
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerOne, shieldPowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						shieldPowerUps.Remove(shieldPowerUp);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerTwo, shieldPowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						shieldPowerUps.Remove(shieldPowerUp);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerThree, shieldPowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						shieldPowerUps.Remove(shieldPowerUp);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerFour, shieldPowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						shieldPowerUps.Remove(shieldPowerUp);
-						break;
-					}
-				}
-
-				foreach (SpeedPowerUp speedPowerUp in speedPowerUps)
-				{
-					bool powerUpHasBeenGrabbedResult;
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerOne, speedPowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						speedPowerUps.Remove(speedPowerUp);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerTwo, speedPowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						speedPowerUps.Remove(speedPowerUp);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerThree, speedPowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						speedPowerUps.Remove(speedPowerUp);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerFour, speedPowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						speedPowerUps.Remove(speedPowerUp);
-						break;
-					}
-				}
-
-				foreach (ExtraLifePowerUp extraLifePowerUp in extraLifePowerUps)
-				{
-					bool powerUpHasBeenGrabbedResult;
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerOne, extraLifePowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						extraLifePowerUps.Remove(extraLifePowerUp);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerTwo, extraLifePowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						extraLifePowerUps.Remove(extraLifePowerUp);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerThree, extraLifePowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						extraLifePowerUps.Remove(extraLifePowerUp);
-						break;
-					}
-
-					powerUpHasBeenGrabbedResult = powerUpHandleing(playerFour, extraLifePowerUp);
-					if (powerUpHasBeenGrabbedResult == true)
-					{
-						extraLifePowerUps.Remove(extraLifePowerUp);
-						break;
-					}
-				}
-				updatePowerUpPositions();
-
-				// Handling Keyboard input
-				// PlayerOne Keyboard Input
-				KeyboardState newState = Keyboard.GetState();
-				if (!(playerOne.bulletCollision == true || playerOne.playerCollision == true))
-				{
-					// PlayerOne Movement
-					if (newState.IsKeyDown(Keys.Right))
-						playerOne.position.X += playerOne.speed;
-					if (newState.IsKeyDown(Keys.Left))
-						playerOne.position.X -= playerOne.speed;
-					if (newState.IsKeyDown(Keys.Down))
-						playerOne.position.Y += playerOne.speed;
-					if (newState.IsKeyDown(Keys.Up))
-						playerOne.position.Y -= playerOne.speed;
-				}
-				// PlayerOne Firing
-				//KeyboardState newState2 = Keyboard.GetState();
-				//if (!(playerOne.bulletCollision == true || playerOne.playerCollision == true))
-				//{
-				//    // PlayerOne firing
-
-				//}
-				// TODO: Create Keyboard input for firing
-
-				// PlayerTwo Keyboard Input
-				// PlayerTwo movement
-				if (!(playerTwo == null))
-				{
-					if (!(playerTwo.bulletCollision == true || playerTwo.playerCollision == true))
-					{
-						if (newState.IsKeyDown(Keys.D))
-							playerTwo.position.X += playerTwo.speed;
-						if (newState.IsKeyDown(Keys.A))
-							playerTwo.position.X -= playerTwo.speed;
-						if (newState.IsKeyDown(Keys.S))
-							playerTwo.position.Y += playerTwo.speed;
-						if (newState.IsKeyDown(Keys.W))
-							playerTwo.position.Y -= playerTwo.speed;
-					}
-				}
-			}
-
-			previousGamePadState1 = GamePad.GetState(PlayerIndex.One);
-			previousGamePadState2 = GamePad.GetState(PlayerIndex.Two);
-			previousGamePadState3 = GamePad.GetState(PlayerIndex.Three);
-			previousGamePadState4 = GamePad.GetState(PlayerIndex.Four);
-
-		}
+            base.Update(gameTime);
+        }
 
 		Vector2 centerForGameOverText;
 
-		/// <summary>
-		/// This is called when the game should draw itself.
-		/// </summary>
-		/// <param name="gameTime">Provides a snapshot of timing values.</param>
-		protected override void Draw(GameTime gameTime)
-		{
-			graphics.GraphicsDevice.Clear(backColor);
+        /// <summary>
+        /// This is called when the game should draw itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Draw(GameTime gameTime)
+        {
+            graphics.GraphicsDevice.Clear(backColor);
+            spriteBatch.Begin();
 
-			// Draw the sprites.
-			spriteBatch.Begin();
+            // Draw the background
+            if (level == 0)
+                spriteBatch.Draw(backgroundBlueSun, new Vector2(), Color.White);
+            if (level == 1)
+                spriteBatch.Draw(background, new Vector2(), Color.White);
+            else if (level == 2)
+                spriteBatch.Draw(level2, new Vector2(), Color.White);
+            else if (level == 3)
+                spriteBatch.Draw(level3, new Vector2(), Color.White);
+            else if (level > 3 && level <= 5)
+                spriteBatch.Draw(level4, new Vector2(), Color.White);
+            else if (level > 5 && level <= 9)
+                spriteBatch.Draw(level6, new Vector2(), Color.White);
+            else if (level > 9 && level <= 10)
+                spriteBatch.Draw(level10, new Vector2(), Color.White);
+            else if (level > 10 && level <= 15)
+                spriteBatch.Draw(backgroundMilkyWay, new Vector2(), Color.White);
+            else if (level > 15 && level <= 20)
+                spriteBatch.Draw(backgroundSat, new Vector2(), Color.White);
+            else if (level > 20 && level <= 25)
+                spriteBatch.Draw(backgroundMiraInSnow, new Vector2(), Color.White);
 
-			// Draw the background
-			spriteBatch.Draw(background, new Vector2(), Color.White);
-
-			//check for game over
-			if (gameOver)
-			{
+            //Check for game over
+            if (gameOver == true)
+            {
 				centerForGameOverText = new Vector2(centerOfScreen.X - 146, centerOfScreen.Y - 12);
 				spriteBatch.DrawString(gameFont, "Game Over.  Press Start!", centerForGameOverText, Color.White);
-				spriteBatch.End();
-				base.Draw(gameTime);
-				return; // draw nothing else
-						//ToDo: Setup a real game over screen, real pause and player selection screens 
-			}
-			else
-			{
-#if debug
+                spriteBatch.End();
+                base.Draw(gameTime);
+                return; // draw nothing else
+            }
+            else if (gameOver == false)
+            {
+#if DEBUG
 			spriteBatch.DrawString(gameFont, "diff adder: " + diffuculityAdder, new Vector2(safeBounds.Left, safeBounds.Top + 180), Color.Blue);
+			spriteBatch.DrawString(gameFont,
+                @"PlayerOne: (" + playerOne.position.X + ", " + playerOne.position.Y + ") " + System.Environment.NewLine + "CenterPos: (" + playerOne.CenterPosition.X + ", " + playerOne.CenterPosition.Y + ") " + System.Environment.NewLine
+                 + "PowerCrystal: (" + this.powerCrystal.position.X + ", " + powerCrystal.position.Y + ") " + System.Environment.NewLine + "CenterPos: (" + powerCrystal.CenterPosition.X + ", " + powerCrystal.CenterPosition.Y + ") "
+                , new Vector2(safeBounds.Left + 50, safeBounds.Height - 320), Color.OrangeRed); 
 #endif
+                // Draw the Player Status Areas
+                if (playerOne.hasStarted)
+                {
+                    spriteBatch.Draw(playerStatusArea, new Vector2(safeBounds.Left - 5, safeBounds.Top - 5), new Color(255, 255, 255, 40));
+                    spriteBatch.DrawString(gameFont, "Player One", new Vector2(safeBounds.Left, safeBounds.Top), Color.Blue);
+                    spriteBatch.DrawString(gameFont, "Lives: " + playerOne.lives, new Vector2(safeBounds.Left, safeBounds.Top + 40), Color.Blue);
+                    spriteBatch.DrawString(gameFont, "Super Bombs: " + playerOne.superBombs, new Vector2(safeBounds.Left, safeBounds.Top + 80), Color.Blue);
+                    spriteBatch.DrawString(gameFont, "Score: " + playerOne.score, new Vector2(safeBounds.Left, safeBounds.Top + 120), Color.Blue);
+                }
+                if (playerTwo.hasStarted)
+                {
+                    spriteBatch.Draw(playerStatusArea, new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Top), new Color(255, 255, 255, 40));
+                    spriteBatch.DrawString(gameFont, "Player Two", new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Top), Color.Blue);
+                    spriteBatch.DrawString(gameFont, "Lives: " + playerTwo.lives, new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Top + 40), Color.Blue);
+                    spriteBatch.DrawString(gameFont, "Super Bombs: " + playerTwo.superBombs, new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Top + 80), Color.Blue);
+                    spriteBatch.DrawString(gameFont, "Score: " + playerTwo.score, new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Top + 120), Color.Blue);
+                }
+                if (playerThree.hasStarted)
+                {
+                    spriteBatch.Draw(playerStatusArea, new Vector2(safeBounds.Left, safeBounds.Bottom - playerStatusArea.Height), new Color(255, 255, 255, 40));
+                    spriteBatch.DrawString(gameFont, "Player Three", new Vector2(safeBounds.Left, safeBounds.Bottom - playerStatusArea.Height), Color.Blue);
+                    spriteBatch.DrawString(gameFont, "Lives: " + playerThree.lives, new Vector2(safeBounds.Left, safeBounds.Bottom - playerStatusArea.Height + 40), Color.Blue);
+                    spriteBatch.DrawString(gameFont, "Super Bombs: " + playerThree.superBombs, new Vector2(safeBounds.Left, safeBounds.Bottom - playerStatusArea.Height + 80), Color.Blue);
+                    spriteBatch.DrawString(gameFont, "Score: " + playerThree.score, new Vector2(safeBounds.Left, safeBounds.Bottom - playerStatusArea.Height + 120), Color.Blue);
+                }
+                if (playerFour.hasStarted)
+                {
+                    spriteBatch.Draw(playerStatusArea, new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Bottom - playerStatusArea.Height), new Color(255, 255, 255, 40));
+                    spriteBatch.DrawString(gameFont, "Player Four", new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Bottom - playerStatusArea.Height), Color.Blue);
+                    spriteBatch.DrawString(gameFont, "Lives: " + playerFour.lives, new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Bottom - playerStatusArea.Height + 40), Color.Blue);
+                    spriteBatch.DrawString(gameFont, "Super Bombs: " + playerFour.superBombs, new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Bottom - playerStatusArea.Height + 80), Color.Blue);
+                    spriteBatch.DrawString(gameFont, "Score: " + playerFour.score, new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Bottom - playerStatusArea.Height + 120), Color.Blue);
+                }
+                // Draw the power crystal in the center of the screen
+                //spriteBatch.Draw(powerCrystal.sprite, powerCrystal.position, new Color(138,43,226,190));
+                spriteBatch.Draw(powerCrystal.sprite, powerCrystal.position, 
+                    new Color((int)((powerCrystal.CenterPosition.Y / 1.9) % 255), 43 + (int)((powerCrystal.CenterPosition.Y / 1.9) % 255), (int)((powerCrystal.CenterPosition.Y / 1.9) % 255) + 226, 190));
 
-				// Draw the Player Status Areas
-				if (playerOneStarted)
-				{
-					spriteBatch.Draw(playerStatusArea, new Vector2(safeBounds.Left - 5, safeBounds.Top - 5), new Color(255, 255, 255, 40));
-					spriteBatch.DrawString(gameFont, "Player One", new Vector2(safeBounds.Left, safeBounds.Top), Color.Blue);
-					spriteBatch.DrawString(gameFont, "Lives: " + playerOne.lives, new Vector2(safeBounds.Left, safeBounds.Top + 40), Color.Blue);
-					spriteBatch.DrawString(gameFont, "Super Bombs: " + playerOne.superBombs, new Vector2(safeBounds.Left, safeBounds.Top + 80), Color.Blue);
-					spriteBatch.DrawString(gameFont, "Score: " + playerOne.score, new Vector2(safeBounds.Left, safeBounds.Top + 120), Color.Blue);
-				}
-				if (playerTwoStarted)
-				{
-					spriteBatch.Draw(playerStatusArea, new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Top), new Color(255, 255, 255, 40));
-					spriteBatch.DrawString(gameFont, "Player Two", new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Top), Color.Blue);
-					spriteBatch.DrawString(gameFont, "Lives: " + playerTwo.lives, new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Top + 40), Color.Blue);
-					spriteBatch.DrawString(gameFont, "Super Bombs: " + playerTwo.superBombs, new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Top + 80), Color.Blue);
-					spriteBatch.DrawString(gameFont, "Score: " + playerTwo.score, new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Top + 120), Color.Blue);
-				}
-				if (playerThreeStarted)
-				{
-					spriteBatch.Draw(playerStatusArea, new Vector2(safeBounds.Left, safeBounds.Bottom - playerStatusArea.Height), new Color(255, 255, 255, 40));
-					spriteBatch.DrawString(gameFont, "Player Three", new Vector2(safeBounds.Left, safeBounds.Bottom - playerStatusArea.Height), Color.Blue);
-					spriteBatch.DrawString(gameFont, "Lives: " + playerThree.lives, new Vector2(safeBounds.Left, safeBounds.Bottom - playerStatusArea.Height + 40), Color.Blue);
-					spriteBatch.DrawString(gameFont, "Super Bombs: " + playerThree.superBombs, new Vector2(safeBounds.Left, safeBounds.Bottom - playerStatusArea.Height + 80), Color.Blue);
-					spriteBatch.DrawString(gameFont, "Score: " + playerThree.score, new Vector2(safeBounds.Left, safeBounds.Bottom - playerStatusArea.Height + 120), Color.Blue);
-				}
-				if (playerFourStarted)
-				{
-					spriteBatch.Draw(playerStatusArea, new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Bottom - playerStatusArea.Height), new Color(255, 255, 255, 40));
-					spriteBatch.DrawString(gameFont, "Player Four", new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Bottom - playerStatusArea.Height), Color.Blue);
-					spriteBatch.DrawString(gameFont, "Lives: " + playerFour.lives, new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Bottom - playerStatusArea.Height + 40), Color.Blue);
-					spriteBatch.DrawString(gameFont, "Super Bombs: " + playerFour.superBombs, new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Bottom - playerStatusArea.Height + 80), Color.Blue);
-					spriteBatch.DrawString(gameFont, "Score: " + playerFour.score, new Vector2(safeBounds.Right - playerStatusArea.Width, safeBounds.Bottom - playerStatusArea.Height + 120), Color.Blue);
-				}
-				// Draw the power crystal in the center of the screen
-				spriteBatch.Draw(powerCrystal.sprite, powerCrystal.position, Color.BlueViolet);
+                // Draw the players
+                if (playerOne.hasStarted && playerOne.lives > 0)
+                {
+                    if (playerOne.bulletCollision || playerOne.playerCollision)
+                        playerOne.explosion.DrawFrame(spriteBatch, playerOne.explosionSpritePosition);
+                    else if (!(playerOne.bulletCollision || playerOne.playerCollision))
+                        spriteBatch.Draw(playerOne.sprite, playerOne.position, Color.White);
+                    //draws shields - The fourth varaiable in the new color controls opacity which gives the shield a fade as it runs out
 
-				// Draw the players
-				if (playerOneStarted && playerOne.lives > 0)
-				{
-					if (playerOne.bulletCollision || playerOne.playerCollision)
-						playerOne.explosion.DrawFrame(spriteBatch, playerOne.explosionSpritePosition);
-					else if (!(playerOne.bulletCollision || playerOne.playerCollision))
-						spriteBatch.Draw(playerOne.sprite, playerOne.position, Color.White);
-					//draws shields - The fourth varaiable in the new color controls opacity which gives the shield a fade as it runs out
-					if (playerOne.shieldUp == true && playerOne.playerSettingsHaveBeenModifiedByShieldPowerUp == false)
-						spriteBatch.Draw(playerOne.shieldSprite, playerOne.shieldSpritePosition, new Color((byte)255, (byte)255, (byte)255, (byte)((playerOne.shieldUpCounter / (playerOne.shieldTimeAfterDeath / 185.0)) + 70)));
-					if (playerOne.shieldUp == true && playerOne.playerSettingsHaveBeenModifiedByShieldPowerUp == true)
-						spriteBatch.Draw(playerOne.shieldSprite, playerOne.shieldSpritePosition, new Color((byte)255, (byte)255, (byte)255, (byte)((playerOne.shieldUpCounter / (ShieldPowerUp.shieldTime / 185.0)) + 70)));
-					foreach (Projectile Projectile in playerOne.projectiles)
-						spriteBatch.Draw(Projectile.sprite, Projectile.position, Color.White);
+                    if (playerOne.shieldUp == true && playerOne.ShieldPowerUp == false)
+                    {
+                        spriteBatch.Draw(playerOne.shieldSprite, playerOne.shieldSpritePosition, new Color((byte)255, (byte)255, (byte)255, (byte)((playerOne.shieldUpCounter / (playerOne.shieldTimeAfterDeath / 185.0)) + 70)));
+                    }
 
-				}
-				if (playerTwoStarted && playerTwo.lives > 0)
-				{
-					if (playerTwo.bulletCollision || playerTwo.playerCollision)
-						playerTwo.explosion.DrawFrame(spriteBatch, playerTwo.explosionSpritePosition);
-					else if (!(playerTwo.bulletCollision || playerTwo.playerCollision))
-						spriteBatch.Draw(playerTwo.sprite, playerTwo.position, Color.White);
-					spriteBatch.Draw(debugDot, playerTwo.CenterPosition, Color.White);
-					if (playerTwo.shieldUp == true && playerTwo.playerSettingsHaveBeenModifiedByShieldPowerUp == false)
-						spriteBatch.Draw(playerTwo.shieldSprite, playerTwo.shieldSpritePosition, new Color((byte)255, (byte)255, (byte)255, (byte)((playerTwo.shieldUpCounter / (playerTwo.shieldTimeAfterDeath / 185.0)) + 70)));
-					if (playerTwo.shieldUp == true && playerTwo.playerSettingsHaveBeenModifiedByShieldPowerUp == true)
-						spriteBatch.Draw(playerTwo.shieldSprite, playerTwo.shieldSpritePosition, new Color((byte)255, (byte)255, (byte)255, (byte)((playerTwo.shieldUpCounter / (ShieldPowerUp.shieldTime / 185.0)) + 70)));
-					foreach (Projectile Projectile in playerTwo.projectiles)
-						spriteBatch.Draw(Projectile.sprite, Projectile.position, Color.White);
-				}
-				if (playerThreeStarted && playerThree.lives > 0)
-				{
-					if (playerThree.bulletCollision || playerThree.playerCollision)
-						playerThree.explosion.DrawFrame(spriteBatch, playerThree.explosionSpritePosition);
-					else if (!(playerThree.bulletCollision || playerThree.playerCollision))
-						spriteBatch.Draw(playerThree.sprite, playerThree.position, Color.White);
-					if (playerThree.shieldUp == true && playerThree.playerSettingsHaveBeenModifiedByShieldPowerUp == false)
-						spriteBatch.Draw(playerThree.shieldSprite, playerThree.shieldSpritePosition, new Color((byte)255, (byte)255, (byte)255, (byte)((playerThree.shieldUpCounter / (playerThree.shieldTimeAfterDeath / 185.0)) + 70)));
-					if (playerThree.shieldUp == true && playerThree.playerSettingsHaveBeenModifiedByShieldPowerUp == true)
-						spriteBatch.Draw(playerThree.shieldSprite, playerThree.shieldSpritePosition, new Color((byte)255, (byte)255, (byte)255, (byte)((playerThree.shieldUpCounter / (ShieldPowerUp.shieldTime / 185.0)) + 70)));
-					foreach (Projectile Projectile in playerThree.projectiles)
-						spriteBatch.Draw(Projectile.sprite, Projectile.position, Color.White);
-				}
-				if (playerFourStarted && playerFour.lives > 0)
-				{
-					if (playerFour.bulletCollision || playerFour.playerCollision)
-						playerFour.explosion.DrawFrame(spriteBatch, playerFour.explosionSpritePosition);
-					else if (!(playerFour.bulletCollision || playerFour.playerCollision))
-						spriteBatch.Draw(playerFour.sprite, playerFour.position, Color.White);
-					if (playerFour.shieldUp == true && playerFour.playerSettingsHaveBeenModifiedByShieldPowerUp == false)
-						spriteBatch.Draw(playerFour.shieldSprite, playerFour.shieldSpritePosition, new Color((byte)255, (byte)255, (byte)255, (byte)((playerFour.shieldUpCounter / (playerFour.shieldTimeAfterDeath / 185.0)) + 70)));
-					if (playerFour.shieldUp == true && playerFour.playerSettingsHaveBeenModifiedByShieldPowerUp == true)
-						spriteBatch.Draw(playerFour.shieldSprite, playerFour.shieldSpritePosition, new Color((byte)255, (byte)255, (byte)255, (byte)((playerFour.shieldUpCounter / (ShieldPowerUp.shieldTime / 185.0)) + 70)));
-					// Draw projectiles
-					foreach (Projectile Projectile in playerFour.projectiles)
-						spriteBatch.Draw(Projectile.sprite, Projectile.position, Color.White);
-				}
+                    if (playerOne.shieldUp == true && playerOne.ShieldPowerUp == true)
+                    {
+                        spriteBatch.Draw(playerOne.shieldSprite, playerOne.shieldSpritePosition, new Color((byte)255, (byte)255, (byte)255, (byte)((playerOne.shieldUpCounter / (ShieldPowerUp.shieldTime / 185.0)) + 70)));
+                    }
+                    foreach (Projectile Projectile in playerOne.projectiles)
+                        spriteBatch.Draw(Projectile.sprite, Projectile.position, Color.White);
 
-				// Draw powerUps
-				foreach (PepperPowerUp pepperPowerUp in pepperPowerUps)
-					spriteBatch.Draw(pepperPowerUp.sprite, pepperPowerUp.position, Color.White);
-				foreach (InvincibleBulletPowerUp invincibleBulletPowerUp in InvincibleBulletPowerUps)
-					spriteBatch.Draw(invincibleBulletPowerUp.sprite, invincibleBulletPowerUp.position, Color.White);
-				foreach (SuperBombPowerUp superBombPowerUp in superBombPowerUps)
-					spriteBatch.Draw(superBombPowerUp.sprite, superBombPowerUp.position, Color.White);
-				foreach (ShieldPowerUp shieldPowerUp in shieldPowerUps)
-					spriteBatch.Draw(shieldPowerUp.sprite, shieldPowerUp.position, Color.White);
-				foreach (SpeedPowerUp speedPowerUp in speedPowerUps)
-					spriteBatch.Draw(speedPowerUp.sprite, speedPowerUp.position, Color.White);
-				foreach (ExtraLifePowerUp extraLifePowerUp in extraLifePowerUps)
-					spriteBatch.Draw(extraLifePowerUp.sprite, extraLifePowerUp.position, Color.White);
+                }
+                else if (playerOne.lives <= 0 )
+                if (playerTwo.hasStarted && playerTwo.lives > 0)
+                {
+                    if (playerTwo.bulletCollision || playerTwo.playerCollision)
+                        playerTwo.explosion.DrawFrame(spriteBatch, playerTwo.explosionSpritePosition);
+                    else if (!(playerTwo.bulletCollision || playerTwo.playerCollision))
+                        spriteBatch.Draw(playerTwo.sprite, playerTwo.position, Color.White);
+                    spriteBatch.Draw(debugDot, playerTwo.CenterPosition, Color.White);
+                    if (playerTwo.shieldUp == true && playerTwo.ShieldPowerUp == false)
+                        spriteBatch.Draw(playerTwo.shieldSprite, playerTwo.shieldSpritePosition, new Color((byte)255, (byte)255, (byte)255, (byte)((playerTwo.shieldUpCounter / (playerTwo.shieldTimeAfterDeath / 185.0)) + 70)));
+                    if (playerTwo.shieldUp == true && playerTwo.ShieldPowerUp == true)
+                        spriteBatch.Draw(playerTwo.shieldSprite, playerTwo.shieldSpritePosition, new Color((byte)255, (byte)255, (byte)255, (byte)((playerTwo.shieldUpCounter / (ShieldPowerUp.shieldTime / 185.0)) + 70)));
+                    foreach (Projectile Projectile in playerTwo.projectiles)
+                        spriteBatch.Draw(Projectile.sprite, Projectile.position, Color.White);
+                }
+                if (playerThree.hasStarted && playerThree.lives > 0)
+                {
+                    if (playerThree.bulletCollision || playerThree.playerCollision)
+                        playerThree.explosion.DrawFrame(spriteBatch, playerThree.explosionSpritePosition);
+                    else if (!(playerThree.bulletCollision || playerThree.playerCollision))
+                        spriteBatch.Draw(playerThree.sprite, playerThree.position, Color.White);
+                    if (playerThree.shieldUp == true && playerThree.ShieldPowerUp == false)
+                        spriteBatch.Draw(playerThree.shieldSprite, playerThree.shieldSpritePosition, new Color((byte)255, (byte)255, (byte)255, (byte)((playerThree.shieldUpCounter / (playerThree.shieldTimeAfterDeath / 185.0)) + 70)));
+                    if (playerThree.shieldUp == true && playerThree.ShieldPowerUp == true)
+                        spriteBatch.Draw(playerThree.shieldSprite, playerThree.shieldSpritePosition, new Color((byte)255, (byte)255, (byte)255, (byte)((playerThree.shieldUpCounter / (ShieldPowerUp.shieldTime / 185.0)) + 70)));
+                    foreach (Projectile Projectile in playerThree.projectiles)
+                        spriteBatch.Draw(Projectile.sprite, Projectile.position, Color.White);
+                }
+                if (playerFour.hasStarted && playerFour.lives > 0)
+                {
+                    if (playerFour.bulletCollision || playerFour.playerCollision)
+                        playerFour.explosion.DrawFrame(spriteBatch, playerFour.explosionSpritePosition);
+                    else if (!(playerFour.bulletCollision || playerFour.playerCollision))
+                        spriteBatch.Draw(playerFour.sprite, playerFour.position, Color.White);
+                    if (playerFour.shieldUp == true && playerFour.ShieldPowerUp == false)
+                        spriteBatch.Draw(playerFour.shieldSprite, playerFour.shieldSpritePosition, new Color((byte)255, (byte)255, (byte)255, (byte)((playerFour.shieldUpCounter / (playerFour.shieldTimeAfterDeath / 185.0)) + 70)));
+                    if (playerFour.shieldUp == true && playerFour.ShieldPowerUp == true)
+                        spriteBatch.Draw(playerFour.shieldSprite, playerFour.shieldSpritePosition, new Color((byte)255, (byte)255, (byte)255, (byte)((playerFour.shieldUpCounter / (ShieldPowerUp.shieldTime / 185.0)) + 70)));
+                    // Draw projectiles
+                    foreach (Projectile Projectile in playerFour.projectiles)
+                        spriteBatch.Draw(Projectile.sprite, Projectile.position, Color.White);
+                }
 
-				// Draw Enemys
-				foreach (Kamikaze kamikazeObj in kamikazes)
-				{
-					if (kamikazeObj.bulletCollision == true || kamikazeObj.playerCollision == true)
-						kamikazeObj.explosion.DrawFrame(spriteBatch, kamikazeObj.explosionSpritePosition);
-					else
-						kamikazeObj.anamatedSprite.DrawFrame(spriteBatch, kamikazeObj.position);
-					//spriteBatch.Draw(kamikazeObj.sprite, kamikazeObj.position, Color.White);
-					//spriteBatch.Draw(debugDot, kamikazeObj.centerPosition, Color.White);  // used for debugging position
-				}
+                // Draw powerUps
+                foreach (PepperPowerUp pepperPowerUp in pepperPowerUps)
+                    spriteBatch.Draw(pepperPowerUp.sprite, pepperPowerUp.position, Color.White);
+                foreach (InvincibleBulletPowerUp invincibleBulletPowerUp in InvincibleBulletPowerUps)
+                    spriteBatch.Draw(invincibleBulletPowerUp.sprite, invincibleBulletPowerUp.position, Color.White);
+                foreach (SuperBombPowerUp superBombPowerUp in superBombPowerUps)
+                    spriteBatch.Draw(superBombPowerUp.sprite, superBombPowerUp.position, Color.White);
+                foreach (ShieldPowerUp shieldPowerUp in shieldPowerUps)
+                    spriteBatch.Draw(shieldPowerUp.sprite, shieldPowerUp.position, Color.White);
+                foreach (SpeedPowerUp speedPowerUp in speedPowerUps)
+                    spriteBatch.Draw(speedPowerUp.sprite, speedPowerUp.position, Color.White);
+                foreach (ExtraLifePowerUp extraLifePowerUp in extraLifePowerUps)
+                    spriteBatch.Draw(extraLifePowerUp.sprite, extraLifePowerUp.position, Color.White);
 
-				foreach (CrystalGrabber crystalGrabber in crystalGrabbers)
-				{
+                // Draw Enemys
+                foreach (Kamikaze kamikazeObj in kamikazes)
+                {
+                    if (kamikazeObj.bulletCollision == true || kamikazeObj.playerCollision == true)
+                        kamikazeObj.explosion.DrawFrame(spriteBatch, kamikazeObj.explosionSpritePosition);
+                    else
+                        kamikazeObj.anamatedSprite.DrawFrame(spriteBatch, kamikazeObj.position);
+                    //spriteBatch.Draw(kamikazeObj.sprite, kamikazeObj.position, Color.White);
+                    //spriteBatch.Draw(debugDot, kamikazeObj.centerPosition, Color.White);  // used for debugging position
+                }
 
-					if (crystalGrabber.bulletCollision == true || crystalGrabber.playerCollision == true)
-						crystalGrabber.explosion.DrawFrame(spriteBatch, crystalGrabber.position);
-					else
-						crystalGrabber.anamatedSprite.DrawFrame(spriteBatch, crystalGrabber.position);
-					//spriteBatch.Draw(crystalGrabber.sprite, crystalGrabber.position, Color.White);
-					//spriteBatch.Draw(debugDot, crystalGrabber.CenterPosition, Color.White);  // used for debugging position
-				}
-			}
+                foreach (WobbleKamikaze Wk in wobbleKamikazes)
+                {
+                    if (Wk.bulletCollision == true || Wk.playerCollision == true)
+                        Wk.explosion.DrawFrame(spriteBatch, Wk.explosionSpritePosition);
+                    else
+                        Wk.anamatedSprite.DrawFrame(spriteBatch, Wk.position);
+                }
 
-			spriteBatch.End();
-			base.Draw(gameTime);
-		}
+                foreach (CrystalGrabber crystalGrabber in crystalGrabbers)
+                {
 
-		///<summary>
-		/// PlayerMovement handles the joystick movement for a player object
-		///</summary>
-		///<param name="playerObj">The player object to move</param>
-		///<param name="gamePadState">The gamePadState controlling the movement</param>
-		void PlayerMovement(Player playerObj, GamePadState gamePadState)
-		{
+                    if (crystalGrabber.bulletCollision == true || crystalGrabber.playerCollision == true)
+                        crystalGrabber.explosion.DrawFrame(spriteBatch, crystalGrabber.position);
+                    else
+                        crystalGrabber.anamatedSprite.DrawFrame(spriteBatch, crystalGrabber.position);
+                }
 
-			if (!(playerObj == null))
-			{
-				// if the player is currently blowing up then skip movement
-				if (!(playerObj.playerCollision == true || playerObj.bulletCollision == true))
-				{
-					playerObj.position.X += gamePadState.ThumbSticks.Left.X * playerObj.speed;
-					playerObj.position.Y += gamePadState.ThumbSticks.Left.Y * -playerObj.speed;
-				}
-			}
-		}
+                // Draw level text
+                spriteBatch.DrawString(Comic, "Level: " + level, new Vector2(centerOfScreen.X - 12, safeBounds.Top + 25), Color.White);
 
-		///<summary>
-		/// PlayerShooting handles the joystick shooting for the player object
-		///</summary>
-		///<param name="playerObj">The player object to move</param>
-		///<param name="gamePadState">The gamePadState controlling the movement</param>
-		void PlayerShooting(Player playerObj, GamePadState gamePadState)
-		{
-			if (!(playerObj == null))
-			{
-				// Check for super Bomb dropage
-				if (gamePadState.Buttons.RightShoulder == ButtonState.Pressed && playerObj.superBombs > 0 && playerObj.superBombTimer.expired(gameTime1))
-				{
-					dropTheSuperBomb();
-					playerObj.superBombs--;
-					playerObj.score += 35;
-					playerObj.superBombTimer.reset(gameTime1);
-				}
+            } // end if (gameOver == false)
+            //if (Guide.IsTrialMode)
+            //{
+            //    spriteBatch.DrawString(gameFontLarger, "Upgrade to Full Version for: " + System.Environment.NewLine +
+            //        "*  4 Players at a time!" + System.Environment.NewLine +
+            //        "*  More powerups!" + System.Environment.NewLine +
+            //        "*  Powerups that last 4 times as long!" + System.Environment.NewLine +
+            //        "*  10 lives at start for each player!" + System.Environment.NewLine +
+            //        "*  A happy happy joy joy best luck good time fun!", new Vector2(safeBounds.Left + 100, safeBounds.Top + 250), Color.White);
+            //    if (livesSetForTrialMode == false)
+            //    {
+            //        playerOne.iniLives = 3;
+            //        playerOne.lives = 3;
+            //        playerTwo.iniLives = 3;
+            //        playerTwo.lives = 3;
+            //        playerThree.iniLives = 3;
+            //        playerThree.lives = 3;
+            //        playerFour.iniLives = 3;
+            //        playerFour.lives = 3;
 
-				// this loop checks for collisions and updates the projectile movement 
-				//for (int i = 0; i < playerObj.projectiles.Count; i++)
-				foreach (Projectile projectile in playerObj.projectiles)
-				{
-					projectile.position =
-						new Vector2(projectile.position.X + projectile.direction.X * projectile.speed,
-						projectile.position.Y + projectile.direction.Y * -projectile.speed);
+            //        levelToAddWobbleKama = 4;
+            //        levelToAddKama = 2;
+            //    }
+            //}
+            spriteBatch.End();
 
+            base.Draw(gameTime);
+        }
 
-					//Check for collisions with other players
-					if (checkPlayerBulletCollision(playerObj, projectile) && (!(projectile.invincible)))
-					{
-						playerObj.projectiles.Remove(projectile);
-						break;
-					}
+        ///<summary>PlayerMovement handles the joystick movement for a player object</summary>
+        ///<param name="playerObj">The player object to move</param>
+        ///<param name="gamePadState">The gamePadState controlling the movement</param>
+        void PlayerMovement(Player playerObj, GamePadState gamePadState)
+        {
+            if ((playerObj.hasStarted) && playerObj.lives > 0)
+            {
+                // if the player is currently blowing up then skip movement
+                if (!(playerObj.playerCollision == true || playerObj.bulletCollision == true))
+                {
+                    playerObj.position.X += gamePadState.ThumbSticks.Left.X * playerObj.speed;
+                    playerObj.position.Y += gamePadState.ThumbSticks.Left.Y * -playerObj.speed;
+                }
+            }
+        }
 
-					// Check for collisions with enemys
-					if (checkEnemyBulletCollision(projectile))
-					{
-						playerObj.score += 10;
-						if (!(projectile.invincible))
-						{
-							playerObj.projectiles.Remove(projectile);
-							break;
-						}
-					}
+        float convertPositionToPanValue(float xPosition)
+        {
+            if (xPosition < 0)
+                xPosition = 0;
+            if (xPosition > (float)this.viewport.Width)
+                xPosition = this.viewport.Width;
+            float ViewportWidth = (float)this.viewport.Width;
+            float ConvertedSpritePositionToPanValue = (xPosition / ViewportWidth * 2.0f) - 1.0f;
+            return ConvertedSpritePositionToPanValue;
+        }
 
-					// Check for collisions with other players shileds
-					if (checkPlayerShieldBulletCollision(projectile, playerObj))
-					{
-						//playerObj.projectiles.Remove(projectile);
-						//break;
+        ///<summary>
+        /// PlayerTiming handles the of the timing for shields and explosions
+		/// </summary>
+        void PlayerTiming(Player playerObj)
+        {
+            if (playerObj.hasStarted && playerObj.lives > 0)
+            {
+                if (playerObj.bulletCollision == true || playerObj.playerCollision == true)
+                    playerObj.headExplodeCounter++;
+                if (playerObj.shieldUp == true)
+                    playerObj.shieldUpCounter--;
+                if (playerObj.shieldUpCounter < 1)
+                {
+                    playerObj.ShieldPowerUp = false;
+                    playerObj.shieldUp = false;
+                    playerObj.shieldUpCounter = playerObj.shieldTimeAfterDeath;
+                }
+                if (headExplodeDownTime < playerObj.headExplodeCounter)
+                {
+                    //playerObj.explosion.Frame = 0;  //reset the explosion frame
+                    playerObj.bulletCollision = false; //reset any prevoius collisions
+                    playerObj.playerCollision = false; //reset any prevoius collisions
+                    playerObj.headExplodeCounter = 0;
+                    playerObj.position = playerObj.startPosition;
+                    playerObj.shieldUp = true;
+                }
+                if (playerObj.playerCollision == true || playerObj.bulletCollision == true)
+                {
+                    playerObj.explosion.UpdateFrame(elapsed);
+                }
+            }
+            else if (playerObj.lives <= 0)
+            {
+                playerObj.position.X = -10000;
+                playerObj.position.Y = -10000;
+                return;
+            }
+        }
 
-					}
+        bool kamikazeTiming(Kamikaze kamikazeObj)
+        {
+            kamikazeObj.anamatedSprite.UpdateFrame(elapsed);
+            if (kamikazeObj.bulletCollision == true || kamikazeObj.playerCollision == true)
+            {
+                kamikazeObj.explodeCounter++;
+                kamikazeObj.explosion.UpdateFrame(elapsed);
+            }
+            if (kamikazeObj.explodeCounter > kamikazeObj.explodeDownTime)
+            {
+                kamikazes.Remove(kamikazeObj);
+                return true;
+            }
+            else return false;
+            //ToDo: finish setting up timing needed to show explosion when enemy is hit for player enemy collision
+        }
 
+        bool wobbleKamikazeTiming(WobbleKamikaze wk)
+        {
+            wk.anamatedSprite.UpdateFrame(elapsed);
+            if (wk.bulletCollision == true || wk.playerCollision == true)
+            {
+                wk.explodeCounter++;
+                wk.explosion.UpdateFrame(elapsed);
+            }
+            if (wk.explodeCounter > wk.explodeDownTime)
+            {
+                wobbleKamikazes.Remove(wk);
+                return true;
+            }
+            else return false;
+        }
+         
+        bool enemyTiming(CrystalGrabber CrystalGrabberObj)
+        {
+            CrystalGrabberObj.anamatedSprite.UpdateFrame(elapsed);
+            if (CrystalGrabberObj.bulletCollision == true || CrystalGrabberObj.playerCollision == true)
+            {
+                CrystalGrabberObj.explodeCounter++;
+                CrystalGrabberObj.explosion.UpdateFrame(elapsed);
+            }
+            if (CrystalGrabberObj.explodeCounter > CrystalGrabberObj.explodeDownTime)
+            {
+                crystalGrabbers.Remove(CrystalGrabberObj);
+                return true;
+            }
+            else return false;
+            //ToDo: finish setting up timing needed to show explosion when enemy is hit for player enemy collision
+        }
 
-
-					// Check for collisions with other player bullets
-					// ToDo: setup checking collisions between player bullets probibly only for deathmatch games
-				}
-
-				// This loop adds new projectiles when the player is shooting
-				if (!(playerObj.playerCollision == true || playerObj.bulletCollision == true))
-				{
-					if (playerObj.projectileFrequencyTimer.expired(gameTime1) == true && gamePadState.IsConnected)
-					{
-						playerObj.projectileFrequencyTimer.reset(gameTime1);
-						if ((gamePadState.ThumbSticks.Right.X < 0.09 && gamePadState.ThumbSticks.Right.X > -0.09)
-							&& (gamePadState.ThumbSticks.Right.Y < 0.09 && gamePadState.ThumbSticks.Right.Y > -0.09))
-							return;
-
-						// The following changes the projectile texture depending on the power up
-						if (playerObj.playerSettingsHaveBeenModifiedByPepperPowerup == false && playerObj.playerSettingsHaveBeenModifiedByInvincibleBulletPowerUp == false)
-						{
-							playerObj.projectiles.Add(new Projectile(this,
-								new Vector2(playerObj.position.X + 30, playerObj.position.Y + 55),
-								new Vector2(gamePadState.ThumbSticks.Right.X, gamePadState.ThumbSticks.Right.Y)));
-							//new GamePadState(gamePadState.ThumbSticks, gamePadState.Triggers, gamePadState.Buttons, gamePadState.DPad)));
-							//soundBank.PlayCue("splat"); //ToDo: change this annoying sound
-						}
-						if (playerObj.playerSettingsHaveBeenModifiedByPepperPowerup == true && playerObj.playerSettingsHaveBeenModifiedByInvincibleBulletPowerUp == false)
-						{
-							playerObj.projectiles.Add(new Projectile(this,
-								new Vector2(playerObj.position.X, playerObj.position.Y),
-								new Vector2(gamePadState.ThumbSticks.Right.X, gamePadState.ThumbSticks.Right.Y),
-								PepperPowerUp.projectileSprite, playerObj.projectileSpeed));
-							//soundBank.PlayCue("ToDo: Add a sound for Pepper");
-						}
-						if (playerObj.playerSettingsHaveBeenModifiedByPepperPowerup == false && playerObj.playerSettingsHaveBeenModifiedByInvincibleBulletPowerUp == true)
-						{
-							playerObj.projectiles.Add(new Projectile(this,
-								new Vector2(playerObj.position.X, playerObj.position.Y),
-								new Vector2(gamePadState.ThumbSticks.Right.X, gamePadState.ThumbSticks.Right.Y),
-								InvincibleBulletPowerUp.projectileSprite, playerObj.projectileSpeed, true));
-							//soundBank.PlayCue(" ToDo: add a sound for InvincibleBullet");
-						}
-						if (playerObj.playerSettingsHaveBeenModifiedByPepperPowerup == true && playerObj.playerSettingsHaveBeenModifiedByInvincibleBulletPowerUp == true)
-						{
-							playerObj.projectiles.Add(new Projectile(this,
-								new Vector2(playerObj.position.X, playerObj.position.Y),
-								new Vector2(gamePadState.ThumbSticks.Right.X, gamePadState.ThumbSticks.Right.Y),
-								fireBallMetalSphere, playerObj.projectileSpeed, true));
-						}
-					}
-				}
-			}
-		}
-
-		///<summary>
-		/// PlayerTiming handles the of the timing for shields and explosions
-		///</summary>
-		void PlayerTiming(Player playerObj)
-		{
-			if (!(playerObj == null))
-			{
-				if (playerObj.bulletCollision == true || playerObj.playerCollision == true)
-					playerObj.headExplodeCounter++;
-				if (playerObj.shieldUp == true)
-					playerObj.shieldUpCounter--;
-				if (playerObj.shieldUpCounter < 1)
-				{
-					playerObj.playerSettingsHaveBeenModifiedByShieldPowerUp = false;
-					playerObj.shieldUp = false;
-					playerObj.shieldUpCounter = playerObj.shieldTimeAfterDeath;
-				}
-				if (headExplodeDownTime < playerObj.headExplodeCounter)
-				{
-					if (playerObj.lives < 0)
-					{
-						playerObj.position.X = 10000;
-						playerObj.position.Y = 10000;
-						playerObj = null;
-						return;
-					}
-					//playerObj.explosion.Frame = 0;  //reset the explosion frame
-					playerObj.bulletCollision = false; //reset any prevoius collisions
-					playerObj.playerCollision = false; //reset any prevoius collisions
-					playerObj.headExplodeCounter = 0;
-					playerObj.position = playerObj.startPosition;
-					playerObj.shieldUp = true;
-				}
-				if (playerObj.playerCollision == true || playerObj.bulletCollision == true)
-				{
-					playerObj.explosion.UpdateFrame(elapsed);
-				}
-			}
-		}
-
-		bool kamikazeTiming(Kamikaze kamikazeObj)
-		{
-			kamikazeObj.anamatedSprite.UpdateFrame(elapsed);
-			if (kamikazeObj.bulletCollision == true || kamikazeObj.playerCollision == true)
-			{
-				kamikazeObj.explodeCounter++;
-				kamikazeObj.explosion.UpdateFrame(elapsed);
-			}
-			if (kamikazeObj.explodeCounter > kamikazeObj.explodeDownTime)
-			{
-				kamikazes.Remove(kamikazeObj);
-				return true;
-			}
-			else return false;
-			//ToDo: finish setting up timing needed to show explosion when enemy is hit for player enemy collision
-		}
-
-		bool enemyTiming(CrystalGrabber CrystalGrabberObj)
-		{
-			CrystalGrabberObj.anamatedSprite.UpdateFrame(elapsed);
-			if (CrystalGrabberObj.bulletCollision == true || CrystalGrabberObj.playerCollision == true)
-			{
-				CrystalGrabberObj.explodeCounter++;
-				CrystalGrabberObj.explosion.UpdateFrame(elapsed);
-			}
-			if (CrystalGrabberObj.explodeCounter > CrystalGrabberObj.explodeDownTime)
-			{
-				crystalGrabbers.Remove(CrystalGrabberObj);
-				return true;
-			}
-			else return false;
-			//ToDo: finish setting up timing needed to show explosion when enemy is hit for player enemy collision
-		}
-
-		///<summary>
-		/// checkPlayerBulletCollision handles checking weather a projectile object has hit any of the four players
-		///</summary>
-		bool checkPlayerBulletCollision(Player playerObj, Projectile projectileObj)
-		{
-			bool result = false;
-			int knockStrength = 3;
-			if (!(playerObj == null))
-			{
-				if (!(playerOne == null))
-				{
-					//if we are not player one and we hit player one
-					if (playerOne.rectangle.Intersects(projectileObj.rectangle) && playerOne.shieldUp == false && !(playerObj.Equals(playerOne)))
-					{
-						result = true;
-						if (gameType == gameTypes.deathMatch)
-						{
-							if (playerOne.bulletCollision == false)
-							{
-								playerObj.score += 25;
+        ///<summary>
+        /// checkPlayerBulletCollision handles checking weather a projectile object has hit any of the four players
+        ///</summary>
+        bool checkPlayerBulletCollision(Player playerObj, Projectile projectileObj)
+        {
+            bool result = false;
+            int knockStrength = 3;
+            if (playerObj.hasStarted)
+            {
+                if (playerOne.hasStarted)
+                {
+                    //if we are not player one and we hit player one
+                    if (playerOne.rectangle.Intersects(projectileObj.rectangle) && playerOne.shieldUp == false && !(playerObj.Equals(playerOne)))
+                    {
+                        result = true;
+                        if (gameType == gameTypes.deathMatch)
+                        {
+                            if (playerOne.bulletCollision == false)
+                            {
+                                playerObj.score += 25;
+								explosion6.Play(0.5f, 0.0f, this.convertPositionToPanValue(playerObj.position.X));
 								//soundBank.PlayCue("explosion6");
 							}
-							playerOne.bulletCollision = true;
-						}
-						if (gameType == gameTypes.defendTheCrystal)
-						{
-							playerOne.position.X += projectileObj.direction.X * knockStrength;
-							playerOne.position.Y -= projectileObj.direction.Y * knockStrength;
-						}
-					}
-				}
-				if (!(playerTwo == null))
-				{
-					//if we are not player two and we hit player two
-					if (playerTwo.rectangle.Intersects(projectileObj.rectangle) && playerTwo.shieldUp == false && !(playerObj.Equals(playerTwo)))
-					{
-						result = true;
-						if (gameType == gameTypes.deathMatch)
-						{
-							if (playerTwo.bulletCollision == false)
-							{
-								playerObj.score += 25;
+                            playerOne.bulletCollision = true;
+                        }
+                        if (gameType == gameTypes.defendTheCrystal)
+                        {
+                            playerOne.position.X += projectileObj.direction.X * knockStrength;
+                            playerOne.position.Y -= projectileObj.direction.Y * knockStrength;
+                        }
+                    }
+                }
+                if (playerTwo.hasStarted)
+                {
+                    //if we are not player two and we hit player two
+                    if (playerTwo.rectangle.Intersects(projectileObj.rectangle) && playerTwo.shieldUp == false && !(playerObj.Equals(playerTwo)))
+                    {
+                        result = true;
+                        if (gameType == gameTypes.deathMatch)
+                        {
+                            if (playerTwo.bulletCollision == false)
+                            {
+                                playerObj.score += 25;
+								explosion6.Play(0.5f, 0.0f, this.convertPositionToPanValue(playerObj.position.X));
 								//soundBank.PlayCue("explosion6");
 							}
-							playerTwo.bulletCollision = true;
-						}
-						if (gameType == gameTypes.defendTheCrystal)
-						{
-							playerTwo.position.X += projectileObj.direction.X * knockStrength;
-							playerTwo.position.Y -= projectileObj.direction.Y * knockStrength;
-						}
+                            playerTwo.bulletCollision = true;
+                        }
+                        if (gameType == gameTypes.defendTheCrystal)
+                        {
+                            playerTwo.position.X += projectileObj.direction.X * knockStrength;
+                            playerTwo.position.Y -= projectileObj.direction.Y * knockStrength;
+                        }
 
-					}
-				}
-				if (!(playerThree == null))
-				{
-					//if we are not player three and we hit player three
-					if (playerThree.rectangle.Intersects(projectileObj.rectangle) && playerThree.shieldUp == false && !(playerObj.Equals(playerThree)))
-					{
-						result = true;
-						if (gameType == gameTypes.deathMatch)
-						{
-							if (playerThree.bulletCollision == false)
-							{
-								playerObj.score += 25;
+                    }
+                }
+                if (playerThree.hasStarted)
+                {
+                    //if we are not player three and we hit player three
+                    if (playerThree.rectangle.Intersects(projectileObj.rectangle) && playerThree.shieldUp == false && !(playerObj.Equals(playerThree)))
+                    {
+                        result = true;
+                        if (gameType == gameTypes.deathMatch)
+                        {
+                            if (playerThree.bulletCollision == false)
+                            {
+                                playerObj.score += 25;
+								explosion6.Play(0.5f, 0.0f, this.convertPositionToPanValue(playerObj.position.X));
 								//soundBank.PlayCue("explosion6");
-							}
-							playerThree.bulletCollision = true;
-						}
-						if (gameType == gameTypes.defendTheCrystal)
-						{
-							playerThree.position.X += projectileObj.direction.X * knockStrength;
-							playerThree.position.Y -= projectileObj.direction.Y * knockStrength;
-						}
+                            }
+                            playerThree.bulletCollision = true;
+                        }
+                        if (gameType == gameTypes.defendTheCrystal)
+                        {
+                            playerThree.position.X += projectileObj.direction.X * knockStrength;
+                            playerThree.position.Y -= projectileObj.direction.Y * knockStrength;
+                        }
 
-					}
-				}
-				if (!(playerFour == null))
-				{
-					//if we are not player four and we hit player four
-					if (playerFour.rectangle.Intersects(projectileObj.rectangle) && playerFour.shieldUp == false && !(playerObj.Equals(playerFour)))
-					{
-						result = true;
-						if (gameType == gameTypes.deathMatch)
-						{
-							if (playerFour.bulletCollision == false)
-							{
-								playerObj.score += 25;
+                    }
+                }
+                if (playerFour.hasStarted)
+                {
+                    //if we are not player four and we hit player four
+                    if (playerFour.rectangle.Intersects(projectileObj.rectangle) && playerFour.shieldUp == false && !(playerObj.Equals(playerFour)))
+                    {
+                        result = true;
+                        if (gameType == gameTypes.deathMatch)
+                        {
+                            if (playerFour.bulletCollision == false)
+                            {
+                                playerObj.score += 25;
+								explosion6.Play(0.5f, 0.0f, this.convertPositionToPanValue(playerObj.position.X));
 								//soundBank.PlayCue("explosion6");
-							}
-							playerFour.bulletCollision = true;
-						}
-						if (gameType == gameTypes.defendTheCrystal)
-						{
-							playerFour.position.X += projectileObj.direction.X * knockStrength;
-							playerFour.position.Y -= projectileObj.direction.Y * knockStrength;
-						}
-					}
-				}
-			}
-			return result;
-		}
+                            }
+                            playerFour.bulletCollision = true;
+                        }
+                        if (gameType == gameTypes.defendTheCrystal)
+                        {
+                            playerFour.position.X += projectileObj.direction.X * knockStrength;
+                            playerFour.position.Y -= projectileObj.direction.Y * knockStrength;
+                        }
+                    }
+                }
+            }
+            return result;
+        }
 
-		bool checkPlayerShieldBulletCollision(Projectile projectileObj, Player playerObj)
-		{
-			if (!(playerOne == null))
-			{
-				//if we are not player one and we hit player one with shield up
-				if (playerOne.shieldRectangle.Intersects(projectileObj.rectangle) && playerOne.shieldUp == true && !(playerObj.Equals(playerOne)))
-				{
-					// Check for per pixle collision
-					if (perPixleCollisionDetection(projectileObj.rectangle, projectileObj.spriteTextureData, playerOne.shieldRectangle, playerOne.shieldTextureData))
-					{
-						projectileObj.direction = findDirection(projectileObj.centerPosition, playerOne.shieldCenterPosition);
-						projectileObj.direction.Y *= -1;
-						return true;
-					}
-				}
-			}
-			if (!(playerTwo == null))
-			{
-				//if we are not player two and we hit player one with shield up
-				if (playerTwo.shieldRectangle.Intersects(projectileObj.rectangle) && playerTwo.shieldUp == true && !(playerObj.Equals(playerTwo)))
-				{
-					// Check for per pixle collision
-					if (perPixleCollisionDetection(projectileObj.rectangle, projectileObj.spriteTextureData, playerTwo.shieldRectangle, playerTwo.shieldTextureData))
-					{
-						projectileObj.direction = findDirection(projectileObj.centerPosition, playerTwo.shieldCenterPosition);
-						projectileObj.direction.Y *= -1; // not sure why this is needed - something wrong with finddirection?
-														 //projectileObj.direction *= findDirection(projectileObj.centerPosition, playerTwo.shieldCenterPosition);
-														 //projectileObj.direction.Y *= -1;
-						return true;
-					}
-				}
-			}
+		/// <summary>
+		/// collision detection between one players bullet and anothers shield
+		/// </summary>
+		/// <param name="projectileObj"></param>
+		/// <param name="playerObj"></param>
+		/// <returns></returns>
+        bool checkPlayerShieldBulletCollision(Projectile projectileObj, Player playerObj)
+        {
+            if (playerOne.hasStarted)
+            {
+                //if we are not player one and we hit player one with shield up
+                if (playerOne.shieldRectangle.Intersects(projectileObj.rectangle) && playerOne.shieldUp == true && !(playerObj.Equals(playerOne)))
+                {
+                    // Check for per pixle collision
+                    if (perPixleCollisionDetection(projectileObj.rectangle, projectileObj.spriteTextureData, playerOne.shieldRectangle, playerOne.shieldTextureData))
+                    {
+                        projectileObj.direction = findDirection(projectileObj.position, playerOne.shieldCenterPosition);
+                        projectileObj.direction.Y *= -1;
+                        return true;
+                    }
+                }
+            }
+            if (playerTwo.hasStarted)
+            {
+                //if we are not player two and we hit player one with shield up
+                if (playerTwo.shieldRectangle.Intersects(projectileObj.rectangle) && playerTwo.shieldUp == true && !(playerObj.Equals(playerTwo)))
+                {
+                    // Check for per pixle collision
+                    if (perPixleCollisionDetection(projectileObj.rectangle, projectileObj.spriteTextureData, playerTwo.shieldRectangle, playerTwo.shieldTextureData))
+                    {
+                        //Vector2 outFromCenterVector = findDirection(projectileObj.position, playerTwo.shieldCenterPosition);
+                        //Vector2 reflectVec = new Vector2(outFromCenterVector.Y * -1, outFromCenterVector.X);
+                        //projectileObj.direction = Vector2.Reflect(projectileObj.direction, reflectVec);
+                        //projectileObj.hasHitShield = true;
+                        projectileObj.direction = findDirection(projectileObj.position, playerTwo.shieldCenterPosition);
+                        projectileObj.direction.Y *= -1;
+                        return true;
+                    }
+                }
+            }
 
-			//if we are not player three and we hit player one with shield up
-			if (!(playerThree == null))
-			{
-				if (playerThree.shieldRectangle.Intersects(projectileObj.rectangle) && playerThree.shieldUp == true && !(playerObj.Equals(playerThree)))
-				{
-					// Check for per pixle collision
-					if (perPixleCollisionDetection(projectileObj.rectangle, projectileObj.spriteTextureData, playerThree.shieldRectangle, playerThree.shieldTextureData))
-					{
-						return true;
-					}
-				}
-			}
+            //if we are not player three and we hit player one with shield up
+            if (playerThree.hasStarted)
+            {
+                if (playerThree.shieldRectangle.Intersects(projectileObj.rectangle) && playerThree.shieldUp == true && !(playerObj.Equals(playerThree)))
+                {
+                    // Check for per pixle collision
+                    if (perPixleCollisionDetection(projectileObj.rectangle, projectileObj.spriteTextureData, playerThree.shieldRectangle, playerThree.shieldTextureData))
+                    {
+                        projectileObj.direction = findDirection(projectileObj.position, playerThree.shieldCenterPosition);
+                        projectileObj.direction.Y *= -1;
+                        return true;
+                    }
+                }
+            }
 
-			if (!(playerFour == null))
-			{
-				//if we are not player four and we hit player one with shield up
-				if (playerFour.shieldRectangle.Intersects(projectileObj.rectangle) && playerFour.shieldUp == true && !(playerObj.Equals(playerFour)))
-				{
-					// Check for per pixle collision
-					if (perPixleCollisionDetection(projectileObj.rectangle, projectileObj.spriteTextureData, playerFour.shieldRectangle, playerFour.shieldTextureData))
-					{
-						return true;
-					}
-				}
-			}
-			return false;
-		}
+            if (playerFour.hasStarted)
+            {
+                //if we are not player four and we hit player one with shield up
+                if (playerFour.shieldRectangle.Intersects(projectileObj.rectangle) && playerFour.shieldUp == true && !(playerObj.Equals(playerFour)))
+                {
+                    // Check for per pixle collision
+                    if (perPixleCollisionDetection(projectileObj.rectangle, projectileObj.spriteTextureData, playerFour.shieldRectangle, playerFour.shieldTextureData))
+                    {
+                        projectileObj.direction = findDirection(projectileObj.position, playerFour.shieldCenterPosition);
+                        projectileObj.direction.Y *= -1;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
-		bool checkEnemyBulletCollision(Projectile projectileObj)
-		{
-			bool result = false;
-			foreach (Kamikaze kamikazeObj in kamikazes)
-			{
-				if (kamikazeObj.rectangle.Intersects(projectileObj.rectangle) && (!(kamikazeObj.bulletCollision || kamikazeObj.playerCollision)))
-				{
-					result = true;
-					if (kamikazeObj.bulletCollision == false) // play the sound only once
-					{
-						//soundBank.PlayCue("explosion6");
-					}
-					kamikazeObj.bulletCollision = true;
-					break;
-				}
-			}
-			foreach (CrystalGrabber crystalGrabber in crystalGrabbers)
-			{
-				if (crystalGrabber.rectangle.Intersects(projectileObj.rectangle) && (!(crystalGrabber.bulletCollision || crystalGrabber.playerCollision)))
-				{
-					result = true;
-					if (crystalGrabber.bulletCollision == false) // play the sound only once
-					{
-						//soundBank.PlayCue("explosion6");
-					}
-					crystalGrabber.bulletCollision = true;
-					break;
-				}
-			}
-			return result;
-		}
+        bool checkEnemyBulletCollision( Projectile projectileObj)
+        {
+            bool result = false;
+            foreach (Kamikaze kamikazeObj in kamikazes)
+            {
+                if (kamikazeObj.rectangle.Intersects(projectileObj.rectangle) && (!(kamikazeObj.bulletCollision || kamikazeObj.playerCollision)))
+                {
+                    result = true;
+                    if (kamikazeObj.bulletCollision == false) // play the sound only once
+                        Explosion.Play(0.5f, 0.0f, this.convertPositionToPanValue(kamikazeObj.position.X));
+                    kamikazeObj.bulletCollision = true;    
+                    break;
+                }
+            }
+            foreach (CrystalGrabber crystalGrabber in crystalGrabbers)
+            {
+                if (crystalGrabber.rectangle.Intersects(projectileObj.rectangle) && (!(crystalGrabber.bulletCollision || crystalGrabber.playerCollision)))
+                {
+                    result = true;
+                    if (crystalGrabber.bulletCollision == false) // play the sound only once
+                        Explosion.Play(0.5f, 0.0f, this.convertPositionToPanValue(crystalGrabber.position.X));
+                    crystalGrabber.bulletCollision = true;
+                    break;
+                }
+            }
+            foreach (WobbleKamikaze wk in wobbleKamikazes)
+            {
+                if (wk.rectangle.Intersects(projectileObj.rectangle) && (!(wk.bulletCollision || wk.playerCollision)))
+                {
+                    result = true;
+                    if (wk.bulletCollision == false) // play the sound only once
+                        Explosion.Play(0.5f, 0.0f, this.convertPositionToPanValue(wk.position.X));
+                    wk.bulletCollision = true;
+                    break;
+                }
+            }
+            return result;
+        }
 
-		///<summary>
-		/// checkPlayerPlayerCollision handles checking weather a player object has hit any other player
-		///</summary>
-		void checkPlayerPlayerCollision(Player playerObjOne, Player playerObjTwo)
-		{
-			if (!(playerObjOne == null) && (!(playerObjTwo == null)))
-			{
-				if (playerObjOne.shieldUp == false && playerObjTwo.shieldUp == false)
-				{
-					if (playerObjOne.rectangle.Intersects(playerObjTwo.rectangle))
-					{
-						//if (perPixleCollisionDetection(playerObjOne.rectangle,
-						playerObjOne.playerCollision = true;
-						playerObjOne.lives--;
-						playerObjTwo.playerCollision = true;
-						playerObjTwo.lives--;
-						if (playerObjOne.headExplodeCounter < 1)
-						{
-							soundBank.PlayCue("explosion6");
-						}
-					}
-				}
-			}
-		}
-
-		void checkPlayerSpriteCollision(Player playerObj, Sprite spriteObj)
-		{
-			if (!(playerObj == null))
-			{
-				if (playerObj.shieldUp == false)
-				{
-					if (playerObj.rectangle.Intersects(spriteObj.rectangle) && (!(spriteObj.playerCollision || spriteObj.bulletCollision)) && playerObj.playerCollision == false)
-					{
-						playerObj.playerCollision = true;
-						playerObj.lives--;
-						if (playerObj.headExplodeCounter < 1)
-						{
+        ///<summary>
+        /// checkPlayerPlayerCollision handles checking weather a player object has hit any other player
+        ///</summary>
+        void checkPlayerPlayerCollision( Player playerObjOne, Player playerObjTwo )
+        {
+            if (!(playerObjOne == null) && (!(playerObjTwo == null)))
+            {
+                if (playerObjOne.shieldUp == false && playerObjTwo.shieldUp == false)
+                {
+                    if (playerObjOne.rectangle.Intersects(playerObjTwo.rectangle))
+                    {
+                        //if (perPixleCollisionDetection(playerObjOne.rectangle,
+                        playerObjOne.playerCollision = true;
+                        playerObjOne.lives--;
+                        playerObjTwo.playerCollision = true;
+                        playerObjTwo.lives--;
+                        if (playerObjOne.headExplodeCounter < 1)
+                        {
+							explosion6.Play(0.5f, 0.0f, this.convertPositionToPanValue(playerObjOne.position.X));
 							//soundBank.PlayCue("explosion6");
-						}
+                        }
+                    }
+                }
+            }
+        }
+
+        void checkPlayerSpriteCollision(Player playerObj, Sprite spriteObj)
+        {
+            if (!(playerObj == null))
+            {
+                if (playerObj.shieldUp == false)
+                {
+                    if (playerObj.rectangle.Intersects(spriteObj.rectangle) && (!(spriteObj.playerCollision || spriteObj.bulletCollision)) && playerObj.playerCollision == false)
+                    {
+                        playerObj.playerCollision = true;
+                        playerObj.lives--;
+                        if (playerObj.headExplodeCounter < 1)
+							explosion6.Play(0.5f, 0.0f, this.convertPositionToPanValue(playerObj.position.X));
 						spriteObj.playerCollision = true;
-					}
-				}
-				if (playerObj.shieldUp == true)
-				{
-					if (playerObj.rectangle.Intersects(spriteObj.rectangle) && (!(spriteObj.playerCollision || spriteObj.bulletCollision)))
-					{
-						//soundBank.PlayCue("explosion6");
+                    }
+                }
+                if (playerObj.shieldUp == true)
+                {
+                    if (playerObj.rectangle.Intersects(spriteObj.rectangle) && (!(spriteObj.playerCollision || spriteObj.bulletCollision)))
+                    {
+						explosion6.Play(0.5f, 0.0f, this.convertPositionToPanValue(playerObj.position.X));
 						spriteObj.playerCollision = true;
-					}
-				}
-			}
-		}
+                    }
+                }
+            }
+        }
 
-		/// <summary>
-		/// This handles removing any sprites that haved moved off the screen
-		/// </summary>
-		void destroyOffScreenSprites(List<Projectile> projectiles)
-		{
-			for (int i = 0; i < projectiles.Count; i++)
-			{
-				// Remove any projectiles that have moved out of the visible area
-				if (projectiles[i].position.X > graphics.GraphicsDevice.Viewport.Width + 300)
-				{
-					projectiles.RemoveAt(i);
-					break;
-				}
-				else if (projectiles[i].position.Y > graphics.GraphicsDevice.Viewport.Height + 300)
-				{
-					projectiles.RemoveAt(i);
-					break;
-				}
-				else if (projectiles[i].position.X < -300)
-				{
-					projectiles.RemoveAt(i);
-					break;
-				}
-				else if (projectiles[i].position.Y < -300)
-				{
-					projectiles.RemoveAt(i);
-					break;
-				}
-			}
-		}
+        /// <summary>
+        /// This handles removing any sprites that haved moved off the screen
+        /// </summary>
+        void destroyOffScreenSprites(List<Projectile> projectiles)
+        {
+            for (int i = 0; i < projectiles.Count; i++)
+            {
+                // Remove any projectiles that have moved out of the visible area
+                if (projectiles[i].position.X > graphics.GraphicsDevice.Viewport.Width + 300)
+                {
+                    projectiles.RemoveAt(i);
+                    break;
+                }
+                else if (projectiles[i].position.Y > graphics.GraphicsDevice.Viewport.Height + 300)
+                {
+                    projectiles.RemoveAt(i);
+                    break;
+                }
+                else if (projectiles[i].position.X < -300)
+                {
+                    projectiles.RemoveAt(i);
+                    break;
+                }
+                else if (projectiles[i].position.Y < -300)
+                {
+                    projectiles.RemoveAt(i);
+                    break;
+                }
+            }
+        }
 
-		void destroyOffScreenPowerUps(List<PowerUp> powerUps)
-		{
-			for (int i = 0; i < powerUps.Count; i++)
-			{
-				// Remove any powerUps that have moved out of the visible area
-				if (powerUps[i].position.X > graphics.GraphicsDevice.Viewport.Width + 200)
-				{
-					powerUps.RemoveAt(i);
-					break;
-				}
-				else if (powerUps[i].position.Y > graphics.GraphicsDevice.Viewport.Height + 200)
-				{
-					powerUps.RemoveAt(i);
-					break;
-				}
-				else if (powerUps[i].position.X < -200)
-				{
-					powerUps.RemoveAt(i);
-					break;
-				}
-				else if (powerUps[i].position.Y < -200)
-				{
-					powerUps.RemoveAt(i);
-					break;
-				}
-			}
-		}
+        void destroyOffScreenPowerUps(List<PowerUp> powerUps)
+        {
+            for (int i = 0; i < powerUps.Count; i++)
+            {
+                // Remove any powerUps that have moved out of the visible area
+                if (powerUps[i].position.X > graphics.GraphicsDevice.Viewport.Width + 200)
+                {
+                    powerUps.RemoveAt(i);
+                    break;
+                }
+                else if (powerUps[i].position.Y > graphics.GraphicsDevice.Viewport.Height + 200)
+                {
+                    powerUps.RemoveAt(i);
+                    break;
+                }
+                else if (powerUps[i].position.X < -200)
+                {
+                    powerUps.RemoveAt(i);
+                    break;
+                }
+                else if (powerUps[i].position.Y < -200)
+                {
+                    powerUps.RemoveAt(i);
+                    break;
+                }
+            }
+        }
 
-		/// <summary>
-		/// This handles modifying the player settings to powerups
-		/// </summary>
-		bool powerUpHandleing(Player playerObj, PowerUp powerUpObj)
-		{
+        /// <summary>
+        /// This handles removing powerUp settings after they timeout
+        /// </summary>
+        void powerUpTiming(Player playerObj)
+        {
+            if (playerObj != null)
+            {
+                // handle the timeout for the pepperpowerup
+                if (playerObj.PepperPowerup == true)
+                {
+                    if (!(playerObj.pepperPowerUpTimeoutTimer == null)) // check for null(uninstantiated) timer object 
+                    {
+                        if (playerObj.pepperPowerUpTimeoutTimer.expired(gameTime1) == true)
+                        {
+                            playerObj.PepperPowerup = false;
 
-			bool powerUpHasBeenGrabbedResult = false;
-			if (!(playerObj == null))
-			{
-				// ToDo: finish allowing multiple powerups to modify a player object at the same time - there may be nothing more to do then create another powerup type and test multiple powerups
+                            // subtract powerup modifiers from player settings 
+                            playerObj.projectileFrequencyTimer.timerDuration -= PepperPowerUp.projectileFrequencyModifier;
+                            playerObj.speed -= PepperPowerUp.playerSpeedModifier;
+                            playerObj.projectileSpeed -= PepperPowerUp.projectileSpeedModifier;
+                        }
+                    }
+                }
 
-				if (playerObj.rectangle.Intersects(powerUpObj.rectangle))
-				{
-					// ToDO: create powerup types that can be matched to the player
-					playerObj.powerUpType = powerUpObj.powerUpType;
-					if (powerUpObj.powerUpType == Sprite.powerUpTypes.Pepper && playerObj.playerSettingsHaveBeenModifiedByPepperPowerup == true)
-						playerObj.pepperPowerUpTimeoutTimer.reset(gameTime1);
-					if (powerUpObj.powerUpType == Sprite.powerUpTypes.Pepper && playerObj.playerSettingsHaveBeenModifiedByPepperPowerup == false)
+                // Handle the timeout for the speed power up
+                if (playerObj.SpeedPowerUp == true)
+                {
+                    if (!(playerObj.speedPowerUpTimeoutTimer == null)) // check for null(uninstantiated) timer object 
+                    {
+                        if (playerObj.speedPowerUpTimeoutTimer.expired(gameTime1) == true)
+                        {
+                            playerObj.SpeedPowerUp = false;
+
+                            // subtract powerup modifiers from player settings 
+                            playerObj.speed -= SpeedPowerUp.playerSpeedModifier;
+                        }
+                    }
+                }
+
+                // handle the timeout for the InvincibleBullet powerup
+                if (playerObj.InvincBulletPowerUp == true)
+                {
+                    if (!(playerObj.invincibleBulletPowerUpTimeoutTimer == null)) // check for null(uninstantiated) timer object 
+                    {
+                        if (playerObj.invincibleBulletPowerUpTimeoutTimer.expired(gameTime1) == true)
+                        {
+                            playerObj.InvincBulletPowerUp = false;
+
+                            // subtract powerup modifiers from player settings 
+                            playerObj.projectileFrequencyTimer.timerDuration -= InvincibleBulletPowerUp.projectileFrequencyModifier;
+                            playerObj.speed -= InvincibleBulletPowerUp.playerSpeedModifier;
+                            playerObj.projectileSpeed -= InvincibleBulletPowerUp.projectileSpeedModifier;
+                        }
+                    }
+                }
+            }
+        }
+
+        void dropTheSuperBomb()
+        {
+            // destroy all 
+            foreach (Kamikaze kamikaze in kamikazes)
+                kamikaze.bulletCollision = true;
+            foreach (CrystalGrabber crystalGrabber in crystalGrabbers)
+                crystalGrabber.bulletCollision = true;
+            foreach (WobbleKamikaze w in wobbleKamikazes)
+                w.bulletCollision = true;
+        }
+
+        void KamikazeMovement()
+        {
+            foreach(Kamikaze kamikaze in kamikazes)
+            {
+                Player playerObj = FindNearistPlayer(kamikaze);
+                kamikaze.direction = findDirection(playerObj.position, kamikaze.position);
+                kamikaze.position.X += kamikaze.direction.X * kamikaze.speed;    
+                kamikaze.position.Y += kamikaze.direction.Y * kamikaze.speed;
+            }
+        }
+
+        void wobbleKamikazeMovement()
+        {
+            foreach (WobbleKamikaze wKamikaze in wobbleKamikazes)
+            {
+                Player playerObj = FindNearistPlayer(wKamikaze);
+                wKamikaze.direction = findDirection(playerObj.position, wKamikaze.position);
+                wKamikaze.position.X += wKamikaze.direction.X * wKamikaze.speed;
+                wKamikaze.position.Y += wKamikaze.direction.Y * wKamikaze.speed;
+                // do wobble
+                wKamikaze.position.X += ((float)Math.Cos(wKamikaze.wobbleRad) * wKamikaze.speed * 1.5f);
+                wKamikaze.position.Y += ((float)Math.Sin(wKamikaze.wobbleRad) * wKamikaze.speed * 1.5f);
+                wKamikaze.wobbleRad += 0.2;
+                wKamikaze.wobbleRad = wKamikaze.wobbleRad % (2 * Math.PI);
+            }
+        }
+
+        void CrystalGrabberMovement()
+        {
+            foreach (CrystalGrabber crystalGrabber in crystalGrabbers)
+            {
+
+                crystalGrabber.direction = findDirection(powerCrystal.position + crystalGrabber.offsetToGrabCrystal, crystalGrabber.position);
+                if (crystalGrabber.hasGrabbedCrystal == false)
+                {
+                    crystalGrabber.position.X += crystalGrabber.direction.X * crystalGrabber.speed;
+                    crystalGrabber.position.Y += crystalGrabber.direction.Y * crystalGrabber.speed;
+					//if ((int)crystalGrabber.position.Y == (int)powerCrystal.position.Y && (int)crystalGrabber.position.X == (int)powerCrystal.position.X)
+					//    crystalGrabber.hasGrabbedCrystal = true;
+					if ((int)crystalGrabber.position.Y >= (int)powerCrystal.position.Y - 10 + crystalGrabber.offsetToGrabCrystal.Y 
+                        && (int)crystalGrabber.position.Y <= (int)powerCrystal.position.Y + 10 + crystalGrabber.offsetToGrabCrystal.Y 
+                        && (int)crystalGrabber.position.X >= (int)powerCrystal.position.X - 10 + crystalGrabber.offsetToGrabCrystal.X 
+                        && (int)crystalGrabber.position.X <= (int)powerCrystal.position.X + 10 + crystalGrabber.offsetToGrabCrystal.X)
 					{
-						playerObj.projectileFrequencyTimer.timerDuration += PepperPowerUp.projectileFrequencyModifier;
-						playerObj.speed += PepperPowerUp.playerSpeedModifier;
-						playerObj.projectileSpeed += PepperPowerUp.projectileSpeedModifier;
-						playerObj.playerSettingsHaveBeenModifiedByPepperPowerup = true;
-						playerObj.pepperPowerUpTimeoutTimer = new Timer(PepperPowerUp.timeout, gameTime1); // constructor starts the timer
+						crystalGrabber.hasGrabbedCrystal = true;
 					}
 
-					if (powerUpObj.powerUpType == Sprite.powerUpTypes.InvincibleBullet && playerObj.playerSettingsHaveBeenModifiedByInvincibleBulletPowerUp == true)
-						playerObj.invincibleBulletPowerUpTimeoutTimer.reset(gameTime1);
-					if (powerUpObj.powerUpType == Sprite.powerUpTypes.InvincibleBullet && playerObj.playerSettingsHaveBeenModifiedByInvincibleBulletPowerUp == false)
-					{
-						playerObj.projectileFrequencyTimer.timerDuration += InvincibleBulletPowerUp.projectileFrequencyModifier;
-						playerObj.speed += InvincibleBulletPowerUp.playerSpeedModifier;
-						playerObj.projectileSpeed += InvincibleBulletPowerUp.projectileSpeedModifier;
-						playerObj.playerSettingsHaveBeenModifiedByInvincibleBulletPowerUp = true;
-						playerObj.invincibleBulletPowerUpTimeoutTimer = new Timer(PepperPowerUp.timeout, gameTime1); // constructor starts the timer
-					}
+                }
+                if (crystalGrabber.hasGrabbedCrystal == true)
+                {
+                    crystalGrabber.position = powerCrystal.position + crystalGrabber.offsetToGrabCrystal;
+                    //Drag the crystal away through the top of the screen
+                    powerCrystal.position.Y -= powerCrystal.speed;
+                }
+                
+            }
+        }
 
-					if (powerUpObj.powerUpType == Sprite.powerUpTypes.Speed && playerObj.playerSettingsHaveBeenModifiedBySpeedPowerUp == true)
-						playerObj.speedPowerUpTimeoutTimer.reset(gameTime1);
-					if (powerUpObj.powerUpType == Sprite.powerUpTypes.Speed && playerObj.playerSettingsHaveBeenModifiedBySpeedPowerUp == false)
-					{
-						playerObj.playerSettingsHaveBeenModifiedBySpeedPowerUp = true;
-						playerObj.speedPowerUpTimeoutTimer = new Timer(SpeedPowerUp.timeout, gameTime1);
-						playerObj.speed += SpeedPowerUp.playerSpeedModifier;
-					}
+        void CheckForCrystalOffScreen()
+        {
+            if (powerCrystal.position.Y <= 0 - powerCrystal.sprite.Height)
+                gameOver = true;
+        }
 
-					if (powerUpObj.powerUpType == Sprite.powerUpTypes.SuperBomb)
-					{
-						playerObj.superBombs++;
-					}
-					if (powerUpObj.powerUpType == Sprite.powerUpTypes.ExtraLife)
-					{
-						playerObj.lives++;
-					}
-					if (powerUpObj.powerUpType == Sprite.powerUpTypes.Shield)
-					{
-						playerObj.playerSettingsHaveBeenModifiedByShieldPowerUp = true;
-						playerObj.shieldUpCounter = ShieldPowerUp.shieldTime;
-						playerObj.shieldUp = true;
-					}
+        Player FindNearistPlayer( Sprite spriteObj)
+        {
+            float distanceToPlayerOne;
+            float distanceToPlayerTwo;
+            float distanceToPlayerThree;
+            float distanceToPlayerFour;
 
-					powerUpHasBeenGrabbedResult = true;
-				}
-			}
-			return powerUpHasBeenGrabbedResult;
-		}
+            if (playerOne.hasStarted)
+                distanceToPlayerOne = System.Math.Abs(spriteObj.position.X - playerOne.position.X) + System.Math.Abs(spriteObj.position.Y - playerOne.position.Y);
+            else 
+                distanceToPlayerOne = 90000;
+            if (playerTwo.hasStarted)
+                distanceToPlayerTwo = System.Math.Abs(spriteObj.position.X - playerTwo.position.X) + System.Math.Abs(spriteObj.position.Y - playerTwo.position.Y);
+            else 
+                distanceToPlayerTwo = 90000;
+            if (playerThree.hasStarted)
+                distanceToPlayerThree = System.Math.Abs(spriteObj.position.X - playerThree.position.X) + System.Math.Abs(spriteObj.position.Y - playerThree.position.Y);
+            else 
+                distanceToPlayerThree = 90000;
+            if (playerFour.hasStarted)
+                distanceToPlayerFour = System.Math.Abs(spriteObj.position.X - playerFour.position.X) + System.Math.Abs(spriteObj.position.Y - playerFour.position.Y);
+            else 
+                distanceToPlayerFour = 90000;
 
-		/// <summary>
-		/// This handles removing powerUp settings after they timeout
-		/// </summary>
-		void powerUpTiming(Player playerObj)
-		{
-			if (playerObj != null)
-			{
-				// handle the timeout for the pepperpowerup
-				if (playerObj.playerSettingsHaveBeenModifiedByPepperPowerup == true)
-				{
-					if (!(playerObj.pepperPowerUpTimeoutTimer == null)) // check for null(uninstantiated) timer object 
-					{
-						if (playerObj.pepperPowerUpTimeoutTimer.expired(gameTime1) == true)
-						{
-							playerObj.playerSettingsHaveBeenModifiedByPepperPowerup = false;
+            if (distanceToPlayerOne < distanceToPlayerTwo && distanceToPlayerOne < distanceToPlayerThree && distanceToPlayerOne < distanceToPlayerFour)
+                return playerOne;
+            if (distanceToPlayerTwo < distanceToPlayerOne && distanceToPlayerTwo < distanceToPlayerThree && distanceToPlayerTwo < distanceToPlayerFour)
+                return playerTwo;
+            if (distanceToPlayerThree < distanceToPlayerTwo && distanceToPlayerThree < distanceToPlayerTwo && distanceToPlayerThree < distanceToPlayerFour)
+                return playerThree;
+            if (distanceToPlayerFour < distanceToPlayerTwo && distanceToPlayerFour < distanceToPlayerThree && distanceToPlayerFour < distanceToPlayerOne)
+                return playerFour;
+            else return playerOne;
 
-							// subtract powerup modifiers from player settings 
-							playerObj.projectileFrequencyTimer.timerDuration -= PepperPowerUp.projectileFrequencyModifier;
-							playerObj.speed -= PepperPowerUp.playerSpeedModifier;
-							playerObj.projectileSpeed -= PepperPowerUp.projectileSpeedModifier;
-						}
-					}
-				}
+        }
 
-				// Handle the timeout for the speed power up
-				if (playerObj.playerSettingsHaveBeenModifiedBySpeedPowerUp == true)
-				{
-					if (!(playerObj.speedPowerUpTimeoutTimer == null)) // check for null(uninstantiated) timer object 
-					{
-						if (playerObj.speedPowerUpTimeoutTimer.expired(gameTime1) == true)
-						{
-							playerObj.playerSettingsHaveBeenModifiedBySpeedPowerUp = false;
+        void updatePowerUpPositions()
+        {
+            foreach (PepperPowerUp pepperPowerU in pepperPowerUps)
+            {
+                pepperPowerU.position.X += pepperPowerU.direction.X * pepperPowerU.speed;
+                pepperPowerU.position.Y += pepperPowerU.direction.Y * pepperPowerU.speed;
+            }
 
-							// subtract powerup modifiers from player settings 
-							playerObj.speed -= SpeedPowerUp.playerSpeedModifier;
-						}
-					}
-				}
+            foreach (InvincibleBulletPowerUp invincibleBulletPowerUp in InvincibleBulletPowerUps)
+            {
+                invincibleBulletPowerUp.position.X += invincibleBulletPowerUp.direction.X * invincibleBulletPowerUp.speed;
+                invincibleBulletPowerUp.position.Y += invincibleBulletPowerUp.direction.Y * invincibleBulletPowerUp.speed;
+            }
 
-				// handle the timeout for the InvincibleBullet powerup
-				if (playerObj.playerSettingsHaveBeenModifiedByInvincibleBulletPowerUp == true)
-				{
-					if (!(playerObj.invincibleBulletPowerUpTimeoutTimer == null)) // check for null(uninstantiated) timer object 
-					{
-						if (playerObj.invincibleBulletPowerUpTimeoutTimer.expired(gameTime1) == true)
-						{
-							playerObj.playerSettingsHaveBeenModifiedByInvincibleBulletPowerUp = false;
+            foreach (SuperBombPowerUp superBombPowerUp in superBombPowerUps)
+            {
+                superBombPowerUp.position.X += superBombPowerUp.direction.X * superBombPowerUp.speed;
+                superBombPowerUp.position.Y += superBombPowerUp.direction.Y * superBombPowerUp.speed;
+            }
 
-							// subtract powerup modifiers from player settings 
-							playerObj.projectileFrequencyTimer.timerDuration -= InvincibleBulletPowerUp.projectileFrequencyModifier;
-							playerObj.speed -= InvincibleBulletPowerUp.playerSpeedModifier;
-							playerObj.projectileSpeed -= InvincibleBulletPowerUp.projectileSpeedModifier;
-						}
-					}
-				}
-			}
-		}
+            foreach (ShieldPowerUp shieldPowerUp in shieldPowerUps)
+            {
+                shieldPowerUp.position.X += shieldPowerUp.direction.X * shieldPowerUp.speed;
+                shieldPowerUp.position.Y += shieldPowerUp.direction.Y * shieldPowerUp.speed;
+            }
+            foreach (SpeedPowerUp speedPowerUp in speedPowerUps)
+            {
+                speedPowerUp.position.X += speedPowerUp.direction.X * speedPowerUp.speed;
+                speedPowerUp.position.Y += speedPowerUp.direction.Y * speedPowerUp.speed;
+            }
+            foreach (ExtraLifePowerUp extraLifePowerUp in extraLifePowerUps)
+            {
+                extraLifePowerUp.position.X += extraLifePowerUp.direction.X * extraLifePowerUp.speed;
+                extraLifePowerUp.position.Y += extraLifePowerUp.direction.Y * extraLifePowerUp.speed;
+            }
+        }
 
-		/// <summary>
-		/// Handles spawning new powerups
-		/// </summary>
-		void spawnPowerUp(int frequency, Sprite.powerUpTypes powerUpType, Random random)
-		{
-			//Random random = new Random();
-			//Random random2 = new Random();
-			//Random random3 = new Random();
+        /// <summary>
+        /// This handles restraining sprites to viewport area
+        /// </summary>
+        void HandleSpriteBoundries(Player playerObj)
+        {
+            if (!(playerObj == null))
+            {
+                int MaxX = graphics.GraphicsDevice.Viewport.Width - playerObj.sprite.Width;
+                int MinX = 0;
+                int MaxY = graphics.GraphicsDevice.Viewport.Height - playerObj.sprite.Height;
+                int MinY = 0;
 
-			if (random.Next(10000) < frequency)
-			{
-				if (powerUpType == Sprite.powerUpTypes.Pepper)
-				{
-					float randomFloatNumOne = random.Next(200);
-					float randomFloatNumTwo = random.Next(200);
+                // Check for bounds.
+                playerObj.position.X = MathHelper.Clamp(playerObj.position.X, MinX, MaxX);
+                playerObj.position.Y = MathHelper.Clamp(playerObj.position.Y, MinY, MaxY);
+            }
+        }
 
+        /// <summary>
+        /// This handles finding the slope bewtween two points and the direction to travel along that slope to get to the 
+        /// destanation point
+        /// The slope is returned as a normalised vector
+        /// </summary>
+        /// <param name="destinatoinPoint">sense</param>
+        /// <param name="originPoint">inital point</param>
+        /// <returns>A normalised vector indicating direction</returns>
+        Vector2 findDirection(Vector2 destinatoinPoint, Vector2 originPoint)
+        {
+            Vector2 direction = new Vector2();
+            float directionY = destinatoinPoint.Y - originPoint.Y;
+            float directionX = destinatoinPoint.X - originPoint.X;
 
-					pepperPowerUps.Add(new PepperPowerUp(this, new Vector2(random.Next((int)(viewport.Width)), random.Next((int)(viewport.Height))),
-						new Vector2((randomFloatNumOne / 100) - 1, (randomFloatNumTwo / 100) - 1), random.Next(2) + 1));
-				}
-				if (powerUpType == Sprite.powerUpTypes.InvincibleBullet)
-				{
-					float randomFloatNumOne = random2.Next(200);
-					float randomFloatNumTwo = random2.Next(200);
-					InvincibleBulletPowerUps.Add(new InvincibleBulletPowerUp(this, new Vector2(random2.Next((int)(viewport.Width)), random2.Next((int)(viewport.Height))),
-						new Vector2((randomFloatNumOne / 100) - 1, (randomFloatNumTwo / 100) - 1), random2.Next(2) + 1));
-				}
-				if (powerUpType == Sprite.powerUpTypes.SuperBomb)
-				{
-					float randomFloatNumOne = random3.Next(200);
-					float randomFloatNumTwo = random3.Next(200);
-					superBombPowerUps.Add(new SuperBombPowerUp(this, new Vector2(random3.Next((int)(viewport.Width)), random3.Next((int)(viewport.Height))),
-						new Vector2((randomFloatNumOne / 100) - 1, (randomFloatNumTwo / 100) - 1), random3.Next(2) + 1));
-				}
-				if (powerUpType == Sprite.powerUpTypes.Shield)
-				{
-					float randomFloatNumOne = random4.Next(200);
-					float randomFloatNumTwo = random4.Next(200);
+            direction = new Vector2(directionX, directionY);
 
-					shieldPowerUps.Add(new ShieldPowerUp(this, new Vector2(random4.Next((int)(viewport.Width)), random4.Next((int)(viewport.Height))),
-						new Vector2((randomFloatNumOne / 100) - 1, (randomFloatNumTwo / 100) - 1), random4.Next(2) + 1));
-				}
-				if (powerUpType == Sprite.powerUpTypes.Speed)
-				{
-					float randomFloatNumOne = random5.Next(200);
-					float randomFloatNumTwo = random5.Next(200);
+            // Turn vector into a unit circle type vector with a length of 1 - this allows for keeping track of direction only
+            direction.Normalize();
+            return direction;
+        }
 
-					speedPowerUps.Add(new SpeedPowerUp(this, new Vector2(random5.Next((int)(viewport.Width)), random5.Next((int)(viewport.Height))),
-						new Vector2((randomFloatNumOne / 100) - 1, (randomFloatNumTwo / 100) - 1), random5.Next(2) + 1));
-				}
-				if (powerUpType == Sprite.powerUpTypes.ExtraLife)
-				{
-					float randomFloatNumOne = random6.Next(200);
-					float randomFloatNumTwo = random6.Next(200);
+        ///// <summary>
+        ///// This handles finding the slope bewtween two points and the direction to travel along that slope to get to the 
+        ///// destanation point
+        ///// </summary>
+        //Vector2 findDirection(Vector2 destinatoinPoint, Vector2 originPoint)
+        //{
+        //    Vector2 direction = new Vector2();
+        //    float directionY = destinatoinPoint.Y - originPoint.Y;
+        //    float directionX = destinatoinPoint.X - originPoint.X;
+        //    float reducedDirectionY = 0;
+        //    float reducedDirectionX = 0;
 
-					extraLifePowerUps.Add(new ExtraLifePowerUp(this, new Vector2(random6.Next((int)(viewport.Width)), random6.Next((int)(viewport.Height))),
-						new Vector2((randomFloatNumOne / 100) - 1, (randomFloatNumTwo / 100) - 1), random6.Next(2) + 1));
-				}
-			}
-		}
+        //    if (directionY == 0 && directionX > 0)
+        //        return new Vector2(0, 1);
+        //    if (directionY == 0 && directionX < 0)
+        //        return new Vector2(0, -1);
+        //    if (directionX == 0 && directionY < 0)
+        //        return new Vector2(-1, 0);
+        //    if (directionX == 0 && directionY > 0)
+        //        return new Vector2(1, 0);
 
-		void dropTheSuperBomb()
-		{
-			// destroy all enemys
-			// destroy all kamikazes
-			foreach (Kamikaze kamikaze in kamikazes)
-			{
-				kamikaze.bulletCollision = true;
-			}
-			// destroy all crystal grabbers
-			foreach (CrystalGrabber crystalGrabber in crystalGrabbers)
-			{
-				crystalGrabber.bulletCollision = true;
-			}
-		}
+        //    if (System.Math.Abs(directionY) > System.Math.Abs(directionX))
+        //    {
+        //        reducedDirectionY = 1;
+        //        reducedDirectionX = directionX / directionY;
+        //    }
 
-		int numToSpawn = 20;
+        //    if (System.Math.Abs(directionY) < System.Math.Abs(directionX))
+        //    {
+        //        reducedDirectionX = 1;
+        //        reducedDirectionY = directionY / directionX;
+        //    }
 
-		/// <summary>
-		/// Handles spawning new kamikazes above the viewable area
-		/// </summary>
-		void spawnKamikazesAboveScreen(int frequency)
-		{
-			Random random = new Random(randomSeed);
-			if (random.Next(10000) < frequency)
-			{
-				for (int i = 0; i < random.Next(numToSpawn); i++)
-				{
-					kamikazes.Add(new Kamikaze(this, new Vector2(random.Next(viewport.Width), -350), new AnimatedTexture(new Vector2(0), Content, "explosionStripForGhost", 12, 12), new AnimatedTexture(new Vector2(0), Content, "KamakisaiSheet - small", 4, 12)));
-				}
-			}
-		}
+        //    if (destinatoinPoint.X > originPoint.X)
+        //        direction.X = System.Math.Abs(reducedDirectionX);
+        //    if (destinatoinPoint.X < originPoint.X)
+        //        direction.X = (System.Math.Abs(reducedDirectionX)) * -1;
 
-		/// <summary>
-		/// Handles spawning new kamikazes below the viewable area
-		/// </summary>
-		void spawnKamikazesBelowScreen(int frequency)
-		{
-			Random random = new Random(randomSeed);
-			if (random.Next(10000) < frequency)
-			{
-				for (int i = 0; i < random.Next(numToSpawn); i++)
-				{
-					kamikazes.Add(new Kamikaze(this, new Vector2(random.Next(viewport.Width), viewport.Height + 300), new AnimatedTexture(new Vector2(0), Content, "explosionStripForGhost", 12, 12), new AnimatedTexture(new Vector2(0), Content, "KamakisaiSheet - small", 4, 12)));
-				}
-			}
-		}
+        //    if (destinatoinPoint.Y > originPoint.Y)
+        //        direction.Y = System.Math.Abs(reducedDirectionY);
+        //    if (destinatoinPoint.Y < originPoint.Y)
+        //        direction.Y = (System.Math.Abs(reducedDirectionY)) * -1;
 
-		/// <summary>
-		/// Handles spawning new kamikazes left of the viewable area
-		/// </summary>
-		void spawnKamikazesLeftOfScreen(int frequency)
-		{
-			Random random = new Random(randomSeed);
-			if (random.Next(10000) < frequency)
-			{
-				for (int i = 0; i < random.Next(numToSpawn); i++)
-				{
-					kamikazes.Add(new Kamikaze(this, new Vector2(-300, random.Next(viewport.Height)), new AnimatedTexture(new Vector2(0), Content, "explosionStripForGhost", 12, 12), new AnimatedTexture(new Vector2(0), Content, "KamakisaiSheet - small", 4, 12)));
-				}
-			}
-		}
+        //    return direction;
+        //}
 
-		/// <summary>
-		/// Handles spawning new kamikazes right of the viewable area
-		/// </summary>
-		void spawnKamikazesRightOfScreen(int frequency)
-		{
-			Random random = new Random(randomSeed);
-			if (random.Next(10000) < frequency)
-			{
-				for (int i = 0; i < random.Next(numToSpawn); i++)
-				{
-					kamikazes.Add(new Kamikaze(this, new Vector2(viewport.Width + 300, random.Next(viewport.Height)), new AnimatedTexture(new Vector2(0), Content, "explosionStripForGhost", 12, 12), new AnimatedTexture(new Vector2(0), Content, "KamakisaiSheet - small", 4, 12)));
-				}
-			}
-		}
+        bool perPixleCollisionDetection(Rectangle rectangleA, Color[] dataA, Rectangle rectangleB, Color[] dataB)
+        {
+            // Find the bounds of the rectangle intersection
+            int top = Math.Max(rectangleA.Top, rectangleB.Top);
+            int bottom = Math.Min(rectangleA.Bottom, rectangleB.Bottom);
+            int left = Math.Max(rectangleA.Left, rectangleB.Left);
+            int right = Math.Min(rectangleA.Right, rectangleB.Right);
 
-		/// <summary>
-		/// Handles spawning new crystalGrabbewrs  above the viewable area
-		/// </summary>
-		void spawnCrystalGrabbersAboveScreen(int frequency)
-		{
-			Random random = new Random(randomSeed);
-			if (random.Next(10000) < frequency)
-			{
-				for (int i = 0; i < random.Next(numToSpawn); i++)
-				{
-					crystalGrabbers.Add(new CrystalGrabber(this, new Vector2(random.Next(viewport.Width), -300), new AnimatedTexture(new Vector2(0), Content, "explosionStrip", 7, 12), new AnimatedTexture(new Vector2(0), Content, "OctoEnemyAnamation2", 14, 12)));
-					crystalGrabbers.Add(new CrystalGrabber(this, new Vector2(random.Next(viewport.Width), -300), new AnimatedTexture(new Vector2(0), Content, "explosionStrip", 7, 12), new AnimatedTexture(new Vector2(0), Content, "OctoEnemyAnamation", 9, 12)));
-				}
+            // Check every point within the intersection bounds
+            for (int y = top; y < bottom; y++)
+            {
+                for (int x = left; x < right; x++)
+                {
+                    // Get the color of both pixels at this point
+                    Color colorA = dataA[(x - rectangleA.Left) +
+                                (y - rectangleA.Top) * rectangleA.Width];
+                    Color colorB = dataB[(x - rectangleB.Left) +
+                                (y - rectangleB.Top) * rectangleB.Width];
 
-			}
-		}
+                    // If both pixels are not completely transparent,
+                    if (colorA.A != 0 && colorB.A != 0)
+                    {
+                        // then an intersection has been found
+                        return true;
+                    }
+                }
+            }
+            return false;
+        } // end perPixleCollisionDetection()
 
-		/// <summary>
-		/// Handles spawning new crystalGrabbewrs  above the viewable area
-		/// </summary>
-		void spawnCrystalGrabbersBelowScreen(int frequency)
-		{
-			Random random = new Random(randomSeed);
-			if (random.Next(10000) < frequency)
-			{
-				for (int i = 0; i < random.Next(numToSpawn); i++)
-				{
-					crystalGrabbers.Add(new CrystalGrabber(this, new Vector2(random.Next(viewport.Width), viewport.Height + 300), new AnimatedTexture(new Vector2(0), Content, "explosionStrip", 7, 12), new AnimatedTexture(new Vector2(0), Content, "OctoEnemyAnamation2", 14, 24)));
-					crystalGrabbers.Add(new CrystalGrabber(this, new Vector2(random.Next(viewport.Width), viewport.Height + 300), new AnimatedTexture(new Vector2(0), Content, "explosionStrip", 7, 12), new AnimatedTexture(new Vector2(0), Content, "OctoEnemyAnamation", 9, 12)));
-				}
+        public void resetGame()
+        {
+            diffuculityAdder = 0;
+            finalScoreMessageboxHasBeenShown = false;
 
-			}
-		}
-
-		/// <summary>
-		/// Handles spawning new crystalGrabbewrs right of the viewable area
-		/// </summary>
-		void spawnCrystalGrabbersRightOfScreen(int frequency)
-		{
-			Random random = new Random(randomSeed);
-			if (random.Next(10000) < frequency)
-			{
-				for (int i = 0; i < random.Next(numToSpawn); i++)
-				{
-					crystalGrabbers.Add(new CrystalGrabber(this, new Vector2(viewport.Width + 300, random.Next(viewport.Height)), new AnimatedTexture(new Vector2(0), Content, "explosionStrip", 7, 12), new AnimatedTexture(new Vector2(0), Content, "OctoEnemyAnamation2", 14, 20)));
-					crystalGrabbers.Add(new CrystalGrabber(this, new Vector2(viewport.Width + 300, random.Next(viewport.Height)), new AnimatedTexture(new Vector2(0), Content, "explosionStrip", 7, 12), new AnimatedTexture(new Vector2(0), Content, "OctoEnemyAnamation", 9, 12)));
-				}
-
-			}
-		}
-
-		/// <summary>
-		/// Handles spawning new crystalGrabbewrs left of the viewable area
-		/// </summary>
-		void spawnCrystalGrabbersLeftOfScreen(int frequency)
-		{
-			Random random = new Random(randomSeed);
-			if (random.Next(10000) < frequency)
-			{
-				for (int i = 0; i < random.Next(numToSpawn); i++)
-				{
-					crystalGrabbers.Add(new CrystalGrabber(this, new Vector2(-300, random.Next(viewport.Height)), new AnimatedTexture(new Vector2(0), Content, "explosionStrip", 7, 12), new AnimatedTexture(new Vector2(0), Content, "OctoEnemyAnamation", 9, 12)));
-				}
-			}
-		}
-
-		void KamikazeMovement()
-		{
-			foreach (Kamikaze kamikaze in kamikazes)
-			{
-				Player playerObj = FindNearistPlayer(kamikaze);
-				kamikaze.direction = findDirection(playerObj.position, kamikaze.position);
-				kamikaze.position.X += kamikaze.direction.X * kamikaze.speed;
-				kamikaze.position.Y += kamikaze.direction.Y * kamikaze.speed;
-			}
-		}
-
-		void CrystalGrabberMovement()
-		{
-			foreach (CrystalGrabber crystalGrabber in crystalGrabbers)
-			{
-
-				crystalGrabber.direction = findDirection(powerCrystal.position + crystalGrabber.offsetToGrabCrystal, crystalGrabber.position);
-				crystalGrabber.position.X += crystalGrabber.direction.X * crystalGrabber.speed;
-				crystalGrabber.position.Y += crystalGrabber.direction.Y * crystalGrabber.speed;
-				if (crystalGrabber.position.Equals(powerCrystal.position + crystalGrabber.offsetToGrabCrystal) && crystalGrabber.hasGrabbedCrystal == false)
-					crystalGrabber.hasGrabbedCrystal = true;
-				if (crystalGrabber.hasGrabbedCrystal == true)
-				{
-					//Drag the crystal away through the top of the screen
-					//powerCrystal.speed += 
-					powerCrystal.position.Y -= powerCrystal.speed;
-				}
-
-			}
-		}
-
-		void CheckForCrystalOffScreen()
-		{
-			if (powerCrystal.position.Y <= 0 - powerCrystal.sprite.Height)
-				gameOver = true;
-		}
-
-
-		Player FindNearistPlayer(Sprite spriteObj)
-		{
-			float distanceToPlayerOne;
-			float distanceToPlayerTwo;
-			float distanceToPlayerThree;
-			float distanceToPlayerFour;
-
-			if (playerOneStarted)
-				distanceToPlayerOne = System.Math.Abs(spriteObj.position.X - playerOne.position.X) + System.Math.Abs(spriteObj.position.Y - playerOne.position.Y);
-			else
-				distanceToPlayerOne = 90000;
-			if (playerTwoStarted)
-				distanceToPlayerTwo = System.Math.Abs(spriteObj.position.X - playerTwo.position.X) + System.Math.Abs(spriteObj.position.Y - playerTwo.position.Y);
-			else
-				distanceToPlayerTwo = 90000;
-			if (playerThreeStarted)
-				distanceToPlayerThree = System.Math.Abs(spriteObj.position.X - playerThree.position.X) + System.Math.Abs(spriteObj.position.Y - playerThree.position.Y);
-			else
-				distanceToPlayerThree = 90000;
-			if (playerFourStarted)
-				distanceToPlayerFour = System.Math.Abs(spriteObj.position.X - playerFour.position.X) + System.Math.Abs(spriteObj.position.Y - playerFour.position.Y);
-			else
-				distanceToPlayerFour = 90000;
-
-			if (distanceToPlayerOne < distanceToPlayerTwo && distanceToPlayerOne < distanceToPlayerThree && distanceToPlayerOne < distanceToPlayerFour)
-				return playerOne;
-			if (distanceToPlayerTwo < distanceToPlayerOne && distanceToPlayerTwo < distanceToPlayerThree && distanceToPlayerTwo < distanceToPlayerFour)
-				return playerTwo;
-			if (distanceToPlayerThree < distanceToPlayerTwo && distanceToPlayerThree < distanceToPlayerTwo && distanceToPlayerThree < distanceToPlayerFour)
-				return playerThree;
-			if (distanceToPlayerFour < distanceToPlayerTwo && distanceToPlayerFour < distanceToPlayerThree && distanceToPlayerFour < distanceToPlayerOne)
-				return playerFour;
-			else return playerOne;
-
-		}
-
-		void updatePowerUpPositions()
-		{
-			foreach (PepperPowerUp pepperPowerU in pepperPowerUps)
-			{
-				pepperPowerU.position.X += pepperPowerU.direction.X * pepperPowerU.speed;
-				pepperPowerU.position.Y += pepperPowerU.direction.Y * pepperPowerU.speed;
-			}
-
-			foreach (InvincibleBulletPowerUp invincibleBulletPowerUp in InvincibleBulletPowerUps)
-			{
-				invincibleBulletPowerUp.position.X += invincibleBulletPowerUp.direction.X * invincibleBulletPowerUp.speed;
-				invincibleBulletPowerUp.position.Y += invincibleBulletPowerUp.direction.Y * invincibleBulletPowerUp.speed;
-			}
-
-			foreach (SuperBombPowerUp superBombPowerUp in superBombPowerUps)
-			{
-				superBombPowerUp.position.X += superBombPowerUp.direction.X * superBombPowerUp.speed;
-				superBombPowerUp.position.Y += superBombPowerUp.direction.Y * superBombPowerUp.speed;
-			}
-
-			foreach (ShieldPowerUp shieldPowerUp in shieldPowerUps)
-			{
-				shieldPowerUp.position.X += shieldPowerUp.direction.X * shieldPowerUp.speed;
-				shieldPowerUp.position.Y += shieldPowerUp.direction.Y * shieldPowerUp.speed;
-			}
-			foreach (SpeedPowerUp speedPowerUp in speedPowerUps)
-			{
-				speedPowerUp.position.X += speedPowerUp.direction.X * speedPowerUp.speed;
-				speedPowerUp.position.Y += speedPowerUp.direction.Y * speedPowerUp.speed;
-			}
-			foreach (ExtraLifePowerUp extraLifePowerUp in extraLifePowerUps)
-			{
-				extraLifePowerUp.position.X += extraLifePowerUp.direction.X * extraLifePowerUp.speed;
-				extraLifePowerUp.position.Y += extraLifePowerUp.direction.Y * extraLifePowerUp.speed;
-			}
-		}
-
-
-		/// <summary>
-		/// This handles restraining sprites to viewport area
-		/// </summary>
-		void HandleSpriteBoundries(Player playerObj)
-		{
-			if (!(playerObj == null))
-			{
-				int MaxX = graphics.GraphicsDevice.Viewport.Width - playerObj.sprite.Width;
-				int MinX = 0;
-				int MaxY = graphics.GraphicsDevice.Viewport.Height - playerObj.sprite.Height;
-				int MinY = 0;
-
-				// Check for bounds.
-				playerObj.position.X = MathHelper.Clamp(playerObj.position.X, MinX, MaxX);
-				playerObj.position.Y = MathHelper.Clamp(playerObj.position.Y, MinY, MaxY);
-			}
-		}
-
-		/// <summary>
-		/// This handles finding the slope bewtween two points and the direction to travel along that slope to get to the 
-		/// destanation point
-		/// </summary>
-		Vector2 findDirection(Vector2 destinatoinPoint, Vector2 originPoint)
-		{
-			Vector2 direction = new Vector2();
-			float directionY = destinatoinPoint.Y - originPoint.Y;
-			float directionX = destinatoinPoint.X - originPoint.X;
-			float reducedDirectionY = 0;
-			float reducedDirectionX = 0;
-
-			if (directionY == 0 && directionX > 0)
-				return new Vector2(0, 1);
-			if (directionY == 0 && directionX < 0)
-				return new Vector2(0, -1);
-			if (directionX == 0 && directionY < 0)
-				return new Vector2(-1, 0);
-			if (directionX == 0 && directionY > 0)
-				return new Vector2(1, 0);
-
-			if (System.Math.Abs(directionY) > System.Math.Abs(directionX))
-			{
-				reducedDirectionY = 1;
-				reducedDirectionX = directionX / directionY;
-			}
-
-			if (System.Math.Abs(directionY) < System.Math.Abs(directionX))
-			{
-				reducedDirectionX = 1;
-				reducedDirectionY = directionY / directionX;
-			}
-
-			if (destinatoinPoint.X > originPoint.X)
-				direction.X = System.Math.Abs(reducedDirectionX);
-			if (destinatoinPoint.X < originPoint.X)
-				direction.X = (System.Math.Abs(reducedDirectionX)) * -1;
-
-			if (destinatoinPoint.Y > originPoint.Y)
-				direction.Y = System.Math.Abs(reducedDirectionY);
-			if (destinatoinPoint.Y < originPoint.Y)
-				direction.Y = (System.Math.Abs(reducedDirectionY)) * -1;
-
-			return direction;
-		}
-
-		bool perPixleCollisionDetection(Rectangle rectangleA, Color[] dataA, Rectangle rectangleB, Color[] dataB)
-		{
-			// Find the bounds of the rectangle intersection
-			int top = Math.Max(rectangleA.Top, rectangleB.Top);
-			int bottom = Math.Min(rectangleA.Bottom, rectangleB.Bottom);
-			int left = Math.Max(rectangleA.Left, rectangleB.Left);
-			int right = Math.Min(rectangleA.Right, rectangleB.Right);
-
-			// Check every point within the intersection bounds
-			for (int y = top; y < bottom; y++)
-			{
-				for (int x = left; x < right; x++)
-				{
-					// Get the color of both pixels at this point
-					Color colorA = dataA[(x - rectangleA.Left) +
-								(y - rectangleA.Top) * rectangleA.Width];
-					Color colorB = dataB[(x - rectangleB.Left) +
-								(y - rectangleB.Top) * rectangleB.Width];
-
-					// If both pixels are not completely transparent,
-					if (colorA.A != 0 && colorB.A != 0)
-					{
-						// then an intersection has been found
-						return true;
-					}
-				}
-			}
-			return false;
-		} // end perPixleCollisionDetection()
-
-		public void resetGame()
-		{
-			diffuculityAdder = 0;
-			kamikazeSpawnRate = 8;
-			crystalGrabberSpawnRate = 10;
-			pepperPowerUpSpawnRate = 8;
-			invincibleBulletPowerUpSpawnRate = 4;
-			superBombPowerUpSpawnRate = 8;
-			shieldPowerUpSpawnRate = 7;
-			speedPowerUpSpawnRate = 6;
-			extraLifePowerUpSpawnRate = 10;
-
-			finalScoreMessageboxHasBeenShown = false;
-			//gameOver = true;
-
+            kamikazes.Clear();
+            crystalGrabbers.Clear();
+            wobbleKamikazes.Clear();
+			pepperPowerUps.Clear();
+			InvincibleBulletPowerUps.Clear();
+			superBombPowerUps.Clear();
+			shieldPowerUps.Clear();
+			speedPowerUps.Clear();
+			extraLifePowerUps.Clear();
 			kamikazes.Clear();
 			crystalGrabbers.Clear();
-		}
+			players.Clear();
 
-	} // end class
+			playerOne.hasStarted = false;
+			playerTwo.hasStarted = false;
+			playerThree.hasStarted = false;
+			playerFour.hasStarted = false;
+
+			playerOne.resetToIniValues();
+			playerTwo.resetToIniValues();
+			playerThree.resetToIniValues();
+			playerFour.resetToIniValues();
+
+			wobbleKSpanRate = wobbleKSpanRateDefault;
+			kamikazeSpawnRate = kamikazeSpawnRateDefault;
+			crystalGrabberSpawnRate = crystalGrabberSpawnRateDefault;
+			pepperPowerUpSpawnRate = pepperPowerUpSpawnRateDefault;
+			invincibleBulletPowerUpSpawnRate = invincibleBulletPowerUpSpawnRateDefault;
+			superBombPowerUpSpawnRate = superBombPowerUpSpawnRateDefault;
+			shieldPowerUpSpawnRate = shieldPowerUpSpawnRateDefault;
+			speedPowerUpSpawnRate = speedPowerUpSpawnRateDefault;
+			extraLifePowerUpSpawnRate = extraLifePowerUpSpawnRateDefault;
+
+			powerCrystal.CenterPosition = this.centerOfScreen;
+        }
+
+    } // end class
 }

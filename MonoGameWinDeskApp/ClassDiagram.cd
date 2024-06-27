@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Segoe UI" Size="9" />
+  <Class Name="MyFirstGame.PowerUp">
+    <Position X="5" Y="1.25" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>PowerUp.cs</FileName>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAICAAABAAAQAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyFirstGame.PepperPowerUp">
+    <Position X="7.5" Y="2.25" Width="2.75" />
+    <TypeIdentifier>
+      <FileName>PepperPowerUp.cs</FileName>
+      <HashCode>AABAAAAAAAAAAgAABAAAAQAAAAAAAAAAAAACAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyFirstGame.Sprite">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Sprite.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <NestedTypes>
+      <Enum Name="MyFirstGame.Sprite.powerUpTypes" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Sprite.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+  </Class>
+  <Class Name="MyFirstGame.Player">
+    <Position X="2.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Player.cs</FileName>
+      <HashCode>IAAAAAAAAAAAABQAAAAKYCAAABChBQgACCJAAIAAIAI=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyFirstGame.Timer">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Timer.cs</FileName>
+      <HashCode>AAAAAAAUAQAAAAAAAAAgAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyFirstGame.Projectile">
+    <Position X="0.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Projectile.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAICAAABABAQAAAAAAgAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+</ClassDiagram>

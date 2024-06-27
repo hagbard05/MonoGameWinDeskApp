@@ -9,23 +9,24 @@ using Microsoft.Xna.Framework.Input;
 
 using AnimatedSprite;
 
-namespace MonoGameWinDeskApp
+namespace MyFirstGame
 {
     /// <summary>
     /// player class 
     /// </summary>
     public class Player : Sprite
     {
-        public static int iniLives = 10;
-        public int lives = iniLives;
+        public int iniLives = 12;
+        public int lives;
 
         public bool shieldUp;
-        public bool playerSettingsHaveBeenModifiedByPepperPowerup;
-        public bool playerSettingsHaveBeenModifiedByInvincibleBulletPowerUp = false;
-        public bool playerSettingsHaveBeenModifiedByShieldPowerUp = false;
-        public bool playerSettingsHaveBeenModifiedBySpeedPowerUp = false;
+        public bool hasStarted = false;
+        public bool PepperPowerup;
+        public bool InvincBulletPowerUp = false;
+        public bool ShieldPowerUp = false;
+        public bool SpeedPowerUp = false;
         public double shieldUpCounter;
-        public int speed = defaultSpeed;
+        public float speed = defaultSpeed;
         public int score = 0;
         public Timer projectileFrequencyTimer;
         public Timer pepperPowerUpTimeoutTimer;
@@ -33,27 +34,31 @@ namespace MonoGameWinDeskApp
         public Timer speedPowerUpTimeoutTimer;
         public Timer superBombTimer;
         public static float defaultSuperBombFrequency = 500; // half a second
-        public static float defaultProjectileFrequency = 150; //in miliseconds
+        public static float defaultProjectileFrequency = 46; //in miliseconds
         public int projectileSpeed;
-        public static int defaultProjectileSpeed = 26;
+        public static int defaultProjectileSpeed = 32;
         public int headExplodeCounter;
-        public static int defaultSpeed = 7;
+        public static int defaultSpeed = 10;
         public int superBombs = 0;
-        public double shieldTimeAfterDeath = 960;
-        public double shieldTimeFromShieldPowerUp = 500;
 
+		// Power up times
+        public double shieldTimeAfterDeath = 290;
+        public double shieldTimeFromShieldPowerUp = 1200;
+
+		// Textures
         public Texture2D shieldSprite;
-        public AnimatedTexture explosion;
+        public AnimatedTexture explosion = new AnimatedTexture(Vector2.Zero);
         public Color[] shieldTextureData;
 
+		// position vectors
         public Vector2 startPosition;
         public Vector2 shieldOffset;
 
-        public List<Projectile> projectiles;
+        public List<Projectile> projectiles = new List<Projectile>();
 
-        public void resetToIniValues()
+        public void setToIniValues()
         {
-            lives = iniLives;
+			lives = iniLives;
             speed = defaultSpeed;
             projectileSpeed = defaultProjectileSpeed;
             superBombs = 0;
@@ -66,35 +71,36 @@ namespace MonoGameWinDeskApp
             projectileSpeed = defaultProjectileSpeed; // ToDo: Implment the projector constructor in the main game to customise player projectile speed
             headExplodeCounter = 0;
             position = startPosition;
-            projectiles.Clear();
             powerUpType = powerUpTypes.none;
-            playerSettingsHaveBeenModifiedByPepperPowerup = false;
+            PepperPowerup = false;
+            //if (Guide.IsTrialMode == true)
+            //{
+            //    iniLives = 3;
+            //    shieldTimeFromShieldPowerUp = 600;
+            //}
+            lives = iniLives;
+        }
+
+        public void resetToIniValues()
+        {
+            setToIniValues();
+            //projectiles.Clear();
         }
 
         public Player(MainGame game, GameTime gameTime)
         {
-            bulletCollision = false;
-            playerCollision = false;
-            shieldUp = false;
-            shieldUpCounter = 0;
-            speed = defaultSpeed;
-            score = 0;
-            projectileSpeed = defaultProjectileSpeed; // ToDo: Implment the projector constructor in the main game to customise player projectile speed
-            headExplodeCounter = 0;
-            sprite = game.Content.Load<Texture2D>("smile");
-            shieldSprite = game.Content.Load<Texture2D>("Sphere75");
-            position.X = 0;
-            position.Y = 0;
+            projectiles = new List<Projectile>();
+            explosion = new AnimatedTexture(Vector2.Zero);
+			resetToIniValues();
+            sprite = game.playerOneTex;
+            shieldSprite = game.shieldSprite;
             shieldOffset.X = -40;
             shieldOffset.Y = -30;
             startPosition.X = 0;
             startPosition.Y = 0;
-            projectiles = new List<Projectile>();
-            explosion = new AnimatedTexture(Vector2.Zero);
-            powerUpType = powerUpTypes.none;
+
             projectileFrequencyTimer = new Timer(defaultProjectileFrequency, gameTime);
             superBombTimer = new Timer(defaultSuperBombFrequency, gameTime);
-            playerSettingsHaveBeenModifiedByPepperPowerup = false;
 
             // Extract texture data for per pixle collision detection
             shieldTextureData = new Color[shieldSprite.Width * shieldSprite.Height];
@@ -104,63 +110,51 @@ namespace MonoGameWinDeskApp
 
         public Player(MainGame game, Vector2 startPos, Texture2D Sprite, GameTime gameTime)
         {
-            bulletCollision = false;
-            playerCollision = false;
-            shieldUp = false;
-            shieldUpCounter = 0;
-            speed = defaultSpeed;
-            score = 0;
-            projectileSpeed = defaultProjectileSpeed;
-            headExplodeCounter = 0;
-            sprite = Sprite;
-            shieldSprite = game.Content.Load<Texture2D>("Sphere75");
-            position = startPos;
-            startPosition = startPos;
-            shieldOffset.X = -40;
-            shieldOffset.Y = -30;
             projectiles = new List<Projectile>();
             explosion = new AnimatedTexture(Vector2.Zero);
+            sprite = Sprite;
+            shieldSprite = game.shieldSprite;
+            position = startPos;
+            startPosition = startPos;
+            shieldOffset.X = Sprite.Width;
+            shieldOffset.Y = Sprite.Height;
             powerUpType = powerUpTypes.none;
             projectileFrequencyTimer = new Timer(defaultProjectileFrequency, gameTime);
             superBombTimer = new Timer(defaultSuperBombFrequency, gameTime);
-            playerSettingsHaveBeenModifiedByPepperPowerup = false;
+            PepperPowerup = false;
+            projectiles = new List<Projectile>();
+            explosion = new AnimatedTexture(Vector2.Zero);
 
             // Extract texture data for per pixle collision detection
             shieldTextureData = new Color[shieldSprite.Width * shieldSprite.Height];
             shieldSprite.GetData(shieldTextureData);
 
-
+			resetToIniValues();
         }
 
         public Player(MainGame game, Vector2 startPos, GameTime gameTime)
         {
-            bulletCollision = false;
-            playerCollision = false;
-            shieldUp = false;
-            shieldUpCounter = 0;
-            speed = defaultSpeed;
-            score = 0;
-            projectileSpeed = defaultProjectileSpeed;
-            headExplodeCounter = 0;
-            sprite = game.Content.Load<Texture2D>("smile");
-            shieldSprite = game.Content.Load<Texture2D>("Sphere75");
+            projectiles = new List<Projectile>();
+            explosion = new AnimatedTexture(Vector2.Zero);
+            sprite = game.playerOneTex;
+            shieldSprite = game.shieldSprite;
             position = startPos;
             startPosition = startPos;
             shieldOffset.X = -40;
             shieldOffset.Y = -30;
-            projectiles = new List<Projectile>();
-            explosion = new AnimatedTexture(Vector2.Zero);
             powerUpType = powerUpTypes.none;
             projectileFrequencyTimer = new Timer(defaultProjectileFrequency, gameTime);
             superBombTimer = new Timer(defaultSuperBombFrequency, gameTime);
-            playerSettingsHaveBeenModifiedByPepperPowerup = false;
+            PepperPowerup = false;
 
             // Extract texture data for per pixle collision detection
             shieldTextureData = new Color[shieldSprite.Width * shieldSprite.Height];
             shieldSprite.GetData(shieldTextureData);
+
+			resetToIniValues();
         }
 
-        public override Rectangle rectangle
+        public Rectangle rectangle
         {
             get { return new Rectangle((int)position.X, (int)position.Y, sprite.Width, sprite.Height); }
         }
@@ -172,17 +166,17 @@ namespace MonoGameWinDeskApp
 
         public Vector2 shieldSpritePosition
         {
-            get { return new Vector2(position.X + shieldOffset.X, position.Y + shieldOffset.Y); }
+            get 
+            {
+                float x = CenterPosition.X + ((float)this.shieldSprite.Width / 2 - shieldSprite.Width);
+                float y = CenterPosition.Y + ((float)this.shieldSprite.Height / 2 - shieldSprite.Height);
+                return new Vector2(x,y);
+            }
         }
 
         public Vector2 explosionSpritePosition
         {
             get { return new Vector2(position.X - 20, position.Y - 10); }
-        }
-
-        public Vector2 CenterPosition
-        {
-            get { return new Vector2(position.X + sprite.Width / 2, position.Y + sprite.Height / 2); }
         }
 
         public Vector2 shieldCenterPosition

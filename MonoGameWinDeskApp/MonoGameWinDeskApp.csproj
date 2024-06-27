@@ -12,22 +12,39 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="CrystalGrabber.cs" />
+    <Compile Remove="ExtraLifePowerUp.cs" />
+    <Compile Remove="Game1.cs" />
+    <Compile Remove="InvincibleBulletPowerUp.cs" />
+    <Compile Remove="kamikaze.cs" />
+    <Compile Remove="PepperPowerUp.cs" />
+    <Compile Remove="PowerUp.cs" />
+    <Compile Remove="ShieldPowerUp.cs" />
+    <Compile Remove="SpeedPowerUp.cs" />
+    <Compile Remove="SuperBombPowerUp.cs" />
+    <Compile Remove="WobbleKamikaze.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Content\DeeperDive.jpg" />
+    <None Remove="Content\Sounds\Sound Bank.xsb" />
+    <None Remove="Content\Sounds\Win\Sound Bank.xsb" />
+    <None Remove="Content\Sounds\Win\Wave Bank.xwb" />
+    <None Remove="Content\Sounds\Win\XACT Sounds.xgs" />
+    <None Remove="Content\Sounds\XACT Sounds.xap" />
+    <None Remove="Content\Sounds\XACT Sounds.xgs" />
+    <None Remove="Content\XACT Sounds.xap" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Content\Sounds\Sound Bank.xsb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Content\Sounds\Wave Bank.xwb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Content\Sounds\XACT Sounds.xap">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Content\Sounds\XACT Sounds.xgs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\Sounds\Win\" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />

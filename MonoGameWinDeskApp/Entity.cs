@@ -9,16 +9,16 @@ using Microsoft.Xna.Framework.Input;
 
 using AnimatedSprite;
 
-namespace MonoGameWinDeskApp
+namespace MyFirstGame
 {
     class Entity : Sprite
     {
         public enum entityTypes { Kamikaze, CrystalGrabber, none };
         public entityTypes EntityType;
-        //public int headExplodeCounter;
+        public int headExplodeCounter;
         public int explodeCounter;
         public int explodeDownTime;
-        public int speed;
+        public float speed;
         public int defaultSpeed = 2;
         public Vector2 direction;
         public AnimatedTexture explosion;

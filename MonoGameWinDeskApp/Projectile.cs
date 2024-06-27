@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 using AnimatedSprite;
 
-namespace MonoGameWinDeskApp
+namespace MyFirstGame
 {
     /// <summary>
     /// projectile class for projectile objects in the game
@@ -19,36 +19,52 @@ namespace MonoGameWinDeskApp
 
         public Vector2 position;
         public Vector2 direction; 
-        public Texture2D sprite;
-        public Color[] spriteTextureData;
-        public int speed;
-        public const int defaultSpeed = 23;
+        public Texture2D sprite = null;
+        public bool hasHitShield = false;
+
+		private Color[] _spriteTextureData = null;
+		public Color[] spriteTextureData
+		{
+			get 
+			{
+				if (_spriteTextureData == null)
+				{
+					if (sprite != null)
+					{
+						// Extract collision data for per pixle collisions
+						_spriteTextureData = new Color[sprite.Width * sprite.Height];
+						sprite.GetData(_spriteTextureData);
+					}
+				}
+				return _spriteTextureData; 
+			}
+		}
+		
+		private float _speed;
+		public float speed
+		{
+			get
+			{
+				return _speed;
+			}
+			set
+			{
+				if (value < 0.7f)
+					_speed = 0.7f;
+				else
+					_speed = value;
+			}
+		}
+		
+		public const int defaultSpeed = 18;
         public bool invincible = false;
 
         public Projectile(MainGame game, Vector2 pos, Vector2 projectileDirection)
         {
             position = pos;
             direction = projectileDirection;
-            sprite = game.Content.Load<Texture2D>("smileSmall");
+            sprite = game.playerBullet;
             speed = defaultSpeed;
-
-            // Extract collision data for per pixle collisions
-            spriteTextureData =
-                new Color[sprite.Width * sprite.Height];
-            sprite.GetData(spriteTextureData);
-        }
-
-        public Projectile(MainGame game, Vector2 pos, Vector2 projectileDirection, Texture2D Sprite)
-        {
-            position = pos;
-            direction = projectileDirection;
-            sprite = Sprite;
-            speed = defaultSpeed;
-
-            // Extract collision data for per pixle collisions
-            spriteTextureData =
-                new Color[sprite.Width * sprite.Height];
-            sprite.GetData(spriteTextureData);
         }
 
         public Projectile(MainGame game, Vector2 pos, Vector2 projectileDirection, Texture2D Sprite, int projectileSpeed)
@@ -58,10 +74,6 @@ namespace MonoGameWinDeskApp
             sprite = Sprite;
             speed = projectileSpeed;
 
-            // Extract collision data for per pixle collisions
-            spriteTextureData =
-                new Color[sprite.Width * sprite.Height];
-            sprite.GetData(spriteTextureData);
         }
 
         public Projectile(MainGame game, Vector2 pos, Vector2 projectileDirection, Texture2D Sprite, int projectileSpeed, bool isInvincible)
@@ -72,22 +84,22 @@ namespace MonoGameWinDeskApp
             speed = projectileSpeed;
             invincible = isInvincible;
 
-            // Extract collision data for per pixle collisions
-            spriteTextureData =
-                new Color[sprite.Width * sprite.Height];
-            sprite.GetData(spriteTextureData);
         }
 
-        public Rectangle rectangle
-        {
-            get
-            {
-                return new Rectangle((int)position.X, (int)position.Y, sprite.Width, sprite.Height);
-            }
-        }
-        public Vector2 centerPosition
+		public Rectangle rectangle { get { return new Rectangle((int)position.X, (int)position.Y, sprite.Width, sprite.Height); } }
+
+        public Vector2 CenterPosition
         {
             get { return new Vector2(position.X + sprite.Width / 2, position.Y + sprite.Height / 2); }
+            //set
+            //{
+            //    if (sprite != null)
+            //    {
+            //        position.X = value.X - sprite.Width / 2.0f;
+            //        position.Y = value.Y - sprite.Height / 2.0f;
+            //    }
+            //}
         }
+
     }
 }

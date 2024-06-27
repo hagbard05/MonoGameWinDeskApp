@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 using AnimatedSprite;
 
-namespace MonoGameWinDeskApp
+namespace MyFirstGame
 {
     class CrystalGrabber : Sprite
     {
@@ -21,8 +21,8 @@ namespace MonoGameWinDeskApp
         public int explodeCounter;
         public int explodeDownTime;
         public int defaultExplodeDownTime = 34;
-        public int speed;
-        public int defaultSpeed = 1;
+        public float speed;
+        public float defaultSpeed = 0.42f;
         public Vector2 direction;
         public AnimatedTexture explosion;
         public AnimatedTexture anamatedSprite;
@@ -34,7 +34,7 @@ namespace MonoGameWinDeskApp
             EntityType = entityTypes.CrystalGrabber;
             powerUpType = powerUpTypes.none;
             speed = defaultSpeed;
-            sprite = game.Content.Load<Texture2D>("OctoEnemy");
+            sprite = game.OctoEnemy;
             anamatedSprite = textureForAnamatedSprite;
             position = startPosition;
             bulletCollision = false;
@@ -43,11 +43,10 @@ namespace MonoGameWinDeskApp
             explosion = Explosion;
             explodeCounter = 0;
 			if (seedForRandom > 9000)
-				seedForRandom = 0;
+				seedForRandom = 1;
 			Random random = new Random(seedForRandom++);
-			offsetToGrabCrystal = new Vector2( random.Next(0, game.powerCrystal.rectangle.Width), random.Next(0, game.powerCrystal.rectangle.Height) );
+            offsetToGrabCrystal = new Vector2(random.Next(0 - sprite.Width / 2, game.powerCrystal.rectangle.Width - sprite.Width / 2), random.Next(0 - sprite.Height / 2, game.powerCrystal.rectangle.Height - sprite.Height / 2));
 			explodeDownTime = defaultExplodeDownTime;
-
         }
 
 

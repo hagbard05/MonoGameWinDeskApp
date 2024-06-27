@@ -9,19 +9,18 @@ using Microsoft.Xna.Framework.Input;
 
 using AnimatedSprite;
 
-namespace MonoGameWinDeskApp
+namespace MyFirstGame 
 {
     public class PowerCrystal : Sprite
     {
         public float speed;
-        public float defaultSpeed = 0.04F;
+        public float defaultSpeed = 0.017f;
 
-        public PowerCrystal(Game game, Vector2 crystalPosition)
+        public PowerCrystal(MainGame game, Vector2 crystalPosition)
         {
             speed = defaultSpeed;
-            sprite = game.Content.Load<Texture2D>("quartz");
+			this.sprite = game.powerCrystalTex;
             position = crystalPosition;
-            position = CenterPosition;
         }
     }
 }
