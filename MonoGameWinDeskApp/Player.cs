@@ -16,7 +16,7 @@ namespace MyFirstGame
     /// </summary>
     public class Player : Sprite
     {
-        public int iniLives = 12;
+        public int iniLives = 4;
         public int lives;
 
         public bool shieldUp;
@@ -34,15 +34,15 @@ namespace MyFirstGame
         public Timer speedPowerUpTimeoutTimer;
         public Timer superBombTimer;
         public static float defaultSuperBombFrequency = 500; // half a second
-        public static float defaultProjectileFrequency = 46; //in miliseconds
+        public static float defaultProjectileFrequency = 55; //in miliseconds
         public int projectileSpeed;
-        public static int defaultProjectileSpeed = 32;
+        public static int defaultProjectileSpeed = 30;
         public int headExplodeCounter;
-        public static int defaultSpeed = 10;
+        public static int defaultSpeed = 7;
         public int superBombs = 0;
 
 		// Power up times
-        public double shieldTimeAfterDeath = 290;
+        public double shieldTimeAfterDeath = 230;
         public double shieldTimeFromShieldPowerUp = 1200;
 
 		// Textures

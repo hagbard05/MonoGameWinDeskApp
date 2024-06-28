@@ -317,7 +317,7 @@ namespace MyFirstGame
             graphics.PreferredBackBufferHeight = 950;
             graphics.IsFullScreen = false;
 #else
-			Guide.SimulateTrialMode = simulateTrialMode;
+			//Guide.SimulateTrialMode = simulateTrialMode;
             if (GraphicsAdapter.DefaultAdapter.IsWideScreen)
             {
                 graphics.PreferredBackBufferWidth = 1920;
@@ -326,8 +326,8 @@ namespace MyFirstGame
             else
             {
 #if WINDOWS
-                graphics.PreferredBackBufferWidth = 1850;
-                graphics.PreferredBackBufferHeight = 920;
+                graphics.PreferredBackBufferWidth = 1920;
+                graphics.PreferredBackBufferHeight = 1080;
 #endif
 #if XBOX
                 graphics.PreferredBackBufferWidth = 1280;
@@ -335,7 +335,7 @@ namespace MyFirstGame
 #endif
 
             }
-            graphics.IsFullScreen = false; 
+            graphics.IsFullScreen = true; 
 #endif
             _gameOver = true;
         }
@@ -537,7 +537,7 @@ namespace MyFirstGame
             explosionStripForGhost = Content.Load<Texture2D>("explosionStripForGhost");
             explosionStripForWobble = Content.Load<Texture2D>("exStripWobble");
 			bomb = Content.Load<Texture2D>("H-Bomb");
-			habanerio = Content.Load<Texture2D>("habanerio");
+			habanerio = Content.Load<Texture2D>("habanerio-small");
 			fireball = Content.Load<Texture2D>("fireBall");
 			crystal = Content.Load<Texture2D>("quartz");
             oneUpTex = Content.Load<Texture2D>("1up");
@@ -631,10 +631,10 @@ namespace MyFirstGame
                 if (gameOver == false)
                 {
                     if (level > 5)
-                        diffuculityAdder += 0.00030;
+                        diffuculityAdder += 0.00060;
                     else
 					{
-						diffuculityAdder += 0.00039;
+						diffuculityAdder += 0.00069;
 					}
 					level = (int)diffuculityAdder;
                 }
