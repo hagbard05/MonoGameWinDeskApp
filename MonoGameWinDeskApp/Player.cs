@@ -33,17 +33,17 @@ namespace MyFirstGame
         public Timer invincibleBulletPowerUpTimeoutTimer;
         public Timer speedPowerUpTimeoutTimer;
         public Timer superBombTimer;
-        public static float defaultSuperBombFrequency = 500; // half a second
-        public static float defaultProjectileFrequency = 55; //in miliseconds
+        public static float defaultSuperBombFrequency = 500; // 500 = .5 seconds 
+        public static float defaultProjectileFrequency = 45; // in miliseconds
         public int projectileSpeed;
-        public static int defaultProjectileSpeed = 30;
+        public static int defaultProjectileSpeed = 31;
         public int headExplodeCounter;
-        public static int defaultSpeed = 7;
+        public static int defaultSpeed = 6;
         public int superBombs = 0;
 
 		// Power up times
         public double shieldTimeAfterDeath = 230;
-        public double shieldTimeFromShieldPowerUp = 1200;
+        public double shieldTimeFromShieldPowerUp = 1800;
 
 		// Textures
         public Texture2D shieldSprite;
