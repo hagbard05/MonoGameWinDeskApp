@@ -413,9 +413,9 @@ namespace MyFirstGame
             //random1 = new Random(randomSeed + randomSeed2 + DateTime.Now.Millisecond % Int32.MaxValue);
             //random2 = new Random(randomSeed2 + randomSeed + DateTime.Now.Millisecond % Int32.MaxValue);
             //random3 = new Random(randomSeed3 + randomSeed3 + DateTime.Now.Millisecond % Int32.MaxValue);
-            //random4 = new Random(randomSeed4 + randomSeed2 + DateTime.Now.Millisecond % Int32.MaxValue);
+            //random4 = new Random(randomSeed4 + randomSeed2 +  DateTime.Now.Millisecond % Int32.MaxValue);
             //random5 = new Random(randomSeed5 + 1 + randomSeed3 + DateTime.Now.Millisecond % Int32.MaxValue);
-            //random6 = new Random(randomSeed6 + 7 + randomSeed + DateTime.Now.Millisecond % Int32.MaxValue);
+            //random6 = new Random(randomSeed6 + 7 + randomSeed + DateTime.Now.Millisecond % Int32.MaxValue); 
 
             random1 = new Random(randomSeed + randomSeed2);
             random2 = new Random(randomSeed2 + randomSeed + 1);
@@ -430,7 +430,7 @@ namespace MyFirstGame
 
             // Create player objects
             playerOne = new Player(this, gameTime1);
-            playerOne.explosion.Load(Content, explosionStripP1, 6, 12);
+            playerOne.explosion.Load(Content, explosionStripP1, 6, 6);
 
             playerTwo = new Player(this, new Vector2(safeBounds.Right - playerTwoTex.Width, safeBounds.Top), playerTwoTex, gameTime1);
             playerTwo.explosion.Load(Content, explosionStrip2, 12, 12);

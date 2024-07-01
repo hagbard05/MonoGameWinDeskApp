@@ -176,7 +176,11 @@ namespace MyFirstGame
 
         public Vector2 explosionSpritePosition
         {
-            get { return new Vector2(position.X - 20, position.Y - 10); }
+            get
+            {
+				return new Vector2(position.X -140, position.Y -140); 
+            }
+
         }
 
         public Vector2 shieldCenterPosition
