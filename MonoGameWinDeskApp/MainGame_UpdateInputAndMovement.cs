@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using AnimatedSprite;
+using SharpDX.DirectWrite;
 
 namespace MyFirstGame
 {
@@ -445,13 +446,73 @@ namespace MyFirstGame
                         playerOne.position.Y -= playerOne.speed;
                 }
                 // PlayerOne Firing
-                //KeyboardState newState2 = Keyboard.GetState();
-                //if (!(playerOne.bulletCollision == true || playerOne.playerCollision == true))
-                //{
-                //    // PlayerOne firing
+                KeyboardState newState2 = Keyboard.GetState();
+                if (!(playerOne.bulletCollision == true || playerOne.playerCollision == true))
+                {
+                    if (newState.IsKeyDown(Keys.A) || newState.IsKeyDown(Keys.S) || newState.IsKeyDown(Keys.D) || newState.IsKeyDown(Keys.W))
+                    {
+                        double spread = 0.2;
+                        Vector2 shotVec = new Vector2(0,0);
+                        Vector2 leftShotVec;
+                        Vector2 rightShotVec;
+						float panPos = convertPositionToPanValue(playerOne.position.X);
 
-                //}
-                // TODO: Create Keyboard input for firing
+                        if (newState.IsKeyDown(Keys.A))
+                        {
+                            shotVec.X = -1;
+						}
+						if (newState.IsKeyDown(Keys.D))
+						{
+							shotVec.X = 1;
+						}
+						if (newState.IsKeyDown(Keys.S))
+						{
+                            shotVec.Y = -1;
+						}
+						if (newState.IsKeyDown(Keys.W))
+						{
+                            shotVec.Y = 1;
+						}
+
+
+						// The following changes the projectile texture depending on the power up
+						if (playerOne.PepperPowerup == false && playerOne.InvincBulletPowerUp == false)
+                        {
+                            playerOne.projectiles.Add(new Projectile(this, new Vector2(playerOne.CenterPosition.X - 10, playerOne.CenterPosition.Y - 6), shotVec));
+                            normalShot.Play(0.4f, -0.4f, panPos);
+                        }
+
+                        if (playerOne.PepperPowerup == true && playerOne.InvincBulletPowerUp == false)
+                        {
+                            rightShotVec = VectorOps.RotateVector(shotVec, -1 * spread);
+                            leftShotVec = VectorOps.RotateVector(shotVec, spread);
+                            Vector2 center = new Vector2(playerOne.CenterPosition.X - 24, playerOne.CenterPosition.Y - 24);
+
+                            playerOne.projectiles.Add(new Projectile(this, center, shotVec, PepperPowerUp.projectileSprite, playerOne.projectileSpeed));
+                            playerOne.projectiles.Add(new Projectile(this, center, leftShotVec, PepperPowerUp.projectileSprite, playerOne.projectileSpeed));
+                            playerOne.projectiles.Add(new Projectile(this, center, rightShotVec, PepperPowerUp.projectileSprite, playerOne.projectileSpeed));
+                            fireBallShot.Play(0.8f, -0.8f, panPos);
+                        }
+                        if (playerOne.PepperPowerup == false && playerOne.InvincBulletPowerUp == true)
+                        {
+                            playerOne.projectiles.Add(new Projectile(this, new Vector2(playerOne.CenterPosition.X - 14, playerOne.CenterPosition.Y - 14), shotVec, InvincibleBulletPowerUp.projectileSprite, playerOne.projectileSpeed, true));
+                            unstopaballShot.Play(1.0f, -0.5f, panPos);
+                        }
+                        if (playerOne.PepperPowerup == true && playerOne.InvincBulletPowerUp == true)
+                        {
+                            Vector2 center = new Vector2(playerOne.CenterPosition.X - 24, playerOne.CenterPosition.Y - 24);
+                            double spread2 = 0.1;
+                            Vector2 leftShotVec2 = VectorOps.RotateVector(shotVec, spread2);
+                            Vector2 rightShotVec2 = VectorOps.RotateVector(shotVec, -1 * spread2);
+                            //playerOne.projectiles.Add(new Projectile(this, center, shotVec, fireBallMetalSphere, playerOne.projectileSpeed, true));
+                            playerOne.projectiles.Add(new Projectile(this, center, leftShotVec2, fireBallMetalSphere, playerOne.projectileSpeed, true));
+                            playerOne.projectiles.Add(new Projectile(this, center, rightShotVec2, fireBallMetalSphere, playerOne.projectileSpeed, true));
+
+                            unstopaballShot.Play(0.7f, -0.9f, panPos);
+                            fireBallShot.Play(0.4f, -0.7f, panPos);
+                        }
+                    }
+				}
 
                 // PlayerTwo Keyboard Input
                 // PlayerTwo movement
@@ -459,14 +520,14 @@ namespace MyFirstGame
                 {
                     if (!(playerTwo.bulletCollision == true || playerTwo.playerCollision == true))
                     {
-                        if (newState.IsKeyDown(Keys.D))
-                            playerTwo.position.X += playerTwo.speed;
-                        if (newState.IsKeyDown(Keys.A))
-                            playerTwo.position.X -= playerTwo.speed;
-                        if (newState.IsKeyDown(Keys.S))
-                            playerTwo.position.Y += playerTwo.speed;
-                        if (newState.IsKeyDown(Keys.W))
-                            playerTwo.position.Y -= playerTwo.speed;
+                        //if (newState.IsKeyDown(Keys.D))
+                        //    playerTwo.position.X += playerTwo.speed;
+                        //if (newState.IsKeyDown(Keys.A))
+                        //    playerTwo.position.X -= playerTwo.speed;
+                        //if (newState.IsKeyDown(Keys.S))
+                        //    playerTwo.position.Y += playerTwo.speed;
+                        //if (newState.IsKeyDown(Keys.W))
+                        //    playerTwo.position.Y -= playerTwo.speed;
                     }
                 }
             }

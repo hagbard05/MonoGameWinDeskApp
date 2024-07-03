@@ -302,16 +302,8 @@ namespace MyFirstGame
         {
             graphics = new GraphicsDeviceManager(this);
 			
-            // GamerServicesComponent
-            //Components.Add(new GamerServicesComponent(this));
 			Content.RootDirectory = "Content";
-#if DEBUG
-            //Guide.SimulateTrialMode = simulateTrialMode;
-            graphics.PreferredBackBufferWidth = 1650;
-            graphics.PreferredBackBufferHeight = 950;
-            graphics.IsFullScreen = false;
-#else
-			//Guide.SimulateTrialMode = simulateTrialMode;
+
             if (GraphicsAdapter.DefaultAdapter.IsWideScreen)
             {
                 graphics.PreferredBackBufferWidth = 1920;
@@ -319,18 +311,11 @@ namespace MyFirstGame
             }
             else
             {
-#if WINDOWS
-                graphics.PreferredBackBufferWidth = 1920;
-                graphics.PreferredBackBufferHeight = 1080;
-#endif
-#if XBOX
-                graphics.PreferredBackBufferWidth = 1280;
-                graphics.PreferredBackBufferHeight = 720;
-#endif
-
-            }
+				graphics.PreferredBackBufferWidth = 1280;
+				graphics.PreferredBackBufferHeight = 720;
+			}
             graphics.IsFullScreen = true; 
-#endif
+
             _gameOver = true;
         }
 
