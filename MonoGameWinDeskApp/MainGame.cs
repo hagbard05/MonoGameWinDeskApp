@@ -200,15 +200,9 @@ namespace MyFirstGame
         }
         double diffuculityAdder = 0;
 
-#if DEBUG
-		public static int crystalGrabberSpawnRateDefault = 5;
-		public static int kamikazeSpawnRateDefault = 5;
-        public static int wobbleKSpanRateDefault = 5;
-#else
-        public static int wobbleKSpanRateDefault = 7;
-        public static int crystalGrabberSpawnRateDefault = 25;
-		public static int kamikazeSpawnRateDefault = 10;
-#endif
+        public static int wobbleKSpanRateDefault = 9;
+        public static int crystalGrabberSpawnRateDefault = 23;
+		public static int kamikazeSpawnRateDefault = 12;
 
         int wobbleKSpanRate = wobbleKSpanRateDefault;
         int kamikazeSpawnRate = kamikazeSpawnRateDefault;
@@ -430,15 +424,16 @@ namespace MyFirstGame
 
             // Create player objects
             playerOne = new Player(this, gameTime1);
-            playerOne.explosion.Load(Content, explosionStripP1, 6, 6);
+            playerOne.explosion.Load(Content, explosionStripP1, 12, 12);
 
-            playerTwo = new Player(this, new Vector2(safeBounds.Right - playerTwoTex.Width, safeBounds.Top), playerTwoTex, gameTime1);
-            playerTwo.explosion.Load(Content, explosionStrip2, 12, 12);
+			//playerTwo = new Player(this, new Vector2(safeBounds.Right - playerTwoTex.Width, safeBounds.Top), playerTwoTex, gameTime1);
+			playerTwo = new Player(this, new Vector2(500, 500), playerTwoTex, gameTime1);
+			playerTwo.explosion.Load(Content, explosionStrip2, 12, 12);
 
             playerThree = new Player(this, new Vector2(safeBounds.Left - playerThreeTex.Width, safeBounds.Bottom - playerThreeTex.Height), playerThreeTex, gameTime1);
             playerThree.explosion.Load(Content, explosionStrip2, 12, 12);
 
-            playerFour = new Player(this, new Vector2(safeBounds.Right - playerFourTex.Width, safeBounds.Bottom - playerFourTex.Height), forestSprite2, gameTime1);
+            playerFour = new Player(this, new Vector2(safeBounds.Right - playerFourTex.Width, safeBounds.Bottom - playerFourTex.Height), playerFourTex, gameTime1);
             playerFour.explosion.Load(Content, explosionStrip2, 12, 12);
         }
 
@@ -544,7 +539,7 @@ namespace MyFirstGame
             kamakizeTex = Content.Load<Texture2D>("Kspr-ExSmall");
             kamakizeTexSm = Content.Load<Texture2D>("Kspr-s");
             playerOneTex = Content.Load<Texture2D>("playerOne");
-            playerTwoTex = Content.Load<Texture2D>("player2");
+            playerTwoTex = Content.Load<Texture2D>("playerTwo");
             playerThreeTex = Content.Load<Texture2D>("player3");
             playerFourTex = Content.Load<Texture2D>("player4");
 
@@ -766,7 +761,6 @@ namespace MyFirstGame
                         spriteBatch.Draw(Projectile.sprite, Projectile.position, Color.White);
 
                 }
-                else if (playerOne.lives <= 0 )
                 if (playerTwo.hasStarted && playerTwo.lives > 0)
                 {
                     if (playerTwo.bulletCollision || playerTwo.playerCollision)

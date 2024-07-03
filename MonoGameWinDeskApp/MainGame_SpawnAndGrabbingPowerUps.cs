@@ -141,7 +141,7 @@ namespace MyFirstGame
             debugRandom = random.Next(20000);
             //debugRandom = random1.Next(10000);
 
-            System.Diagnostics.Debug.WriteLine("frequency: " + frequency + "powerUpType: " + powerUpType);
+            //System.Diagnostics.Debug.WriteLine("frequency: " + frequency + "powerUpType: " + powerUpType);
             if (debugRandom * numPlayersStarted < frequency)
             {
                 

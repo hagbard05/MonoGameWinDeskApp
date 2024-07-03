@@ -134,18 +134,6 @@
 /processorParam:TextureFormat=Color
 /build:explosionStrip.png
 
-#begin explosionStrip2.bmp
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:explosionStrip2.bmp
-
 #begin explosionStrip2.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -273,13 +261,6 @@
 /processorParam:TextureFormat=Compressed
 /build:gamefont.spritefont
 
-#begin gamefont.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:gamefont.spritefont
-
 #begin gamefontLarger.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -371,18 +352,6 @@
 /processorParam:TextureFormat=Color
 /build:Kspr-ExSmall.png
 
-#begin Kspr-ExSmall.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Kspr-ExSmall.png
-
 #begin Kspr-s.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -418,18 +387,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:level10.jpg
-
-#begin level2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:level2.png
 
 #begin level2.png
 /importer:TextureImporter
@@ -635,6 +592,18 @@
 /processorParam:TextureFormat=Color
 /build:PlayerStatusArea.png
 
+#begin playerTwo.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:playerTwo.png
+
 #begin puet.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -652,12 +621,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:quartz.png
-
-#begin reload.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:reload.wav
 
 #begin reload.wav
 /importer:WavImporter
@@ -808,12 +771,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:splat.bmp
-
-#begin unstopaballShot.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:unstopaballShot.wav
 
 #begin unstopaballShot.wav
 /importer:WavImporter
