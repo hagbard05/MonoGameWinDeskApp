@@ -458,26 +458,26 @@ namespace MyFirstGame
 		public Texture2D habanerio;
         public Texture2D fireball;
 		public Texture2D bomb;
-        public Texture2D explosionStripForGhost;
-        public Texture2D KamakisaiSheetSmall;
-        public Texture2D explosionStrip;
-        public Texture2D OctoEnemy;
-        public Texture2D OctoEnemyAnamation;
-        public Texture2D OctoEnemyAnamation2;
-        public Texture2D OctoEnemyAnamationSmall;
-        public Texture2D OctoEnemySmall;
-        public Texture2D wobbleKam;
-        public Texture2D wobbleKSheet;
-        public Texture2D explosionStrip2;
-        public Texture2D shieldSprite;
-		public Texture2D powerCrystalTex;
-        public Texture2D speedPowUpTex;
-        public Texture2D shieldPowUpTex;
-        public Texture2D explosionStripForWobble;
-        public Texture2D explosionStripP1;
+        public Texture2D explosionStripForGhost; // Utilised
+		public Texture2D KamakisaiSheetSmall; // Utilised
+		public Texture2D explosionStrip; // Utilised
+		public Texture2D OctoEnemy; // Utilised
+		public Texture2D OctoEnemyAnamation; // Utilised
+        public Texture2D OctoEnemyAnamation2; // Utilised
+		//public Texture2D OctoEnemyAnamationSmall;
+        //public Texture2D OctoEnemySmall;
+        //public Texture2D wobbleKam;
+        public Texture2D wobbleKSheet; // Utilised
+		public Texture2D explosionStrip2; // Utilised
+		public Texture2D shieldSprite; // Utilised
+		public Texture2D powerCrystalTex; // Utilised
+		public Texture2D speedPowUpTex; // Utilised
+		public Texture2D shieldPowUpTex; // Utilised
+		public Texture2D explosionStripForWobble; // Utilised
+		public Texture2D explosionStripP1; // Utilised
 
-        /// <summary>LoadContent will be called once per game and is the place to load all of your content.</summary>
-        protected override void LoadContent()
+		/// <summary>LoadContent will be called once per game and is the place to load all of your content.</summary>
+		protected override void LoadContent()
         {
 
             // Calculate safe bounds based on current resolution
@@ -505,8 +505,8 @@ namespace MyFirstGame
 			powerCrystalTex = Content.Load<Texture2D>("quartz");
             shieldSprite = Content.Load<Texture2D>("Sphere75");
             explosionStrip2 = Content.Load<Texture2D>("explosionStrip2");
-            OctoEnemySmall = Content.Load<Texture2D>("OctoEnemy-s");
-            wobbleKam = Content.Load<Texture2D>("WKam");
+            //OctoEnemySmall = Content.Load<Texture2D>("OctoEnemy-s");
+            //wobbleKam = Content.Load<Texture2D>("WKam");
             wobbleKSheet = Content.Load<Texture2D>("wobKamAna");
 
             OctoEnemy = Content.Load<Texture2D>("OctoEnemy");

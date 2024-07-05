@@ -474,7 +474,6 @@ namespace MyFirstGame
                             shotVec.Y = 1;
 						}
 
-
 						// The following changes the projectile texture depending on the power up
 						if (playerOne.PepperPowerup == false && playerOne.InvincBulletPowerUp == false)
                         {
@@ -513,23 +512,6 @@ namespace MyFirstGame
                         }
                     }
 				}
-
-                // PlayerTwo Keyboard Input
-                // PlayerTwo movement
-                if (!(playerTwo == null))
-                {
-                    if (!(playerTwo.bulletCollision == true || playerTwo.playerCollision == true))
-                    {
-                        //if (newState.IsKeyDown(Keys.D))
-                        //    playerTwo.position.X += playerTwo.speed;
-                        //if (newState.IsKeyDown(Keys.A))
-                        //    playerTwo.position.X -= playerTwo.speed;
-                        //if (newState.IsKeyDown(Keys.S))
-                        //    playerTwo.position.Y += playerTwo.speed;
-                        //if (newState.IsKeyDown(Keys.W))
-                        //    playerTwo.position.Y -= playerTwo.speed;
-                    }
-                }
             }
 
             previousGamePadState1 = GamePad.GetState(PlayerIndex.One);

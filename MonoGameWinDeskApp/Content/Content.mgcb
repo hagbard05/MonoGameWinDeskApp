@@ -460,18 +460,6 @@
 /processorParam:TextureFormat=Color
 /build:OctoAnamationDistort.png
 
-#begin OctoEnemy-s.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:OctoEnemy-s.png
-
 #begin OctoEnemy.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -777,18 +765,6 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:unstopaballShot.wav
-
-#begin WKam.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:WKam.png
 
 #begin wobKamAna.png
 /importer:TextureImporter
