@@ -26,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Content\DeeperDive.jpg" />
+    <None Remove="Content\OctoAnamationDistort.png" />
     <None Remove="Content\Sounds\Sound Bank.xsb" />
     <None Remove="Content\Sounds\Win\Sound Bank.xsb" />
     <None Remove="Content\Sounds\Win\Wave Bank.xwb" />
