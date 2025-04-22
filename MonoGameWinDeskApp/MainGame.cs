@@ -73,6 +73,7 @@ namespace MyFirstGame
 						spawnCrystalGrabbersBelowScreen(100000);
 						spawnCrystalGrabbersBelowScreen(10000);
 						spawnCrystalGrabbersBelowScreen(1000);
+						spawnPowerUp(100000, Sprite.powerUpTypes.Pepper, new Random(randomSeed6));
 						spawnPowerUp(100000, Sprite.powerUpTypes.InvincibleBullet, new Random(randomSeed));
 					}
 					if (value == 4 && _level != 4)
@@ -241,20 +242,19 @@ namespace MyFirstGame
         int headExplodeDownTime = 59; //Number of cycles to show the explosion. default gameTime: 60 = 1 second = 0 to 59 = 1 second
         float elapsed; // used to track elapsed time for sprite anamation
 
-		// ------------------------------------------------------------------------------
-        // Sound Effects
-        // ------------------------------------------------------------------------------
+		#region  Sound Effects
 		SoundEffect unstopaballShot;
 		SoundEffect powerUp;
 		SoundEffect fireBallShot;
         SoundEffect normalShot;
         SoundEffect Explosion;
         SoundEffect explosion6;
-
         AudioEngine audioEngine;
         SoundBank soundBank;
         WaveBank waveBank;
-        SpriteBatch spriteBatch;
+		#endregion 
+
+		SpriteBatch spriteBatch;
         Color backColor = Color.Black; //background color
         Vector2 centerOfScreen;
 
@@ -281,22 +281,28 @@ namespace MyFirstGame
         public List<PowerUp> speedPowerUps = new List<PowerUp>();
         public List<PowerUp> extraLifePowerUps = new List<PowerUp>();
 
-        // Enemy lists
+        /// <summary>
+        /// Enemys
+        /// </summary>
         List<Kamikaze> kamikazes = new List<Kamikaze>();
         List<WobbleKamikaze> wobbleKamikazes = new List<WobbleKamikaze>();
         List<CrystalGrabber> crystalGrabbers = new List<CrystalGrabber>();
 
-        // player list
+        /// <summary>
+        /// The Players
+        /// </summary>
         public List<Player> players = new List<Player>();
 
-        // The sub-rectangle of the drawable area which should be visible on all TVs
+        /// <summary>
+        /// The sub-rectangle of the drawable area which should be visible on all TVs
+        /// </summary>
         public Rectangle safeBounds;
 
         // Percentage of the screen on every side is the safe area
         const float SafeAreaPortion = 0.06f;
-
-        /// <summary>
-        /// Default constructor set screen size and add the GamerServicesComponent
+        
+        ///<summary>
+        /// Sets the screen size
         /// </summary>
         public MainGame()
         {
@@ -314,12 +320,13 @@ namespace MyFirstGame
 				graphics.PreferredBackBufferWidth = 1280;
 				graphics.PreferredBackBufferHeight = 720;
 			}
-            graphics.IsFullScreen = true; 
+            //graphics.IsFullScreen = true; 
 
             _gameOver = true;
         }
 
-        public static int _randomSeed = 1;
+		#region Random number generation
+		public static int _randomSeed = 1;
         public static int randomSeed 
         { 
             get 
@@ -379,22 +386,17 @@ namespace MyFirstGame
                 return _randomSeed6++;
             }
         }
+		#endregion 
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
-        protected override void Initialize()
+		/// <summary>
+		/// Allows the game to perform any initialization it needs to before starting to run.
+		/// This is where it can query for any required services and load any non-graphic
+		/// related content.  Calling base.Initialize will enumerate through any components
+		/// and initialize them as well.
+		/// </summary>
+		protected override void Initialize()
         {
             base.Initialize();
-            //random1 = new Random(randomSeed + randomSeed2 + DateTime.Now.Millisecond % Int32.MaxValue);
-            //random2 = new Random(randomSeed2 + randomSeed + DateTime.Now.Millisecond % Int32.MaxValue);
-            //random3 = new Random(randomSeed3 + randomSeed3 + DateTime.Now.Millisecond % Int32.MaxValue);
-            //random4 = new Random(randomSeed4 + randomSeed2 +  DateTime.Now.Millisecond % Int32.MaxValue);
-            //random5 = new Random(randomSeed5 + 1 + randomSeed3 + DateTime.Now.Millisecond % Int32.MaxValue);
-            //random6 = new Random(randomSeed6 + 7 + randomSeed + DateTime.Now.Millisecond % Int32.MaxValue); 
 
             random1 = new Random(randomSeed + randomSeed2);
             random2 = new Random(randomSeed2 + randomSeed + 1);
