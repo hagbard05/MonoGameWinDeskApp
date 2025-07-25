@@ -17,8 +17,9 @@ namespace MyFirstGame
     public partial class MainGame : Microsoft.Xna.Framework.Game
     {
 		bool simulateTrialMode = false; // In debug trialmode will be enabled (this variable will be ignored)
+        public bool isfullscreen = false;
 
-        SpriteFont gameFont;
+		SpriteFont gameFont;
 		SpriteFont gameFontLarger;
 		SpriteFont Comic;
 
@@ -307,22 +308,20 @@ namespace MyFirstGame
         public MainGame()
         {
             graphics = new GraphicsDeviceManager(this);
-			
 			Content.RootDirectory = "Content";
 
-            if (GraphicsAdapter.DefaultAdapter.IsWideScreen)
+            graphics.IsFullScreen = isfullscreen;
+			if (isfullscreen)
             {
-                graphics.PreferredBackBufferWidth = 1920;
-                graphics.PreferredBackBufferHeight = 1080;
+                graphics.PreferredBackBufferWidth = 3840;
+                graphics.PreferredBackBufferHeight = 2160;
             }
             else
             {
-				graphics.PreferredBackBufferWidth = 1280;
-				graphics.PreferredBackBufferHeight = 720;
+				graphics.PreferredBackBufferWidth = 3800;
+				graphics.PreferredBackBufferHeight = 2023;
 			}
-            //graphics.IsFullScreen = true; 
-
-            _gameOver = true;
+			_gameOver = true;
         }
 
 		#region Random number generation
@@ -459,8 +458,8 @@ namespace MyFirstGame
 		public Texture2D crystal;
 		public Texture2D habanerio;
         public Texture2D fireball;
-		public Texture2D bomb;
-        public Texture2D explosionStripForGhost; // Utilised
+		public Texture2D bomb; // Utilised
+		public Texture2D explosionStripForGhost; // Utilised
 		public Texture2D KamakisaiSheetSmall; // Utilised
 		public Texture2D explosionStrip; // Utilised
 		public Texture2D OctoEnemy; // Utilised
@@ -573,7 +572,6 @@ namespace MyFirstGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             powerCrystal = new PowerCrystal(this, centerOfScreen);
-
         }
 
         /// <summary>
