@@ -274,30 +274,31 @@ namespace MyFirstGame
 		public GraphicsDeviceManager graphics;
 
         public PowerCrystal powerCrystal;
-        // powerUp lists
-        public List<PowerUp> pepperPowerUps = new List<PowerUp>();
+		#region powerUp lists
+		public List<PowerUp> pepperPowerUps = new List<PowerUp>();
         public List<PowerUp> InvincibleBulletPowerUps = new List<PowerUp>();
         public List<PowerUp> superBombPowerUps = new List<PowerUp>();
         public List<PowerUp> shieldPowerUps = new List<PowerUp>();
         public List<PowerUp> speedPowerUps = new List<PowerUp>();
         public List<PowerUp> extraLifePowerUps = new List<PowerUp>();
+		#endregion
 
-        /// <summary>
-        /// Enemys
-        /// </summary>
-        List<Kamikaze> kamikazes = new List<Kamikaze>();
+        #region Enemys
+		List<Kamikaze> kamikazes = new List<Kamikaze>();
         List<WobbleKamikaze> wobbleKamikazes = new List<WobbleKamikaze>();
         List<CrystalGrabber> crystalGrabbers = new List<CrystalGrabber>();
+		#endregion
+		#region The Players
+		/// <summary>
+		/// The Players
+		/// </summary>
+		public List<Player> players = new List<Player>();
+		#endregion 
 
-        /// <summary>
-        /// The Players
-        /// </summary>
-        public List<Player> players = new List<Player>();
-
-        /// <summary>
-        /// The sub-rectangle of the drawable area which should be visible on all TVs
-        /// </summary>
-        public Rectangle safeBounds;
+		/// <summary>
+		/// The sub-rectangle of the drawable area which should be visible on all TVs
+		/// </summary>
+		public Rectangle safeBounds;
 
         // Percentage of the screen on every side is the safe area
         const float SafeAreaPortion = 0.06f;
@@ -423,6 +424,7 @@ namespace MyFirstGame
             playerFour.explosion.Load(Content, explosionStrip2, 12, 12);
         }
 
+		#region Textures Def
 		public Texture2D background;
         public Texture2D backgroundSat;
         public Texture2D backgroundGalixy;
@@ -446,18 +448,18 @@ namespace MyFirstGame
 
 		public Texture2D debugDot; // one pixle used for position debugging
         public Texture2D playerBullet;
-        public Texture2D metelSpherePowerUp;
-        public Texture2D metelSpherePowerUpProjectileSprite;
-        public Texture2D playerOneTex;
-        public Texture2D playerTwoTex;
-        public Texture2D playerThreeTex;
-        public Texture2D playerFourTex;
-        public Texture2D kamakizeTex;
-        public Texture2D kamakizeTexSm;
-        public Texture2D oneUpTex;
-		public Texture2D crystal;
-		public Texture2D habanerio;
-        public Texture2D fireball;
+        public Texture2D metelSpherePowerUp; // Utilised
+		public Texture2D metelSpherePowerUpProjectileSprite; // Utilised
+		public Texture2D playerOneTex; // Utilised
+		public Texture2D playerTwoTex; // Utilised
+		public Texture2D playerThreeTex; // Utilised
+		public Texture2D playerFourTex; // Utilised
+		public Texture2D kamakizeTex; // Utilised
+									  //public Texture2D kamakizeTexSm;
+		public Texture2D oneUpTex; // Utilised
+		public Texture2D crystal; // Utilised
+		public Texture2D habanerio; // Utilised
+		public Texture2D fireball; // Utilised
 		public Texture2D bomb; // Utilised
 		public Texture2D explosionStripForGhost; // Utilised
 		public Texture2D KamakisaiSheetSmall; // Utilised
@@ -476,11 +478,11 @@ namespace MyFirstGame
 		public Texture2D shieldPowUpTex; // Utilised
 		public Texture2D explosionStripForWobble; // Utilised
 		public Texture2D explosionStripP1; // Utilised
+		#endregion 
 
 		/// <summary>LoadContent will be called once per game and is the place to load all of your content.</summary>
 		protected override void LoadContent()
         {
-
             // Calculate safe bounds based on current resolution
             viewport = graphics.GraphicsDevice.Viewport;
             safeBounds = new Rectangle( (int)(viewport.Width * SafeAreaPortion), (int)(viewport.Height * SafeAreaPortion), (int)(viewport.Width * (1 - 2 * SafeAreaPortion)), (int)(viewport.Height * (1 - 2 * SafeAreaPortion)));
@@ -523,7 +525,7 @@ namespace MyFirstGame
 			crystal = Content.Load<Texture2D>("quartz");
             oneUpTex = Content.Load<Texture2D>("1up");
             kamakizeTex = Content.Load<Texture2D>("Kspr-ExSmall");
-            kamakizeTexSm = Content.Load<Texture2D>("Kspr-s");
+            //kamakizeTexSm = Content.Load<Texture2D>("Kspr-s");
             playerOneTex = Content.Load<Texture2D>("playerOne");
             playerTwoTex = Content.Load<Texture2D>("playerTwo");
             playerThreeTex = Content.Load<Texture2D>("player3");
@@ -548,6 +550,7 @@ namespace MyFirstGame
 
             debugDot = Content.Load<Texture2D>("debugDot");// one pixle used for position debugging
 
+			#region SoundEffects
 			unstopaballShot = Content.Load<SoundEffect>("unstopaballShot");
 			powerUp = Content.Load<SoundEffect>("reload");
 			fireBallShot = Content.Load<SoundEffect>("FireBallShot");
@@ -560,11 +563,13 @@ namespace MyFirstGame
             pepperPowUpGrab = Content.Load<SoundEffect>("FireballAhh");
             shieldPowUpGrab = Content.Load<SoundEffect>("reload");
             
+
             daBombPowUpGrab = Content.Load<SoundEffect>("reload");
             unstopPowUpGrab = Content.Load<SoundEffect>("reload");
+			#endregion 
 
-            // Extract collision data - used for per pixle collisions - not yet implemented
-            forestSpriteTextureData = new Color[forestSprite2.Width * forestSprite2.Height];
+			// Extract collision data - used for per pixle collisions - not yet implemented
+			forestSpriteTextureData = new Color[forestSprite2.Width * forestSprite2.Height];
             forestSprite2.GetData(forestSpriteTextureData);
             //projectileSpriteTextureData = new Color[projectileSprite.Width * projectileSprite.Height];
 
