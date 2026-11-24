@@ -250,9 +250,6 @@ namespace MyFirstGame
         SoundEffect normalShot;
         SoundEffect Explosion;
         SoundEffect explosion6;
-        AudioEngine audioEngine;
-        SoundBank soundBank;
-        WaveBank waveBank;
 		#endregion 
 
 		SpriteBatch spriteBatch;
