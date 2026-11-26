@@ -10,6 +10,20 @@ namespace MyFirstGame
 {
     public partial class MainGame : Microsoft.Xna.Framework.Game
     {
+        private void StartPlayer(Player player)
+        {
+            if (IsTrialMode && player != playerOne)
+                return;
+
+            if (IsTrialMode)
+                player.lives = 1;
+
+            player.hasStarted = true;
+            players.Add(player);
+            numPlayersStarted++;
+            gameOver = false;
+        }
+
         private void UpdateInputAndMovement(GameTime gameTime)
         {
             GamePadState gamePadStateOne = GamePad.GetState(PlayerIndex.One);
@@ -17,89 +31,29 @@ namespace MyFirstGame
             GamePadState gamePadStateThree = GamePad.GetState(PlayerIndex.Three);
             GamePadState gamePadStateFour = GamePad.GetState(PlayerIndex.Four);
 
-            // poll for start press on controller
-            #region pollForStart
+			// poll for start press on controller
+			#region pollForStart
 
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed && previousGamePadState1.Buttons.Start == ButtonState.Released && playerOne.hasStarted == false)
-            {
-                //if (!(Guide.IsTrialMode && numPlayersStarted >= 2))
-                //{
-                    playerOne.hasStarted = true;
-                    players.Add(playerOne);
-                    numPlayersStarted++;
-                    gameOver = false;
-                //}
-            }
-            if (GamePad.GetState(PlayerIndex.Two).Buttons.Start == ButtonState.Pressed && previousGamePadState2.Buttons.Start == ButtonState.Released && playerTwo.hasStarted == false)
-            {
-                //if (!(Guide.IsTrialMode && numPlayersStarted >= 2))
-                //{
-                    playerTwo.hasStarted = true;
-                    players.Add(playerTwo);
-                    numPlayersStarted++;
-                    gameOver = false;
-                //}
-            }
-            if (GamePad.GetState(PlayerIndex.Three).Buttons.Start == ButtonState.Pressed && previousGamePadState3.Buttons.Start == ButtonState.Released && playerThree.hasStarted == false)
-            {
-                //if (!(Guide.IsTrialMode && numPlayersStarted >= 2))
-                //{
-                    playerThree.hasStarted = true;
-                    players.Add(playerThree);
-                    numPlayersStarted++;
-                    gameOver = false;
-                //}
-            }
-            if (GamePad.GetState(PlayerIndex.Four).Buttons.Start == ButtonState.Pressed && previousGamePadState4.Buttons.Start == ButtonState.Released && playerFour.hasStarted == false)
-            {
-                //if (!(Guide.IsTrialMode && numPlayersStarted >= 2))
-                {
-                    playerFour.hasStarted = true;
-                    players.Add(playerFour);
-                    numPlayersStarted++;
-                    gameOver = false;
-                }
-            }
+			if (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed && previousGamePadState1.Buttons.Start == ButtonState.Released && playerOne.hasStarted == false)
+				StartPlayer(playerOne);
+			if (GamePad.GetState(PlayerIndex.Two).Buttons.Start == ButtonState.Pressed && previousGamePadState2.Buttons.Start == ButtonState.Released && playerTwo.hasStarted == false)
+				StartPlayer(playerTwo);
+			if (GamePad.GetState(PlayerIndex.Three).Buttons.Start == ButtonState.Pressed && previousGamePadState3.Buttons.Start == ButtonState.Released && playerThree.hasStarted == false)
+				StartPlayer(playerThree);
+			if (GamePad.GetState(PlayerIndex.Four).Buttons.Start == ButtonState.Pressed && previousGamePadState4.Buttons.Start == ButtonState.Released && playerFour.hasStarted == false)
+				StartPlayer(playerFour);
 
 			// Keyboard input for starting
-            if (Keyboard.GetState().IsKeyDown(Keys.NumPad1) && playerOne.hasStarted == false)
-            {
-                //if (!(Guide.IsTrialMode && numPlayersStarted >= 2))
-                {
-                    playerOne.hasStarted = true;
-                    numPlayersStarted++;
-                    gameOver = false;
-                }
-            }
+			if ((Keyboard.GetState().IsKeyDown(Keys.NumPad1) || Keyboard.GetState().IsKeyDown(Keys.Enter)) && playerOne.hasStarted == false)
+				StartPlayer(playerOne);
 			if (Keyboard.GetState().IsKeyDown(Keys.NumPad2) && playerTwo.hasStarted == false)
-			{
-				//if (!(Guide.IsTrialMode && numPlayersStarted >= 2))
-				{
-					playerTwo.hasStarted = true;
-					numPlayersStarted++;
-					gameOver = false;
-				}
-			}
+				StartPlayer(playerTwo);
 			if (Keyboard.GetState().IsKeyDown(Keys.NumPad3) && playerThree.hasStarted == false)
-			{
-				//if (!(Guide.IsTrialMode && numPlayersStarted >= 2))
-				{
-					playerThree.hasStarted = true;
-					numPlayersStarted++;
-					gameOver = false;
-				}
-			}
+				StartPlayer(playerThree);
 			if (Keyboard.GetState().IsKeyDown(Keys.NumPad4) && playerFour.hasStarted == false)
-			{
-				//if (!(Guide.IsTrialMode && numPlayersStarted >= 2))
-				{
-					playerFour.hasStarted = true;
-					numPlayersStarted++;
-					gameOver = false;
-				}
-			}
+				StartPlayer(playerFour);
 
-            #endregion
+			#endregion
 
 			//if (gamePadStateOne.Buttons.Back == ButtonState.Pressed && playerOne.hasStarted == true) // ToDo: enable exiting on back button press and save the game for resumeing on exit
 			//    this.Exit();

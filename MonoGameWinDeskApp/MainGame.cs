@@ -12,12 +12,12 @@ using AnimatedSprite;
 namespace MyFirstGame
 {
     /// <summary>
-    /// This is the main type for your game
-    /// </summary>
-    public partial class MainGame : Microsoft.Xna.Framework.Game
-    {
-		bool simulateTrialMode = false; // In debug trialmode will be enabled (this variable will be ignored)
-        public bool isfullscreen = false;
+	/// This is the main type for your game
+	/// </summary>
+	public partial class MainGame : Microsoft.Xna.Framework.Game
+	{
+		public bool IsTrialMode { get; }
+		public bool isfullscreen = true;
 
 		SpriteFont gameFont;
 		SpriteFont gameFontLarger;
@@ -303,8 +303,9 @@ namespace MyFirstGame
         ///<summary>
         /// Sets the screen size
         /// </summary>
-        public MainGame()
+        public MainGame(bool trialMode = false)
         {
+            IsTrialMode = trialMode;
             graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 
@@ -673,9 +674,18 @@ namespace MyFirstGame
             //Check for game over
             if (gameOver == true)
             {
-				centerForGameOverText = new Vector2(centerOfScreen.X - 146, centerOfScreen.Y - 12);
-				spriteBatch.DrawString(gameFont, "Game Over.  Press Start!", centerForGameOverText, Color.White);
-                spriteBatch.End();
+                if (IsTrialMode)
+                {
+                    spriteBatch.DrawString(gameFontLarger, "Upgrade to Full Version for: " + System.Environment.NewLine +
+                        "*  4 Players at a time!" + System.Environment.NewLine +
+                        "*  A happy happy joy joy best luck good time fun!", new Vector2(safeBounds.Left + 100, safeBounds.Top + 250), Color.White);
+                }
+                else
+                {
+                    centerForGameOverText = new Vector2(centerOfScreen.X - 146, centerOfScreen.Y - 12);
+                    spriteBatch.DrawString(gameFont, "Game Over.  Press Start!", centerForGameOverText, Color.White);
+                    spriteBatch.End();
+                }
                 base.Draw(gameTime);
                 return; // draw nothing else
             }
@@ -836,29 +846,9 @@ namespace MyFirstGame
                 spriteBatch.DrawString(Comic, "Level: " + level, new Vector2(centerOfScreen.X - 12, safeBounds.Top + 25), Color.White);
 
             } // end if (gameOver == false)
-            //if (Guide.IsTrialMode)
-            //{
-            //    spriteBatch.DrawString(gameFontLarger, "Upgrade to Full Version for: " + System.Environment.NewLine +
-            //        "*  4 Players at a time!" + System.Environment.NewLine +
-            //        "*  More powerups!" + System.Environment.NewLine +
-            //        "*  Powerups that last 4 times as long!" + System.Environment.NewLine +
-            //        "*  10 lives at start for each player!" + System.Environment.NewLine +
-            //        "*  A happy happy joy joy best luck good time fun!", new Vector2(safeBounds.Left + 100, safeBounds.Top + 250), Color.White);
-            //    if (livesSetForTrialMode == false)
-            //    {
-            //        playerOne.iniLives = 3;
-            //        playerOne.lives = 3;
-            //        playerTwo.iniLives = 3;
-            //        playerTwo.lives = 3;
-            //        playerThree.iniLives = 3;
-            //        playerThree.lives = 3;
-            //        playerFour.iniLives = 3;
-            //        playerFour.lives = 3;
 
-            //        levelToAddWobbleKama = 4;
-            //        levelToAddKama = 2;
-            //    }
-            //}
+
+
             spriteBatch.End();
 
             base.Draw(gameTime);

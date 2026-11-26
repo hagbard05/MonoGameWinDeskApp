@@ -55,13 +55,13 @@ namespace MyFirstGame
 					position.X = value.X - (float)sprite.Width / 2.0f;
 					position.Y = value.Y - (float)sprite.Height / 2.0f;
 #if DEBUG
-					System.Diagnostics.Debug.WriteLine("Position set to: (" + position.X + ", " + position.Y + ") using center position set{} (" + value.X + ", " + value.Y +")");
+//					System.Diagnostics.Debug.WriteLine("Position set to: (" + position.X + ", " + position.Y + ") using center position set{} (" + value.X + ", " + value.Y +")");
 #endif
 				}
 				else
 				{
 #if DEBUG
-					System.Diagnostics.Debug.WriteLine("Texture is null so CenterPosition was set using X, Y - 10 values");
+//					System.Diagnostics.Debug.WriteLine("Texture is null so CenterPosition was set using X, Y - 10 values");
 #endif
 					position.X = value.X - 15;
 					position.Y = value.Y - 15;
