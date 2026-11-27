@@ -23,6 +23,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:1up.png
 
 #begin Ball65.png
@@ -35,6 +36,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:Ball65.png
 
 #begin Ball90.png
@@ -47,6 +49,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:Ball90.png
 
 #begin BlueSun.png
@@ -59,6 +62,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:BlueSun.png
 
 #begin CalebSprite.png
@@ -71,6 +75,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:CalebSprite.png
 
 #begin Comic.spritefont
@@ -78,6 +83,7 @@
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.1
 /build:Comic.spritefont
 
 #begin DebugDot.bmp
@@ -90,6 +96,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:DebugDot.bmp
 
 #begin DeeperDive.png
@@ -102,24 +109,28 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:DeeperDive.png
 
 #begin ExLifeAhh.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
+/processorParam:Version=3.8.6.1
 /build:ExLifeAhh.wav
 
 #begin exp.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
+/processorParam:Version=3.8.6.1
 /build:exp.wav
 
 #begin explosion6.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
+/processorParam:Version=3.8.6.1
 /build:explosion6.wav
 
 #begin explosionStrip.png
@@ -132,6 +143,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:explosionStrip.png
 
 #begin explosionStrip2.png
@@ -144,6 +156,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:explosionStrip2.png
 
 #begin explosionStripForGhost.png
@@ -156,6 +169,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:explosionStripForGhost.png
 
 #begin explosionStripP1.png
@@ -168,6 +182,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:explosionStripP1.png
 
 #begin exStripWobble.png
@@ -180,6 +195,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:exStripWobble.png
 
 #begin fireBall.png
@@ -192,12 +208,14 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:fireBall.png
 
 #begin FireballAhh.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
+/processorParam:Version=3.8.6.1
 /build:FireballAhh.wav
 
 #begin fireBallMetelSphere.png
@@ -210,12 +228,14 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:fireBallMetelSphere.png
 
 #begin FireBallShot.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
+/processorParam:Version=3.8.6.1
 /build:FireBallShot.wav
 
 #begin ForestSprite.bmp
@@ -228,6 +248,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:ForestSprite.bmp
 
 #begin ForestSprite2.png
@@ -240,6 +261,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:ForestSprite2.png
 
 #begin Galixy.jpg
@@ -252,6 +274,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:Galixy.jpg
 
 #begin gamefont.spritefont
@@ -259,6 +282,7 @@
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.1
 /build:gamefont.spritefont
 
 #begin gamefontLarger.spritefont
@@ -266,6 +290,7 @@
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.1
 /build:gamefontLarger.spritefont
 
 #begin H-Bomb.png
@@ -278,6 +303,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:H-Bomb.png
 
 #begin habanerio-small.png
@@ -290,6 +316,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:habanerio-small.png
 
 #begin habanerio.png
@@ -302,6 +329,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:habanerio.png
 
 #begin KamakisaiSheet - small-s.png
@@ -314,6 +342,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:KamakisaiSheet - small-s.png
 
 #begin KamakisaiSheet - small.png
@@ -326,6 +355,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:KamakisaiSheet - small.png
 
 #begin KamakisaiSheet-Exsmall.png
@@ -338,6 +368,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:KamakisaiSheet-Exsmall.png
 
 #begin Kspr-ExSmall.png
@@ -350,6 +381,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:Kspr-ExSmall.png
 
 #begin Kspr-s.png
@@ -362,6 +394,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:Kspr-s.png
 
 #begin Kspr.png
@@ -374,6 +407,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:Kspr.png
 
 #begin level10.jpg
@@ -386,6 +420,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:level10.jpg
 
 #begin level2.png
@@ -398,6 +433,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:level2.png
 
 #begin Level3.jpg
@@ -410,6 +446,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:Level3.jpg
 
 #begin level4.jpg
@@ -422,6 +459,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:level4.jpg
 
 #begin metelSphere.png
@@ -434,6 +472,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:metelSphere.png
 
 #begin metelSphereSmall.png
@@ -446,6 +485,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:metelSphereSmall.png
 
 #begin OctoEnemy.png
@@ -458,6 +498,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:OctoEnemy.png
 
 #begin OctoEnemyAnamation - Copy.png
@@ -470,6 +511,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:OctoEnemyAnamation - Copy.png
 
 #begin OctoEnemyAnamation-.png
@@ -482,6 +524,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:OctoEnemyAnamation-.png
 
 #begin OctoEnemyAnamation.png
@@ -494,6 +537,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:OctoEnemyAnamation.png
 
 #begin OctoEnemyAnamation2.png
@@ -506,6 +550,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:OctoEnemyAnamation2.png
 
 #begin Player2.png
@@ -518,6 +563,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:Player2.png
 
 #begin player3.png
@@ -530,6 +576,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:player3.png
 
 #begin player4.png
@@ -542,6 +589,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:player4.png
 
 #begin PlayerOne.png
@@ -554,6 +602,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:PlayerOne.png
 
 #begin PlayerStatusArea.png
@@ -566,6 +615,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:PlayerStatusArea.png
 
 #begin playerTwo.png
@@ -578,12 +628,14 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:playerTwo.png
 
 #begin puet.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
+/processorParam:Version=3.8.6.1
 /build:puet.wav
 
 #begin quartz.png
@@ -596,12 +648,14 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:quartz.png
 
 #begin reload.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
+/processorParam:Version=3.8.6.1
 /build:reload.wav
 
 #begin Saturn.jpg
@@ -614,6 +668,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:Saturn.jpg
 
 #begin slow.png
@@ -626,6 +681,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:slow.png
 
 #begin smile.png
@@ -638,6 +694,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:smile.png
 
 #begin smileSmall.png
@@ -650,6 +707,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:smileSmall.png
 
 #begin smileSmallStainG.png
@@ -662,31 +720,49 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:smileSmallStainG.png
 
 #begin Sounds/explosion6.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
+/processorParam:Version=3.8.6.1
 /build:Sounds/explosion6.wav
 
 #begin Sounds/fire.wma
 /importer:WmaImporter
 /processor:SongProcessor
 /processorParam:Quality=Best
+/processorParam:Version=3.8.6.1
 /build:Sounds/fire.wma
 
 #begin Sounds/puet.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
+/processorParam:Version=3.8.6.1
 /build:Sounds/puet.wav
 
 #begin Sounds/splat.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
+/processorParam:Version=3.8.6.1
 /build:Sounds/splat.wav
+
+#begin SpacecraftEngineExhaust_8Frame.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
+/build:SpacecraftEngineExhaust_8Frame.png
 
 #begin speed.png
 /importer:TextureImporter
@@ -698,6 +774,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:speed.png
 
 #begin Sphere.png
@@ -710,6 +787,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:Sphere.png
 
 #begin Sphere75.png
@@ -722,6 +800,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:Sphere75.png
 
 #begin Sphere75small.png
@@ -734,6 +813,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:Sphere75small.png
 
 #begin splat.bmp
@@ -746,12 +826,14 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:splat.bmp
 
 #begin unstopaballShot.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
+/processorParam:Version=3.8.6.1
 /build:unstopaballShot.wav
 
 #begin wobKamAna.png
@@ -764,5 +846,6 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.1
 /build:wobKamAna.png
 

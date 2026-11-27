@@ -19,6 +19,7 @@ namespace MyFirstGame
 
         public Vector2 position;
         public Vector2 direction; 
+        public Vector2 inheritedVelocity;
         public Texture2D sprite = null;
         public bool hasHitShield = false;
 
@@ -59,27 +60,30 @@ namespace MyFirstGame
 		public const int defaultSpeed = 18;
         public bool invincible = false;
 
-        public Projectile(MainGame game, Vector2 pos, Vector2 projectileDirection)
+        public Projectile(MainGame game, Vector2 pos, Vector2 projectileDirection, Vector2 inheritedVelocity = default(Vector2))
         {
             position = pos;
             direction = projectileDirection;
+            this.inheritedVelocity = inheritedVelocity;
             sprite = game.playerBullet;
             speed = defaultSpeed;
         }
 
-        public Projectile(MainGame game, Vector2 pos, Vector2 projectileDirection, Texture2D Sprite, int projectileSpeed)
+        public Projectile(MainGame game, Vector2 pos, Vector2 projectileDirection, Texture2D Sprite, int projectileSpeed, Vector2 inheritedVelocity = default(Vector2))
         {
             position = pos;
             direction = projectileDirection;
+            this.inheritedVelocity = inheritedVelocity;
             sprite = Sprite;
             speed = projectileSpeed;
 
         }
 
-        public Projectile(MainGame game, Vector2 pos, Vector2 projectileDirection, Texture2D Sprite, int projectileSpeed, bool isInvincible)
+        public Projectile(MainGame game, Vector2 pos, Vector2 projectileDirection, Texture2D Sprite, int projectileSpeed, bool isInvincible, Vector2 inheritedVelocity = default(Vector2))
         {
             position = pos;
             direction = projectileDirection;
+            this.inheritedVelocity = inheritedVelocity;
             sprite = Sprite;
             speed = projectileSpeed;
             invincible = isInvincible;

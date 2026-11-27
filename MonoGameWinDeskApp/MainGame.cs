@@ -452,6 +452,7 @@ namespace MyFirstGame
 		public Texture2D playerTwoTex; // Utilised
 		public Texture2D playerThreeTex; // Utilised
 		public Texture2D playerFourTex; // Utilised
+		Texture2D playerThrustTexture;
 		public Texture2D kamakizeTex; // Utilised
 									  //public Texture2D kamakizeTexSm;
 		public Texture2D oneUpTex; // Utilised
@@ -528,6 +529,7 @@ namespace MyFirstGame
             playerTwoTex = Content.Load<Texture2D>("playerTwo");
             playerThreeTex = Content.Load<Texture2D>("player3");
             playerFourTex = Content.Load<Texture2D>("player4");
+            playerThrustTexture = Content.Load<Texture2D>("SpacecraftEngineExhaust_8Frame");
 
             playerBullet = Content.Load<Texture2D>("smileSmallStainG");
             metelSpherePowerUp = Content.Load<Texture2D>("metelSphere");
@@ -739,6 +741,7 @@ namespace MyFirstGame
                 // Draw the players
                 if (playerOne.hasStarted && playerOne.lives > 0)
                 {
+                    DrawPlayerThrust(playerOne);
                     if (playerOne.bulletCollision || playerOne.playerCollision)
                         playerOne.explosion.DrawFrame(spriteBatch, playerOne.explosionSpritePosition);
                     else if (!(playerOne.bulletCollision || playerOne.playerCollision))
@@ -760,6 +763,7 @@ namespace MyFirstGame
                 }
                 if (playerTwo.hasStarted && playerTwo.lives > 0)
                 {
+                    DrawPlayerThrust(playerTwo);
                     if (playerTwo.bulletCollision || playerTwo.playerCollision)
                         playerTwo.explosion.DrawFrame(spriteBatch, playerTwo.explosionSpritePosition);
                     else if (!(playerTwo.bulletCollision || playerTwo.playerCollision))
@@ -774,6 +778,7 @@ namespace MyFirstGame
                 }
                 if (playerThree.hasStarted && playerThree.lives > 0)
                 {
+                    DrawPlayerThrust(playerThree);
                     if (playerThree.bulletCollision || playerThree.playerCollision)
                         playerThree.explosion.DrawFrame(spriteBatch, playerThree.explosionSpritePosition);
                     else if (!(playerThree.bulletCollision || playerThree.playerCollision))
@@ -787,6 +792,7 @@ namespace MyFirstGame
                 }
                 if (playerFour.hasStarted && playerFour.lives > 0)
                 {
+                    DrawPlayerThrust(playerFour);
                     if (playerFour.bulletCollision || playerFour.playerCollision)
                         playerFour.explosion.DrawFrame(spriteBatch, playerFour.explosionSpritePosition);
                     else if (!(playerFour.bulletCollision || playerFour.playerCollision))
@@ -854,6 +860,25 @@ namespace MyFirstGame
             base.Draw(gameTime);
         }
 
+        void DrawPlayerThrust(Player player)
+        {
+            if (player.thrustMagnitude <= 0f || player.playerCollision || player.bulletCollision)
+                return;
+
+            int frameWidth = playerThrustTexture.Width / 8;
+            int intensityFrame = Math.Min((int)(player.thrustMagnitude * 7f), 6);
+            int frame = intensityFrame + (player.alternateThrustFrame ? 1 : 0);
+            Rectangle source = new Rectangle(frame * frameWidth, 0, frameWidth, playerThrustTexture.Height);
+            Vector2 direction = player.thrustDirection;
+            float rotation = (float)Math.Atan2(direction.X, -direction.Y);
+            float spriteSize = Math.Max(player.sprite.Width, player.sprite.Height);
+            float scale = spriteSize / (float)Math.Max(frameWidth, playerThrustTexture.Height);
+            Vector2 exhaustPosition = player.CenterPosition - direction * (spriteSize * 0.35f);
+
+            spriteBatch.Draw(playerThrustTexture, exhaustPosition, source, Color.White, rotation,
+                new Vector2(frameWidth / 2f, playerThrustTexture.Height / 2f), scale, SpriteEffects.None, 0f);
+        }
+
         ///<summary>PlayerMovement handles the joystick movement for a player object</summary>
         ///<param name="playerObj">The player object to move</param>
         ///<param name="gamePadState">The gamePadState controlling the movement</param>
@@ -864,6 +889,8 @@ namespace MyFirstGame
                 if (playerObj.playerCollision || playerObj.bulletCollision)
                 {
                     playerObj.velocity = Vector2.Zero;
+                    playerObj.thrustMagnitude = 0f;
+                    playerObj.thrustDirection = Vector2.Zero;
                     return;
                 }
 
@@ -878,6 +905,25 @@ namespace MyFirstGame
                     if (keyboardState.IsKeyDown(Keys.Left)) movementInput.X -= 1;
                     if (keyboardState.IsKeyDown(Keys.Down)) movementInput.Y += 1;
                     if (keyboardState.IsKeyDown(Keys.Up)) movementInput.Y -= 1;
+                }
+
+                float inputMagnitude = movementInput.Length();
+                playerObj.thrustMagnitude = MathHelper.Clamp(inputMagnitude, 0f, 1f);
+                playerObj.thrustDirection = inputMagnitude > 0f ? movementInput / inputMagnitude : Vector2.Zero;
+
+                if (playerObj.thrustMagnitude > 0f)
+                {
+                    playerObj.thrustAnimationTimer += elapsed;
+                    while (playerObj.thrustAnimationTimer >= 0.1f)
+                    {
+                        playerObj.thrustAnimationTimer -= 0.1f;
+                        playerObj.alternateThrustFrame = !playerObj.alternateThrustFrame;
+                    }
+                }
+                else
+                {
+                    playerObj.thrustAnimationTimer = 0f;
+                    playerObj.alternateThrustFrame = false;
                 }
 
                 if (movementInput.LengthSquared() > 1f)

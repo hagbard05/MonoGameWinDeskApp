@@ -38,7 +38,7 @@ namespace MyFirstGame
         public int projectileSpeed;
         public static int defaultProjectileSpeed = 31;
         public int headExplodeCounter;
-        public static int defaultSpeed = 6;
+        public static int defaultSpeed = 7;
         public int superBombs = 0;
 
 		// Power up times
@@ -54,6 +54,10 @@ namespace MyFirstGame
 		public Vector2 startPosition;
 		public Vector2 shieldOffset;
 		public Vector2 velocity;
+		public float thrustMagnitude;
+		public Vector2 thrustDirection;
+		public float thrustAnimationTimer;
+		public bool alternateThrustFrame;
 
 		public List<Projectile> projectiles = new List<Projectile>();
 
@@ -67,6 +71,10 @@ namespace MyFirstGame
             score = 0;
             bulletCollision = false;
             playerCollision = false;
+            thrustMagnitude = 0f;
+            thrustDirection = Vector2.Zero;
+            thrustAnimationTimer = 0f;
+            alternateThrustFrame = false;
             shieldUp = false;
             shieldUpCounter = 0;
             speed = defaultSpeed;
