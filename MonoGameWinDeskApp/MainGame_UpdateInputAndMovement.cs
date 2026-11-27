@@ -540,7 +540,7 @@ namespace MyFirstGame
 							if (playerObj.PepperPowerup == false && playerObj.InvincBulletPowerUp == false)
 							{
                                 playerObj.projectiles.Add(new Projectile(this, new Vector2(playerObj.CenterPosition.X - 10, playerObj.CenterPosition.Y - 6), shotVec, playerObj.velocity));
-								normalShot.Play(0.4f, -0.4f, panPos);
+								normalShot.Play(0.3f, 0.0f, panPos);
 							}
 
 							if (playerObj.PepperPowerup == true && playerObj.InvincBulletPowerUp == false)

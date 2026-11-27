@@ -312,8 +312,11 @@ namespace MyFirstGame
             graphics.IsFullScreen = isfullscreen;
 			if (isfullscreen)
             {
-                graphics.PreferredBackBufferWidth = 3840;
-                graphics.PreferredBackBufferHeight = 2160;
+				graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+				graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+
+				//graphics.PreferredBackBufferWidth = 3840;
+                //graphics.PreferredBackBufferHeight = 2160;
             }
             else
             {
@@ -1172,10 +1175,6 @@ namespace MyFirstGame
                     // Check for per pixle collision
                     if (perPixleCollisionDetection(projectileObj.rectangle, projectileObj.spriteTextureData, playerTwo.shieldRectangle, playerTwo.shieldTextureData))
                     {
-                        //Vector2 outFromCenterVector = findDirection(projectileObj.position, playerTwo.shieldCenterPosition);
-                        //Vector2 reflectVec = new Vector2(outFromCenterVector.Y * -1, outFromCenterVector.X);
-                        //projectileObj.direction = Vector2.Reflect(projectileObj.direction, reflectVec);
-                        //projectileObj.hasHitShield = true;
                         projectileObj.direction = findDirection(projectileObj.position, playerTwo.shieldCenterPosition);
                         projectileObj.direction.Y *= -1;
                         return true;
@@ -1628,52 +1627,6 @@ namespace MyFirstGame
             direction.Normalize();
             return direction;
         }
-
-        ///// <summary>
-        ///// This handles finding the slope bewtween two points and the direction to travel along that slope to get to the 
-        ///// destanation point
-        ///// </summary>
-        //Vector2 findDirection(Vector2 destinatoinPoint, Vector2 originPoint)
-        //{
-        //    Vector2 direction = new Vector2();
-        //    float directionY = destinatoinPoint.Y - originPoint.Y;
-        //    float directionX = destinatoinPoint.X - originPoint.X;
-        //    float reducedDirectionY = 0;
-        //    float reducedDirectionX = 0;
-
-        //    if (directionY == 0 && directionX > 0)
-        //        return new Vector2(0, 1);
-        //    if (directionY == 0 && directionX < 0)
-        //        return new Vector2(0, -1);
-        //    if (directionX == 0 && directionY < 0)
-        //        return new Vector2(-1, 0);
-        //    if (directionX == 0 && directionY > 0)
-        //        return new Vector2(1, 0);
-
-        //    if (System.Math.Abs(directionY) > System.Math.Abs(directionX))
-        //    {
-        //        reducedDirectionY = 1;
-        //        reducedDirectionX = directionX / directionY;
-        //    }
-
-        //    if (System.Math.Abs(directionY) < System.Math.Abs(directionX))
-        //    {
-        //        reducedDirectionX = 1;
-        //        reducedDirectionY = directionY / directionX;
-        //    }
-
-        //    if (destinatoinPoint.X > originPoint.X)
-        //        direction.X = System.Math.Abs(reducedDirectionX);
-        //    if (destinatoinPoint.X < originPoint.X)
-        //        direction.X = (System.Math.Abs(reducedDirectionX)) * -1;
-
-        //    if (destinatoinPoint.Y > originPoint.Y)
-        //        direction.Y = System.Math.Abs(reducedDirectionY);
-        //    if (destinatoinPoint.Y < originPoint.Y)
-        //        direction.Y = (System.Math.Abs(reducedDirectionY)) * -1;
-
-        //    return direction;
-        //}
 
         bool perPixleCollisionDetection(Rectangle rectangleA, Color[] dataA, Rectangle rectangleB, Color[] dataB)
         {

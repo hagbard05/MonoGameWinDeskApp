@@ -38,7 +38,7 @@ namespace MyFirstGame
         public int projectileSpeed;
         public static int defaultProjectileSpeed = 31;
         public int headExplodeCounter;
-        public static int defaultSpeed = 7;
+        public static int defaultSpeed = 8;
         public int superBombs = 0;
 
 		// Power up times
