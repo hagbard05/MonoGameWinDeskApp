@@ -50,16 +50,18 @@ namespace MyFirstGame
         public AnimatedTexture explosion = new AnimatedTexture(Vector2.Zero);
         public Color[] shieldTextureData;
 
-		// position vectors
-        public Vector2 startPosition;
-        public Vector2 shieldOffset;
+		// position and movement vectors
+		public Vector2 startPosition;
+		public Vector2 shieldOffset;
+		public Vector2 velocity;
 
-        public List<Projectile> projectiles = new List<Projectile>();
+		public List<Projectile> projectiles = new List<Projectile>();
 
-        public void setToIniValues()
-        {
+		public void setToIniValues()
+		{
 			lives = iniLives;
-            speed = defaultSpeed;
+			velocity = Vector2.Zero;
+			speed = defaultSpeed;
             projectileSpeed = defaultProjectileSpeed;
             superBombs = 0;
             score = 0;

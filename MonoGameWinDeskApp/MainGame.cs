@@ -859,14 +859,32 @@ namespace MyFirstGame
         ///<param name="gamePadState">The gamePadState controlling the movement</param>
         void PlayerMovement(Player playerObj, GamePadState gamePadState)
         {
-            if ((playerObj.hasStarted) && playerObj.lives > 0)
+            if (playerObj.hasStarted && playerObj.lives > 0)
             {
-                // if the player is currently blowing up then skip movement
-                if (!(playerObj.playerCollision == true || playerObj.bulletCollision == true))
+                if (playerObj.playerCollision || playerObj.bulletCollision)
                 {
-                    playerObj.position.X += gamePadState.ThumbSticks.Left.X * playerObj.speed;
-                    playerObj.position.Y += gamePadState.ThumbSticks.Left.Y * -playerObj.speed;
+                    playerObj.velocity = Vector2.Zero;
+                    return;
                 }
+
+                Vector2 movementInput = new Vector2(
+                    gamePadState.ThumbSticks.Left.X,
+                    -gamePadState.ThumbSticks.Left.Y);
+
+                if (playerObj == playerOne)
+                {
+                    KeyboardState keyboardState = Keyboard.GetState();
+                    if (keyboardState.IsKeyDown(Keys.Right)) movementInput.X += 1;
+                    if (keyboardState.IsKeyDown(Keys.Left)) movementInput.X -= 1;
+                    if (keyboardState.IsKeyDown(Keys.Down)) movementInput.Y += 1;
+                    if (keyboardState.IsKeyDown(Keys.Up)) movementInput.Y -= 1;
+                }
+
+                if (movementInput.LengthSquared() > 1f)
+                    movementInput.Normalize();
+
+                playerObj.velocity += movementInput * (playerObj.speed * 60f * elapsed);
+                playerObj.position += playerObj.velocity * elapsed;
             }
         }
 
@@ -905,6 +923,7 @@ namespace MyFirstGame
                     playerObj.playerCollision = false; //reset any prevoius collisions
                     playerObj.headExplodeCounter = 0;
                     playerObj.position = playerObj.startPosition;
+                    playerObj.velocity = Vector2.Zero;
                     playerObj.shieldUp = true;
                 }
                 if (playerObj.playerCollision == true || playerObj.bulletCollision == true)
@@ -997,8 +1016,8 @@ namespace MyFirstGame
                         }
                         if (gameType == gameTypes.defendTheCrystal)
                         {
-                            playerOne.position.X += projectileObj.direction.X * knockStrength;
-                            playerOne.position.Y -= projectileObj.direction.Y * knockStrength;
+                            playerOne.velocity.X += projectileObj.direction.X * knockStrength * 60f;
+                            playerOne.velocity.Y -= projectileObj.direction.Y * knockStrength * 60f;
                         }
                     }
                 }
@@ -1020,8 +1039,8 @@ namespace MyFirstGame
                         }
                         if (gameType == gameTypes.defendTheCrystal)
                         {
-                            playerTwo.position.X += projectileObj.direction.X * knockStrength;
-                            playerTwo.position.Y -= projectileObj.direction.Y * knockStrength;
+                            playerTwo.velocity.X += projectileObj.direction.X * knockStrength * 60f;
+                            playerTwo.velocity.Y -= projectileObj.direction.Y * knockStrength * 60f;
                         }
 
                     }
@@ -1044,8 +1063,8 @@ namespace MyFirstGame
                         }
                         if (gameType == gameTypes.defendTheCrystal)
                         {
-                            playerThree.position.X += projectileObj.direction.X * knockStrength;
-                            playerThree.position.Y -= projectileObj.direction.Y * knockStrength;
+                            playerThree.velocity.X += projectileObj.direction.X * knockStrength * 60f;
+                            playerThree.velocity.Y -= projectileObj.direction.Y * knockStrength * 60f;
                         }
 
                     }
@@ -1068,8 +1087,8 @@ namespace MyFirstGame
                         }
                         if (gameType == gameTypes.defendTheCrystal)
                         {
-                            playerFour.position.X += projectileObj.direction.X * knockStrength;
-                            playerFour.position.Y -= projectileObj.direction.Y * knockStrength;
+                            playerFour.velocity.X += projectileObj.direction.X * knockStrength * 60f;
+                            playerFour.velocity.Y -= projectileObj.direction.Y * knockStrength * 60f;
                         }
                     }
                 }
@@ -1518,9 +1537,28 @@ namespace MyFirstGame
                 int MaxY = graphics.GraphicsDevice.Viewport.Height - playerObj.sprite.Height;
                 int MinY = 0;
 
-                // Check for bounds.
-                playerObj.position.X = MathHelper.Clamp(playerObj.position.X, MinX, MaxX);
-                playerObj.position.Y = MathHelper.Clamp(playerObj.position.Y, MinY, MaxY);
+                // Stop outward momentum when the player reaches a screen edge.
+                if (playerObj.position.X < MinX)
+                {
+                    playerObj.position.X = MinX;
+                    if (playerObj.velocity.X < 0) playerObj.velocity.X = 0;
+                }
+                else if (playerObj.position.X > MaxX)
+                {
+                    playerObj.position.X = MaxX;
+                    if (playerObj.velocity.X > 0) playerObj.velocity.X = 0;
+                }
+
+                if (playerObj.position.Y < MinY)
+                {
+                    playerObj.position.Y = MinY;
+                    if (playerObj.velocity.Y < 0) playerObj.velocity.Y = 0;
+                }
+                else if (playerObj.position.Y > MaxY)
+                {
+                    playerObj.position.Y = MaxY;
+                    if (playerObj.velocity.Y > 0) playerObj.velocity.Y = 0;
+                }
             }
         }
 

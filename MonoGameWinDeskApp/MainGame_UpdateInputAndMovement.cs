@@ -379,89 +379,6 @@ namespace MyFirstGame
                     }
                 }
                 updatePowerUpPositions();
-
-                // Handling Keyboard input
-                // PlayerOne Keyboard Input
-                KeyboardState newState = Keyboard.GetState();
-                if (!(playerOne.bulletCollision == true || playerOne.playerCollision == true))
-                {
-                    // PlayerOne Movement
-                    if (newState.IsKeyDown(Keys.Right))
-                        playerOne.position.X += playerOne.speed;
-                    if (newState.IsKeyDown(Keys.Left))
-                        playerOne.position.X -= playerOne.speed;
-                    if (newState.IsKeyDown(Keys.Down))
-                        playerOne.position.Y += playerOne.speed;
-                    if (newState.IsKeyDown(Keys.Up))
-                        playerOne.position.Y -= playerOne.speed;
-                }
-                // PlayerOne Firing
-                KeyboardState newState2 = Keyboard.GetState();
-                if (!(playerOne.bulletCollision == true || playerOne.playerCollision == true))
-                {
-                    if (newState.IsKeyDown(Keys.A) || newState.IsKeyDown(Keys.S) || newState.IsKeyDown(Keys.D) || newState.IsKeyDown(Keys.W))
-                    {
-                        double spread = 0.2;
-                        Vector2 shotVec = new Vector2(0,0);
-                        Vector2 leftShotVec;
-                        Vector2 rightShotVec;
-						float panPos = convertPositionToPanValue(playerOne.position.X);
-
-                        if (newState.IsKeyDown(Keys.A))
-                        {
-                            shotVec.X = -1;
-						}
-						if (newState.IsKeyDown(Keys.D))
-						{
-							shotVec.X = 1;
-						}
-						if (newState.IsKeyDown(Keys.S))
-						{
-                            shotVec.Y = -1;
-						}
-						if (newState.IsKeyDown(Keys.W))
-						{
-                            shotVec.Y = 1;
-						}
-
-						// The following changes the projectile texture depending on the power up
-						if (playerOne.PepperPowerup == false && playerOne.InvincBulletPowerUp == false)
-                        {
-                            playerOne.projectiles.Add(new Projectile(this, new Vector2(playerOne.CenterPosition.X - 10, playerOne.CenterPosition.Y - 6), shotVec));
-                            normalShot.Play(0.4f, -0.4f, panPos);
-                        }
-
-                        if (playerOne.PepperPowerup == true && playerOne.InvincBulletPowerUp == false)
-                        {
-                            rightShotVec = VectorOps.RotateVector(shotVec, -1 * spread);
-                            leftShotVec = VectorOps.RotateVector(shotVec, spread);
-                            Vector2 center = new Vector2(playerOne.CenterPosition.X - 24, playerOne.CenterPosition.Y - 24);
-
-                            playerOne.projectiles.Add(new Projectile(this, center, shotVec, PepperPowerUp.projectileSprite, playerOne.projectileSpeed));
-                            playerOne.projectiles.Add(new Projectile(this, center, leftShotVec, PepperPowerUp.projectileSprite, playerOne.projectileSpeed));
-                            playerOne.projectiles.Add(new Projectile(this, center, rightShotVec, PepperPowerUp.projectileSprite, playerOne.projectileSpeed));
-                            fireBallShot.Play(0.8f, -0.8f, panPos);
-                        }
-                        if (playerOne.PepperPowerup == false && playerOne.InvincBulletPowerUp == true)
-                        {
-                            playerOne.projectiles.Add(new Projectile(this, new Vector2(playerOne.CenterPosition.X - 14, playerOne.CenterPosition.Y - 14), shotVec, InvincibleBulletPowerUp.projectileSprite, playerOne.projectileSpeed, true));
-                            unstopaballShot.Play(1.0f, -0.5f, panPos);
-                        }
-                        if (playerOne.PepperPowerup == true && playerOne.InvincBulletPowerUp == true)
-                        {
-                            Vector2 center = new Vector2(playerOne.CenterPosition.X - 24, playerOne.CenterPosition.Y - 24);
-                            double spread2 = 0.1;
-                            Vector2 leftShotVec2 = VectorOps.RotateVector(shotVec, spread2);
-                            Vector2 rightShotVec2 = VectorOps.RotateVector(shotVec, -1 * spread2);
-                            //playerOne.projectiles.Add(new Projectile(this, center, shotVec, fireBallMetalSphere, playerOne.projectileSpeed, true));
-                            playerOne.projectiles.Add(new Projectile(this, center, leftShotVec2, fireBallMetalSphere, playerOne.projectileSpeed, true));
-                            playerOne.projectiles.Add(new Projectile(this, center, rightShotVec2, fireBallMetalSphere, playerOne.projectileSpeed, true));
-
-                            unstopaballShot.Play(0.7f, -0.9f, panPos);
-                            fireBallShot.Play(0.4f, -0.7f, panPos);
-                        }
-                    }
-				}
             }
 
             previousGamePadState1 = GamePad.GetState(PlayerIndex.One);
@@ -470,6 +387,15 @@ namespace MyFirstGame
             previousGamePadState4 = GamePad.GetState(PlayerIndex.Four);
 
         }
+
+		Vector2 AddPlayerVelocityToShotVector(Vector2 shotVector, Player playerObj, float projectileSpeed)
+		{
+			if (shotVector.LengthSquared() > 0f)
+				shotVector.Normalize();
+
+			Vector2 velocityInShotCoordinates = new Vector2(playerObj.velocity.X, -playerObj.velocity.Y);
+			return shotVector + velocityInShotCoordinates / (projectileSpeed * 60f);
+		}
 
 		///<summary>
 		/// PlayerShooting handles the joystick shooting for the player object
@@ -492,7 +418,6 @@ namespace MyFirstGame
 				}
 
 				// this loop checks for collisions and updates the projectile movement 
-				//for (int i = 0; i < playerObj.projectiles.Count; i++)
 				foreach (Projectile projectile in playerObj.projectiles)
 				{
 					projectile.position = new Vector2(projectile.position.X + projectile.direction.X * projectile.speed, projectile.position.Y + projectile.direction.Y * -projectile.speed);
@@ -529,14 +454,7 @@ namespace MyFirstGame
 						Vector2 shotVec = new Vector2(gamePadState.ThumbSticks.Right.X, gamePadState.ThumbSticks.Right.Y);
 
 						// --->  Dead Center for shooting stick.  (If the stick is in the middle dont shoot)
-						float deadCenterRange = 0.04f;
-
-
-						// Keyboard input for player one
-						if (Keyboard.GetState().IsKeyDown(Keys.D))
-						{
-							shotVec = new Vector2(1, 0);
-						}
+						float deadCenterRange = 0.035f;
 
 						if ((shotVec.X < deadCenterRange && shotVec.X > -1 * deadCenterRange) && (shotVec.Y < deadCenterRange && shotVec.Y > -1 * deadCenterRange))
 						{
@@ -551,7 +469,8 @@ namespace MyFirstGame
 							// The following changes the projectile texture depending on the power up
 							if (playerObj.PepperPowerup == false && playerObj.InvincBulletPowerUp == false)
 							{
-								playerObj.projectiles.Add(new Projectile(this, new Vector2(playerObj.CenterPosition.X - 10, playerObj.CenterPosition.Y - 6), shotVec));
+								Vector2 launchVector = AddPlayerVelocityToShotVector(shotVec, playerObj, Projectile.defaultSpeed);
+								playerObj.projectiles.Add(new Projectile(this, new Vector2(playerObj.CenterPosition.X - 10, playerObj.CenterPosition.Y - 6), launchVector));
 								normalShot.Play(0.4f, -0.4f, panPos);
 							}
 
@@ -561,14 +480,15 @@ namespace MyFirstGame
 								leftShotVec = VectorOps.RotateVector(shotVec, spread);
 								Vector2 center = new Vector2(playerObj.CenterPosition.X - 24, playerObj.CenterPosition.Y - 24);
 
-								playerObj.projectiles.Add(new Projectile(this, center, shotVec, PepperPowerUp.projectileSprite, playerObj.projectileSpeed));
-								playerObj.projectiles.Add(new Projectile(this, center, leftShotVec, PepperPowerUp.projectileSprite, playerObj.projectileSpeed));
-								playerObj.projectiles.Add(new Projectile(this, center, rightShotVec, PepperPowerUp.projectileSprite, playerObj.projectileSpeed));
+								playerObj.projectiles.Add(new Projectile(this, center, AddPlayerVelocityToShotVector(shotVec, playerObj, playerObj.projectileSpeed), PepperPowerUp.projectileSprite, playerObj.projectileSpeed));
+								playerObj.projectiles.Add(new Projectile(this, center, AddPlayerVelocityToShotVector(leftShotVec, playerObj, playerObj.projectileSpeed), PepperPowerUp.projectileSprite, playerObj.projectileSpeed));
+								playerObj.projectiles.Add(new Projectile(this, center, AddPlayerVelocityToShotVector(rightShotVec, playerObj, playerObj.projectileSpeed), PepperPowerUp.projectileSprite, playerObj.projectileSpeed));
 								fireBallShot.Play(0.8f, -0.8f, panPos);
 							}
 							if (playerObj.PepperPowerup == false && playerObj.InvincBulletPowerUp == true)
 							{
-								playerObj.projectiles.Add(new Projectile(this, new Vector2(playerObj.CenterPosition.X - 14, playerObj.CenterPosition.Y - 14), shotVec, InvincibleBulletPowerUp.projectileSprite, playerObj.projectileSpeed, true));
+								Vector2 launchVector = AddPlayerVelocityToShotVector(shotVec, playerObj, playerObj.projectileSpeed);
+								playerObj.projectiles.Add(new Projectile(this, new Vector2(playerObj.CenterPosition.X - 14, playerObj.CenterPosition.Y - 14), launchVector, InvincibleBulletPowerUp.projectileSprite, playerObj.projectileSpeed, true));
 								unstopaballShot.Play(1.0f, -0.5f, panPos);
 							}
 							if (playerObj.PepperPowerup == true && playerObj.InvincBulletPowerUp == true)
@@ -578,8 +498,8 @@ namespace MyFirstGame
 								Vector2 leftShotVec2 = VectorOps.RotateVector(shotVec, spread2);
 								Vector2 rightShotVec2 = VectorOps.RotateVector(shotVec, -1 * spread2);
 								//playerObj.projectiles.Add(new Projectile(this, center, shotVec, fireBallMetalSphere, playerObj.projectileSpeed, true));
-								playerObj.projectiles.Add(new Projectile(this, center, leftShotVec2, fireBallMetalSphere, playerObj.projectileSpeed, true));
-								playerObj.projectiles.Add(new Projectile(this, center, rightShotVec2, fireBallMetalSphere, playerObj.projectileSpeed, true));
+								playerObj.projectiles.Add(new Projectile(this, center, AddPlayerVelocityToShotVector(leftShotVec2, playerObj, playerObj.projectileSpeed), fireBallMetalSphere, playerObj.projectileSpeed, true));
+								playerObj.projectiles.Add(new Projectile(this, center, AddPlayerVelocityToShotVector(rightShotVec2, playerObj, playerObj.projectileSpeed), fireBallMetalSphere, playerObj.projectileSpeed, true));
 
 								unstopaballShot.Play(0.7f, -0.9f, panPos);
 								fireBallShot.Play(0.4f, -0.7f, panPos);
